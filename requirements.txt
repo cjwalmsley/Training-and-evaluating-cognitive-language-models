@@ -1,0 +1,6 @@
+ollama
+datasets
+datetime
+pandas
+requests
+jupyter

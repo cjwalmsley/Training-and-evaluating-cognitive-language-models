@@ -5,18 +5,23 @@ import timeit
 from datetime import datetime
 import pandas as pd
 import sys
+import os
 
-def generated_text_from_prompt(the_prompt, model_string):
-    generated_text = ollama.generate(model=model_string, prompt=the_prompt)
+def generated_text_from_prompt(the_prompt, model_string, the_options):
+    generated_text = ollama.generate(model=model_string, prompt=the_prompt, options=the_options)
     return generated_text.response
+
+
+def prompt_prefix_from_file():
+    with open("prompts/prompt_prefix_for_squad", "r") as prefix_file:
+        prompt_prefix = prefix_file.read()
+    return prompt_prefix
 
 def prepare_prompt(question, answer):
 
-    prompt = """you are a writing assistant whose job is to write a declarative statement.
-The statement must have no punctuation and no special characters and proper nouns must begin with Capital letters.
-for example: given this question and answer: The Basilica of the Sacred Heart at Notre Dame is beside to which structure? / the Main Building.
-your output would be: the Basilica of the Sacred heart at Notre Dame is beside the Main Building
-write a declarative statement from the following question and answer:\n""" + question + " / " + answer
+    prompt_suffix = "question: " + question + "\nanswer: " + answer
+
+    prompt = prompt_prefix_from_file() + "\n" + prompt_suffix
     return prompt
 
 def items_with_title(the_dataset, the_title):
@@ -25,9 +30,21 @@ def items_with_title(the_dataset, the_title):
 
 def generate_declarative_sentences(the_model_string, title='all', number_of_sentences = 5):
     # generate an output file of n examples
-    ds = load_dataset("rajpurkar/squad")
 
+    options = {
+        "temperature": 0,
+        "seed": 42,
+        "top_p": 0.5,
+        "top_k": 10, }
+
+    ds = load_dataset("rajpurkar/squad")
+    if os.path.exists("/Volumes/X9 Pro/datasets"):
+        log_directory = "/Volumes/X9 Pro/datasets"
+    elif os.path.exists("/Users/chris/datasets"):
+        log_directory = "/Users/chris/datasets"
+    else: log_directory = "/home/chris/datasets"
     output_filename = "declarative_statement_generation_output_" + the_model_string + "_" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ".tsv"
+    output_filepath = os.path.join(log_directory, output_filename)
 
     if title != 'all':
         ds = ds.filter(lambda x: x["title"] == title)
@@ -38,11 +55,11 @@ def generate_declarative_sentences(the_model_string, title='all', number_of_sent
        number_of_examples = min(len(ds["train"]), number_of_sentences)
 
     log_writer = logger.LogWriter("declarative_statement_generation.log")
-    log_writer.log("generating: " + str(number_of_examples) + "examples\t" + "using  model: " + the_model_string)
+    log_writer.log("generating: " + str(number_of_examples) + " examples\t" + "using  model: " + the_model_string + " with prompt_prefix: " + prompt_prefix_from_file())
 
     total_elapsed = 0
     examples_generated = 0
-    with (open(output_filename, "w") as output_file):
+    with (open(output_filepath, "w") as output_file):
         output_file.write("id\ttitle\tquestion\tanswer\tstatement\n")
         for example in ds["train"]:
             example_id = example["id"]
@@ -51,9 +68,9 @@ def generate_declarative_sentences(the_model_string, title='all', number_of_sent
             answer = example["answers"]["text"][0]
             prompt = prepare_prompt(question, answer)
             start_time = timeit.default_timer()
-            statement = generated_text_from_prompt(prompt, model_string)
+            statement = generated_text_from_prompt(prompt, model_string, options)
             elapsed = timeit.default_timer() - start_time
-            log_writer.log("model_string: " + model_string + "\texecution_time_in_seconds: " + str(elapsed) + "\tprompt: " + prompt + "\tstatement: " + statement)
+            log_writer.log("model_string: " + model_string + "\texecution_time_in_seconds: " + str(elapsed) + "\tprompt_question: " + question +"\tprompt_answer: " + answer + "\tstatement: " + statement)
             file_entry = example_id + "\t" + title + "\t" + question + "\t" + answer + "\t" + statement + "\n"
             output_file.write(file_entry)
             total_elapsed = total_elapsed + elapsed
@@ -61,7 +78,7 @@ def generate_declarative_sentences(the_model_string, title='all', number_of_sent
             if examples_generated == number_of_examples:
                 break
     log_writer.log("generated: " + str(
-        examples_generated) + " examples\t" + "using  model: " + model_string + "\t" + "total_execution_time_in_seconds: " + str(total_elapsed) + "\n")
+        examples_generated) + " examples\t" + "using  model: " + model_string + "\t" + "total_execution_time_in_seconds: " + str(total_elapsed) + "\toutput_filepath:" + output_filepath + "\n")
 
 def clean_line(a_string):
     cleaned_string = a_string.replace('"', '')
@@ -99,6 +116,7 @@ if __name__ == "__main__":
         # Default execution if no args or wrong number of args are provided
         model_string = "llama3.2"
         #model_string="llama3"
+        #model_string = "deepseek-r1:8b"
         #model_string = "gemma3:4b"
         title_arg = "Frédéric_Chopin"
         num_sentences_arg = 5  # Default to 5 if not specified

@@ -5,6 +5,8 @@ class LogWriter:
 
     if os.path.exists("/Volumes/X9 Pro/logs"):
         log_directory = "/Volumes/X9 Pro/logs"
+    if os.path.exists("/Users/chris/logs"):
+        log_directory = "/Users/chris/logs"
     else: log_directory = "/home/chris/logs"
 
     def __init__(self, log_filename):
