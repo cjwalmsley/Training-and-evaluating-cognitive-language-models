@@ -6,6 +6,7 @@ from datetime import datetime
 import pandas as pd
 import sys
 import os
+import json
 
 def generated_text_from_prompt(the_prompt, model_string, the_options):
     generated_text = ollama.generate(model=model_string, prompt=the_prompt, options=the_options)
@@ -28,14 +29,8 @@ def items_with_title(the_dataset, the_title):
     df = pd.DataFrame(the_dataset)
     return df[df.apply(lambda x: x["title"] == the_title, axis=1)]
 
-def generate_declarative_sentences(the_model_string, title='all', number_of_sentences = 5):
+def generate_declarative_sentences(the_model_string, the_options, title='all', number_of_sentences = 5):
     # generate an output file of n examples
-
-    options = {
-        "temperature": 0,
-        "seed": 42,
-        "top_p": 0.5,
-        "top_k": 10, }
 
     ds = load_dataset("rajpurkar/squad")
     if os.path.exists("/Volumes/X9 Pro/datasets"):
@@ -55,7 +50,7 @@ def generate_declarative_sentences(the_model_string, title='all', number_of_sent
        number_of_examples = min(len(ds["train"]), number_of_sentences)
 
     log_writer = logger.LogWriter("declarative_statement_generation.log")
-    log_writer.log("generating: " + str(number_of_examples) + " examples\t" + "using  model: " + the_model_string + " with prompt_prefix: " + prompt_prefix_from_file())
+    log_writer.log("generating: " + str(number_of_examples) + " examples\t" + "using  model: " + the_model_string + "\twith: options: " + str(the_options) + "\twith prompt_prefix: " + prompt_prefix_from_file())
 
     total_elapsed = 0
     examples_generated = 0
@@ -68,7 +63,7 @@ def generate_declarative_sentences(the_model_string, title='all', number_of_sent
             answer = example["answers"]["text"][0]
             prompt = prepare_prompt(question, answer)
             start_time = timeit.default_timer()
-            statement = generated_text_from_prompt(prompt, model_string, options)
+            statement = generated_text_from_prompt(prompt, model_string, the_options)
             elapsed = timeit.default_timer() - start_time
             log_writer.log("model_string: " + model_string + "\texecution_time_in_seconds: " + str(elapsed) + "\tprompt_question: " + question +"\tprompt_answer: " + answer + "\tstatement: " + statement)
             file_entry = example_id + "\t" + title + "\t" + question + "\t" + answer + "\t" + statement + "\n"
@@ -95,12 +90,21 @@ def clean_file(a_filepath):
     print("cleaned: " + a_filepath + " new file: " + clean_filepath)
     return clean_filepath
 
+def load_options_from_config_file(config_filepath="options_config.json"):
 
-
-
-
+    with open(config_filepath, 'r') as config_file:
+        options = json.load(config_file)
+    return options
 
 if __name__ == "__main__":
+
+    model_strings = (
+        "llama3.2",
+        "llama3",
+        "deepseek-r1:8b",
+        "gemma3:4b")
+
+    options = load_options_from_config_file()
 
     if len(sys.argv) == 4:
         model_string = sys.argv[1]
@@ -114,11 +118,8 @@ if __name__ == "__main__":
     else:
         print("Usage: python generate_declarative_sentences.py <model_string> <title> <number_of_sentences_or_all>")
         # Default execution if no args or wrong number of args are provided
-        model_string = "llama3.2"
-        #model_string="llama3"
-        #model_string = "deepseek-r1:8b"
-        #model_string = "gemma3:4b"
+        model_string = model_strings[-1]
         title_arg = "Frédéric_Chopin"
-        num_sentences_arg = 5  # Default to 5 if not specified
+        num_sentences_arg = 5
 
-    generate_declarative_sentences(model_string, title_arg , num_sentences_arg )
+    generate_declarative_sentences(model_string, options, title_arg , num_sentences_arg )
