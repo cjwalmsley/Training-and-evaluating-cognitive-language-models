@@ -4,4 +4,3 @@ datetime
 pandas
 requests
 jupyter
-unidecode
