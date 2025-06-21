@@ -43,15 +43,14 @@ def filter_dataset_split(the_dataset_split, title, number_of_sentences, id=None)
 
     if id is not None:
         the_dataset = the_dataset_split.filter(lambda x: x["id"] == id)
-    else:
-        if title != 'all':
-            the_dataset = the_dataset_split.filter(lambda x: x["title"] == title)
-
+    elif title != 'all':
+        the_dataset = the_dataset_split.filter(lambda x: x["title"] == title)
         if number_of_sentences == 'all':
             pass
         else:
             the_dataset = the_dataset.select(range(min(number_of_sentences, len(the_dataset_split))))
-
+    else:
+        the_dataset = the_dataset_split
     return the_dataset
 
 def generate_declarative_sentences(ds, number_of_sentences, the_model_string, the_options, id=None, title="all"):
@@ -65,9 +64,9 @@ def generate_declarative_sentences(ds, number_of_sentences, the_model_string, th
 
     log_writer = logger.LogWriter("declarative_statement_generation.log")
 
-    total_elapsed = 0
-    examples_generated = 0
     for ds_split_name in ("train", "validation"):
+        total_elapsed = 0
+        examples_generated = 0
         output_filename = "declarative_sentences_" + ds_split_name + "_" + the_model_string + "_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".tsv"
         output_filepath = os.path.join(output_directory, output_filename)
         dataset_split = ds[ds_split_name]
