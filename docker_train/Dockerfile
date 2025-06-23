@@ -19,11 +19,11 @@ RUN echo "Setting up dependencies..." && \
     make && \
     rm -rf /var/lib/apt/lists/*
 
-COPY annabell.tar.xz /app/
+COPY annabell_increased_phrase_size.tar.xz /app/
 
 RUN echo "Setting up Annabell..." && \
     cd /app/ && \
-    tar -xvJf annabell.tar.xz && \
+    tar -xvJf annabell_increased_phrase_size.tar.xz && \
     echo "Contents of /app after tar:" && \
     ls -l /app/ && \
     # Assuming tar extracts to a directory named 'annabell' inside /app
