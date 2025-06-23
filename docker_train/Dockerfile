@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
 
+ARG ANNABELL_VERSION="annabell"
+
 FROM ubuntu:latest as base
 
 FROM base as build
