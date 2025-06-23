@@ -32,13 +32,13 @@ STATEMENTS_FILE=$4
 #turn on logging
 echo .logfile "$LOGFILE"
 #load the weights
-echo .load "$PRETRAINED_WEIGHTS"
+#echo .load "$PRETRAINED_WEIGHTS"
 #train using the statements
-echo .f "$STATEMENTS_FILE"
+#echo .f "$STATEMENTS_FILE"
 #save the weights
-echo .save "$POSTTRAINED_WEIGHTS"
+#echo .save "$POSTTRAINED_WEIGHTS"
 #turn off logging
-echo .logfile off
+#echo .logfile off
 #shut down ANNABELL
-echo .q
+#echo .q
 ) | annabell

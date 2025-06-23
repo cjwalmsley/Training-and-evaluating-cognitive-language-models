@@ -27,7 +27,7 @@ RUN echo "Setting up Annabell..." && \
     echo "Contents of /app after tar:" && \
     ls -l /app/ && \
     # Assuming tar extracts to a directory named 'annabell' inside /app
-    cd annabell && \
+    cd annabell_increased_phrase_size && \
     ./configure && \
     make && \
     make install
@@ -58,12 +58,12 @@ RUN adduser \
     appuser
 USER appuser
 
-ENTRYPOINT [ \
-    "./train_annabell_squad.sh", \
-    "data/statements/crossvalidation/round1/logs/logfile_squad_statements.txt", \
-    "data/statements/crossvalidation/round1/links/links_people_body_skills.dat", \
-    "data/statements/crossvalidation/round1/links/links_people_body_skills_squad.dat", \
-    "data/statements/training/all_statements.txt" \
-]
+#ENTRYPOINT [ \
+#    "./train_annabell_squad.sh", \
+#    "data/statements/crossvalidation/round1/logs/logfile_squad_statements.txt", \
+#    "data/statements/crossvalidation/round1/links/links_people_body_skills.dat", \
+#    "data/statements/crossvalidation/round1/links/links_people_body_skills_squad.dat", \
+#    "data/statements/training/all_statements.txt" \
+#]
 
 #ENTRYPOINT ["annabell"]
