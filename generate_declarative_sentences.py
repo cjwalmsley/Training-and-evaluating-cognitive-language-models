@@ -72,8 +72,7 @@ def generate_declarative_sentences(ds, number_of_sentences, the_model_string, th
         dataset_split = ds[ds_split_name]
         filtered_database_split = filter_dataset_split(dataset_split, title, number_of_sentences, id)
         number_of_examples = filtered_database_split.num_rows
-        log_writer.log("generating: " + str(
-            number_of_examples) + " examples\t" "database_split: " + ds_split_name + "\tusing  model: " + the_model_string + "\twith: options: " + str(
+        log_writer.log("generating: " + str(number_of_examples) + " examples\t" "database_split: " + ds_split_name + "\tusing  model: " + the_model_string + "\twith: options: " + str(
             the_options) + "\twith prompt_prefix: " + prompt_prefix_from_file())
         with (open(output_filepath, "w") as output_file):
             output_file.write("id\ttitle\tquestion\tanswer\tresponse_question\tresponse_answer\tstatement\n")
@@ -91,7 +90,7 @@ def generate_declarative_sentences(ds, number_of_sentences, the_model_string, th
                     response_answer = response_sections[1].strip()
                     statement = response_sections[2].strip()
                     elapsed = timeit.default_timer() - start_time
-                    log_writer.log("model_string: " + model_string + "\texecution_time_in_seconds: " + str(elapsed) + "\tprompt_question: " + question +"\tprompt_answer: " + answer + "\tresponse_question: " + response_question
+                    log_writer.log("processed example: " + str(examples_generated) + "\tmodel_string: " + model_string + "\texecution_time_in_seconds: " + str(elapsed) + "\tprompt_question: " + question +"\tprompt_answer: " + answer + "\tresponse_question: " + response_question
                    + "\tresponse_question: " + response_answer + "\tstatement: " + statement)
                     file_entry = example_id + "\t" + title + "\t" + question + "\t" + answer + "\t" + response_question + "\t" + response_answer + "\t" + statement + "\n"
                     output_file.write(file_entry)
