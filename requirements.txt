@@ -4,3 +4,4 @@ datetime
 pandas
 requests
 jupyter
+nltk

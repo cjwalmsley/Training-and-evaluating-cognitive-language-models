@@ -4,7 +4,7 @@
     "repeat_penalty": 1.5,
     "temperature": 0,
     "seed": 42,
-    "num_predict": 50,
+    "num_predict": 100,
     "top_k": 0,
     "top_p": 0.0,
     "min_p": 0.0

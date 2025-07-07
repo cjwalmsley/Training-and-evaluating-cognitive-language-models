@@ -7,9 +7,24 @@ import pandas as pd
 import sys
 import os
 import json
+from pydantic import BaseModel
 
-def generated_text_from_prompt(the_prompt, model_string, the_options):
-    generated_text = ollama.generate(model=model_string, prompt=the_prompt, options=the_options)
+class DeclarativeStatement(BaseModel):
+  question: str
+  answer: str
+  statement: str
+
+def generated_json_from_prompt(the_model_string, the_prompt, the_options=None):
+    the_response = generated_text_from_prompt(
+        the_model_string=the_model_string,
+        the_prompt=the_prompt,
+        the_format=DeclarativeStatement.model_json_schema(),
+        the_options=the_options
+    )
+    return DeclarativeStatement.model_validate_json(the_response)
+
+def generated_text_from_prompt(the_model_string, the_prompt, the_format=None, the_options=None):
+    generated_text = ollama.generate(model=the_model_string, prompt=the_prompt, format=the_format, options=the_options)
     return generated_text.response
 
 def prompt_prefix_from_file():
@@ -84,11 +99,10 @@ def generate_declarative_sentences(ds, number_of_sentences, the_model_string, th
                     answer = example["answers"]["text"][0]
                     prompt = prepare_prompt(question, answer)
                     start_time = timeit.default_timer()
-                    response = generated_text_from_prompt(prompt, model_string, the_options)
-                    response_sections = response.split("\n")
-                    response_question = response_sections[0].strip()
-                    response_answer = response_sections[1].strip()
-                    statement = response_sections[2].strip()
+                    response = generated_json_from_prompt(model_string, prompt, the_options)
+                    response_question = response.question
+                    response_answer = response.answer
+                    statement = response.statement
                     elapsed = timeit.default_timer() - start_time
                     log_writer.log("processed example: " + str(examples_generated) + "\tmodel_string: " + model_string + "\texecution_time_in_seconds: " + str(elapsed) + "\tprompt_question: " + question +"\tprompt_answer: " + answer + "\tresponse_question: " + response_question
                    + "\tresponse_question: " + response_answer + "\tstatement: " + statement)
@@ -98,8 +112,8 @@ def generate_declarative_sentences(ds, number_of_sentences, the_model_string, th
                     examples_generated = examples_generated + 1
                 except IndexError as index_error:
                     log_writer.log("Index Error processing example with id: " + str(example_id) + "\t" + str(index_error))
-                except Exception as error:
-                    log_writer.log("Error processing example with id: " + str(example_id) + "\t" + str(error))
+                #except Exception as error:
+                 #   log_writer.log("Error processing example with id: " + str(example_id) + "\t" + str(error))
                 if examples_generated == number_of_examples:
                     break
             completion_message = "generated: " + str(examples_generated) + " examples\t" + "using  model: " + model_string + "\t" + "total_execution_time_in_seconds: " + str(total_elapsed) + "\toutput_filepath:" + output_filepath + "\n"
@@ -133,7 +147,8 @@ if __name__ == "__main__":
         "llama3.2",
         "llama3",
         "deepseek-r1:8b",
-        "gemma3:4b")
+        "gemma3:4b",
+        "gemma3:1b")
 
     options = load_options_from_config_file()
 
@@ -150,7 +165,7 @@ if __name__ == "__main__":
         print("Usage: python generate_declarative_sentences.py <model_string> <title> <number_of_sentences_or_all>")
         # Default execution if no args or wrong number of args are provided
         model_string = model_strings[-1]
-        title_arg = "Frédéric_Chopin"
+        title_arg = "New_York_City"
         num_sentences_arg = 5
 
     dataset = load_squad_dataset()

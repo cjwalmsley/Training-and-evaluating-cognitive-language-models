@@ -108,7 +108,7 @@ def dataset_summary(a_dataset):
         titles=ds_split["title"]
         print("number of titles: " + str(len(set(titles))))
         print((set(titles)))
-        bag_of_titles = Counter((titles))
+        bag_of_titles = Counter(titles)
         print("titles with most numerous examples: " + str((bag_of_titles.most_common(20))) +"\n")
 
 def data_frame_up_to_statement_title(a_dataframe, a_statemment):
