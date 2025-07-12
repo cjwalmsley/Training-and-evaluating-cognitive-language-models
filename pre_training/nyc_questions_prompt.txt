@@ -1,0 +1,820 @@
+TASK: categorise the provided list of sentences by grammatical structure
+RESPONSE FORMAT: provide the response in JSON format with each row formatted as {"category":"<INSERT CATEGORY>", "sentence":"<INSERT SENTENCE>"}
+SENTENCES:
+What city in the United States has the highest population?
+In what city is the United Nations based?
+What city has been called the cultural capital of the world?
+What American city welcomes the largest number of legal immigrants?
+The major gateway for immigration has been which US city?
+The most populated city in the United States is which city?
+How many boroughs comprise New York City?
+In what year were the five boroughs combined into one city?
+In 2014, what did the census estimate the population of New York City to be?
+What is the size of New York City in square miles?
+What is the population of New York's Combined Statistical Area?
+How man boroughs does New York City contain?
+The five boroughs of New York City are named what?
+All five boroughs of New York City formed into one city on what date?
+What is the population of New York City as of 2014?
+How many languages are spoken by the people of New York City?
+What was the trading post that preceded New York City called?
+What nation founded New Amsterdam?
+In what year did New York become the largest city in the United States?
+When did the English take over the area from the Dutch?
+In what year did New York cease the be the capital of the United States?
+When was New York City established?
+New Amsterdam became the title of New York City in what past date?
+The English occupied New York City beginning on what date?
+New York City is the biggest city in the United States since what historical date?
+How many tourists visited New York in 2014?
+How many stations are operated by the New York City Subway?
+In what borough is Wall Street located?
+How many school and universities are in NYC?
+NYC has the two largest stock exchanges in the world which are called what?
+What island was once a part of Long Island?
+During what period was the area around New York City located at the edge of an ice sheet 1,000 feet deep?
+Long Island and Staten Island were split in half by what geographical phenomenon?
+What was the name of the Lenape homeland?
+In what year did the first European arrive in the New York area?
+What was the name of the first European who arrived in the New York area?
+What was the name of Giovanni da Verrazzano's ship?
+What nation did Giovanni da Verrazzano serve?
+What did Giovanni da Verrazzano call the area when he staked claim on it?
+When was the first European to visit the area of NYC?
+Giovanni da Verrazzano's ship that sailed to New York was named what?
+Giovani da Verrazzano was an explorer from which country?
+In what year did a Spanish expedition visit New York Harbor?
+Who commanded the Spanish expedition?
+What was the nationality of Estêvão Gomes?
+What monarch did Estêvão Gomes serve?
+What was the name of Estêvão Gomes's ship?
+The front of the Hudson River was named what by Estevao Gomes?
+What was the first map to show the whole North American East coast?
+What was the name of the explorer who visited the area in 1609?
+Who was Henry Hudson working for?
+In what year did the Netherlands claim the area between Delaware Bay and Cape Cod?
+How many days did Henry Hudson spend exploring the region?
+What did Henry Hudson call the river that is now called the Hudson River?
+Henry Hudson worked for which company in the 1600s?
+In what year was the land between Cape Cod and Delaware Bay claimed by the Dutch?
+Which explorer sailed his ship into New York harbor in 1609?
+Where was Juan Rodriguez born?
+What did the Dutch call Juan Rodriguez?
+What was Juan Rodriguez's occupation?
+What is the street that is named after Juan Rodriguez?
+During what season did Juan Rodriguez first come to New York?
+Who was the first non-Indian person to live in what is now NYC?
+Which street in NYC today is now named after Juan Rodriguez?
+On what island did the Dutch set up a settlement to trade furs?
+On what island was Fort Amsterdam built?
+In what year did construction begin on Fort Amsterdam?
+What person bought Manhattan from the Canarsie for the Dutch?
+In what year did the Dutch buy Manhattan?
+New Netherland established a permanent European presence in what year?
+What year did building begin of Fort Amsterdam on Manhattan Island?
+What was the myth that Manhattan was bought for by General Peter Minuit ?
+What did the English call New Amsterdam after its capture?
+What was the regnal name of the Duke of York?
+What person gave up New Amsterdam to the English?
+What was Peter Stuyvesant's title?
+In what year did the English take over New Amsterdam?
+Who gave up New Amsterdam to the English without a fight in 1664?
+What was the regnal name of the Prince of Orange?
+What was the date of Anthonio Colve's capture of New York?
+What did Colve call New York after he captured it?
+In what year did the Dutch give New York back to the English?
+August 24, 1673 is when which Dutch officer  took control of NYC?
+The Dutch gave back the island to which country in 1674 after their trade routes had been destroyed?
+New York was called New Orange for a period based off which historical figure?
+After what war did the English receive New Amsterdam?
+How many Lenape lived in the area in 1700?
+What was the name of the island the English traded to the Dutch in return for New Amsterdam?
+In 1700, the Lenape Native American population had dwindled to how many?
+After which war did England gain New York in exchange for Run, an Indonesian island?
+In 1730, what percentage of New York households were slave-holding?
+In 1730, what American city had the highest percentage of slaveholders?
+Near what square was the African Burial Ground unearthed?
+What was being built that resulted in the discovery of the African Burial Ground?
+Which city in North America held the most slaves in the 1700s?
+When was as African burial ground discovered after the building of new courthouse?
+In what year was John Peter Zenger tried?
+On what island did Zenger's trial occur?
+In what year was Columbia University chartered?
+Under what king did the founding of Columbia University occur?
+What was the original name of Columbia University?
+Which trial in Manhatten helped establish the right of freedom of the press?
+Columbia University of New York was founded in what year?
+The Stamp Act Congress had a meeting in 1765 in which US city?
+What was the biggest battle of the American Revolution?
+In what borough did the Battle of Long Island occur?
+In what month and year was the Battle of Long Island fought?
+About how many escaped slaves were in New York during the time the British occupied it?
+In what year did the American Revolutionary War end?
+Which battle was the largest battle of the American Revolutionary war?
+Which borough of New York was the Battle of Long Island fought?
+When did the English army start to retreat and evacuate NYC during the Battle of Long Island?
+On what date did the peace conference on Staten Island occur?
+Who was the British representative at the Conference House meeting?
+What notable catastrophe took place under the British occupation?
+In what modern-day borough did the Great Fire happen?
+What noted religious building was destroyed in the Great Fire?
+Who was the English general who met with Benjamin Franklin on Septermber 11, 1776?
+Which natural disaster happened after English occupation of Lower Manhattan?
+In what year did New York become the United States capital?
+Who was the United States' first President?
+In what building did the Supreme Court of the United States first sit?
+On what street did the writing of the Bill of Rights occur?
+What was the second largest city in the United States in 1790?
+Which organization made New York the national capital in 1785?
+New York City became the first what under the new Constitution of the United States?
+The first president, George Washington, took office in what year?
+By which year, did New York City become the largest city in the United States?
+In what year did the state of New York pass a law to free the slaves?
+What borough was home to a notable population of free African-Americans?
+Along with John Jay, who founded the New York Manumission Society?
+In what year did the state of New York eliminate slavery?
+In 1840, about how many African-Americans lived in New York City?
+The gradual abolition act in New York was formed in what year?
+When was slavery completely outlawed in the state of New York?
+What plan of 1811 spread a grid of streets across Manhattan?
+In what year did the Erie Canal finish building?
+What political machine controlled New York politics in this era?
+Along with German immigrants, immigrants of what nationality supported Tammany Hall?
+The Erie Canal was finished being built in what year?
+What was the name of the first urban landscaped park in the United States?
+In what year was Central Park founded?
+Central park, in 1857, became the first park in America to become what?
+What event brought many Irish immigrants to the United States?
+In 1860, approximately how many people of Irish extraction were in New York?
+In 1860, what fraction of the city population was composed of Irish immigrants?
+In 1860, what percentage of the city population was composed of German immigrants?
+What events provoked the immigration of people from Germany?
+Which event brought upon a lot of Irish immigrants to NYC?
+How many immigrants that were Irish were living in New York in 1860?
+Who was the mayor of New York City in 1861? 
+What was the commutation fee to avoid being conscripted during the American Civil War?
+People of what ethnicity most visibly participated in the Draft Riots of 1863?
+About how many people died during the Draft Riots of 1863?
+What was the approximate African-American population of New York City in 1865?
+The Draft Riots caused which building to burn down in 1863?
+In what year was the modern City of New York founded?
+In what year did the subway begin operation?
+Portions of what modern-day borough were included in the County of New York?
+The subway of New York was first available in what year?
+In what year did the General Slocum disaster occur?
+How many people died on the General Slocum?
+In what building did the city's deadliest industrial disaster occur?
+How many people died in the Triangle Shirtwaist Factory fire?
+The growth of what organization was prompted by the Triangle Shirtwaist Factory fire?
+A catastrophe in 1911 that killed 146 workers was called what?
+How many non-white people lived in New York in 1890?
+What was the name of the Prohibition-era African-American cultural flourishing in New York?
+What was the population of people in New York that were not Caucasian in 1890?
+In the early 1920s, what was the second most highly populated city in the world?
+What is the term for a city with a population of over 10 million?
+Who was mayor of New York during the Great Depression?
+For about how many years did Tammany Hall control New York political life?
+In the 1930s, New York City had more than 10 million people becoming the first what in history?
+When was construction finished on the United Nations Headquarters?
+Prior to New York, what city was the center of the world of art?
+What artistic movement caused New York to overtake Paris as the global art center?
+The headquarters what organization was done being build in 1952 in New York?
+The Stonewall riots are named after what building?
+In what neighborhood did the Stonewall riots occur?
+On what date did the Stonewall riots take place?
+In what borough did the Stonewall riots happen?
+What event provoked the Stonewall riots?
+Where did the Stonewall riots happen?
+In what year did the population of New York first reach an all-time high in this period?
+In what year did the population of New York reach an all-time high for the second time in this period?
+What was the name of a new sector of the New York economy that appeared in the 1990s?
+In what decade did the crime rate drop significantly?
+In what decade was there a significant decline in industrial jobs?
+Which decade did massive job losses happen in NYC due to industrial issues?
+What was the name of the aircraft that crashed into the World Trade Center's North Tower on September 11, 2001?
+What was the name of the aircraft that crashed into the World Trade Center's South Tower on September 11, 2001?
+How many firefighters died in the World Trade Center attack?
+On what date did the World Trade Center PATH begin operation?
+How tall is One World Trade Center in meters?
+The Hudson Terminal which was also demolished was build in what year?
+How many leader terrorists of Al Quada were involved with the 9/11 attacks directly that day?
+What was the plane named that crashed into the World Trade Center?
+On what date did the Occupy Wall Street protests commence?
+In what park did the Occupy Wall Street protests occur?
+In what borough did the Occupy Wall Street protests take place?
+In what district of Manhattan were the Occupy Wall Street protests?
+The Occupy Wall Street protests that took place in Zuccotti Park was on which date?
+What individual established the National Review?
+In what year was the National Review founded?
+What public figure defended New York in January 2016?
+A presidential candidate from what party derided the city for its liberalism?
+In what geographical region of the United States is New York City located?
+In what geographical region of New York state is New York City located?
+New York City is about half the distance between Washington DC and what city?
+New York City is adjacent to what ocean?
+What river is New York City located on?
+New York City is at the base of which American river?
+The Hudson River flows into which body of water?
+The three islands that make up New York city are named what?
+The Hudson River serves as a dividing line between New York and what state?
+What river flows between the Hudson and East Rivers?
+What is the city's sole fresh water river?
+Into what body of water does the Hudson River terminate?
+Between New York City and what city is the Hudson River an estuary?
+The Hudson River separates NYC from which US state?
+The single only freshwater river in NYC is what river?
+Which river seperates The Bronx from Manhatten?
+What Manhattan development is the product of land reclamation?
+What is the total area of New York City in square miles?
+In square miles, how much of the city's total area is composed of water?
+In square miles, how much of the city's total area is land?
+What is the name of New York City's highest point?
+On what island is New York City's highest point located?
+How many square miles in NYC?
+How many square miles are water in NYC?
+How many square miles are land in NYC?
+The highest peak in the city is what location?
+How many feet above sea level is Todt Hil?
+What structure is an example of saltbox architecture?
+In what borough is the Pieter Claesen Wyckoff House located?
+What building is the priciest office tower in the world?
+In what borough is One World Trade Center located?
+In what year did construction on the oldest part of Pieter Claesen Wyckoff House begin?
+The most expensive office tower built in the world today is what?
+How many high-rises were present in New York City in 2011?
+What city has the most high-rise buildings in the world?
+How many structures in New York City are over 100m tall?
+In what year was the Woolworth Building completed?
+How many buildings in New York City are over 200m high?
+NYC has the highest quantity of skyscrapers after which other world city?
+How many buildings located in NYC are at least 330 feet in height?
+In what year was the Empire State Building completed?
+The Chrysler Building reflects what architectural style?
+What floor of the Chrysler Building has sculptures of eagles at its corners?
+What building known for its bronze-tinted I-beams was completed in 1957?
+What is the full name of the organization known by the acronym AIA?
+Which animal decorates the corners of the Chrysler Building?
+When was the Empire State Building constructed?
+When was the Chrysler building built in NYC?
+In what borough is the Riverdale neighborhood located?
+In what borough is the Ditmas Park neighborhood located?
+In what borough is the Douglaston neighborhood located?
+Brownstone rowhouse construction is most often associated with the period beginning in 1870 and ending in what year?
+Along with Tudor Revival, what is a common architectural style of single-family houses in New York?
+What type of housing structure makes up most of the large residential districts of NYC?
+What event led to the decline in wooden construction in New York City?
+In the 19th century, New York city required water towers in the roofs of buildings that were more than how many stories tall?
+What area was known for its garden apartments?
+After the Great Fire of 1835, what became the most widespread building materials?
+To prevent high water pressures at lower elevations what were built on many of the city's buildings?
+When did the United States Geological Survey released its seismic hazard analysis?
+How many of New York's boroughs would be counted among the United States' ten most populated cities if they were independent?
+How many boroughs does New York City have?
+Which four boroughs of NYC would be among the the most populous cities in the US if they were independent cities?
+What is the name of New York City's climate using the Köppen climate classification?
+How many sunny days does New York average each year?
+How many hours of sunshine does New York receive every year?
+The suburbs of the city lie between the humid subtropical and what other climate zone?
+What month in New York City is the coldest?
+What type of climate does NYC possess?
+How many days on average does NYC get sunshine annually?
+What planting zone does the city land in?
+What mountains serve as a barrier to keep New York City comparatively warmer in the winter?
+What is New York City's daily January mean temperature in degrees celsius?
+What is the average humidity in July as a percentage?
+On average, how often do New York temperatures exceed 90 degrees Fahrenheit each year?
+On what date did New York record its highest temperature ever?
+What is the highest temperature recorded in NYC?
+When was the lowest temperature recorded in NYC?
+The highest temperature ever recorded in NYC was in what year?
+In millimeters, how much precipitation does New York receive a year?
+In centimeters, what is the average winter snowfall?
+When did Hurricane Sandy strike New York?
+How many inches of precipitation does NYC get in a year?
+Which natural disaster occurred on October 29, 2012 in NYC?
+The mean snowfall between 1981 and 2010 in NYC has been how many inches?
+What is the name of the New York City department that operates the park system?
+What is the state office that operates New York City parks?
+What federal service operates New York City parks?
+What city was rated as having the best park system by The Trust for Public Land?
+What city had the second highest ParkScore rating?
+The 2013 ParkScore rating for NYC made NYC second in best park system to what other US city?
+How large is the Gateway National recreation Area in hectares?
+About how large is the Jamaica Bay Wildlife Refuge in acres?
+What fort is located on the Rockaway Peninsula?
+What park is located on the Rockaway Peninsula?
+What body of water is Jamaica Bay Wildlife Refuge adjacent to?
+How many acres of land does Gateway Nation Recreation contain?
+What body administers the Ellis Island Immigration Museum?
+What is the common name for the General Grant National Memorial?
+In what neighborhood is the Stonewall Inn located?
+What movement is the Stonewall Inn most famously associated with?
+The Statue of Liberty is taken care of by what organization?
+The Statue of Liberty is also in what other US state?
+Ellis Island is considered in New York state and which other?
+Which landmark is considered the spark for LGBT rights?
+The landmark, General Grant National Memorial, is also called what?
+How many state parks exist in New York City?
+How large is Riverbank State Park in acres?
+How many meters is Riverbank State Park elevated above the Hudson River?
+How many New York state parks are within New York City?
+Riverbank State park's highest point is how high above the Hudson River?
+New York has approximately how many acres of parks?
+How many miles of public beach are located in New York City?
+What is the biggest public park in the city?
+How large is Pelham Bay Park in hectares?
+New York City has how many acres of land dedicated to parks?
+How long are all the public beaches together in miles?
+What is the largest park in New York City?
+How many acres of land does Pelham Bay park have?
+What is the name of the military base in New York City?
+In what year was Fort Hamilton founded?
+In what borough is Fort Hamilton located?
+What division is based at Fort Hamilton?
+What brigade is headquartered at Fort Hamilton?
+The U.S. military has only one active location in NYC named what?
+When was Fort Hamilton built?
+Which borough can Fort Hamilton be found?
+Fort Wadsworth and Fort Totten are located in which area of New York City?
+What was the population of New York City in 2014?
+What is the US city with the second largest population?
+How many people moved to New York City between April 2010 and July 2014?
+Approximately what percentage is New York City's population of the entire state's population?
+About what percentage is New York City's population of the New York metropolitan area's population?
+What is the population of NYC as of 2014?
+The second largest city in the US is what?
+What percentage of people that live in the state of New York live in New York City?
+How many people live in a square mile of New York City?
+What is the population density of Manhattan per square kilometer?
+Some cities in what county have a higher population density than New York City?
+What percentage of the city's population is Caucasian?
+What percentage of the city's population is African-American?
+What ethnicity is growing the quickest in New York City?
+What percentage of the population identifies as Hispanic?
+By what percentage did the non-Hispanic white population decrease?
+As of 2010, what percentage made up white people in NYC?
+Since what event did the first time black people decline in living in NYC?
+Which race of people made it the highest growing ethnicity between 2000-2010 in NYC?
+What percentage of Africans make up NYC?
+How many immigrants arrived at Ellis Island from 1892 to 1924?
+'Melting pot' was first used to describe neighborhoods in what area of the city?
+What ethnicity comprised the largest number of immigrants at the beginning of the twentieth century?
+What percentage of the population was Caucasian in 1940?
+What was the ethnicity of the second largest group of immigrants in 1900?
+Between 1892-1924, how many immigrants came through Ellis Island?
+In the year 1942, what percentage of white Americans made up New York City?
+What percentage of the population was born outside the United States?
+From what country did the largest number of foreign-born immigrants originate as of 2011?
+About how many immigrants from Bangladesh lived in the city in 2013?
+What country was the second largest source of foreign-born New Yorkers in 2011?
+What percentage of the population of NYC was born in another country?
+What New York borough contains the highest population of Asian-Americans?
+What borough housed the first Chinatown in New York?
+As of 2012, what percentage of the New York City population was ethnically Chinese?
+What borough is home to a large Tibetan population?
+What percentage of the New York City population is Japanese?
+How many non-Hispanic whites lived in New York City in 2012?
+What is the non-Hispanic white population of Houston?
+How many New Yorkers are of Polish ancestry?
+How many New York City residents are of Greek heritage?
+What borough has the largest population of ethnic Albanians?
+NYC has the largest white population by how many people?
+About how many people live in New York City's metropolitan area?
+As of 2012, how many Jewish people lived in the New York metropolitan area?
+What percentage of the total Indian-American population of the United States lives in the New York metropolitan area?
+How many Hispanic people live in the New York metropolitan area?
+Approximately how many Chinatowns exist in New York City?
+In 2013, how many people of Puerto Rican ancestry lived in New York City?
+What nation provided the most legal immigrants to New York City in the Caribbean?
+Out of all African nations, which provided the most legal immigrants in 2013?
+Out of all nations in Central America, which provided the most legal immigrants in 2013?
+Of all the countries in South America, which provided the most legal immigrants in 2013?
+How many self-identified LGB people live in the New York metropolitan area?
+On what date did New York legalize gay marriage?
+How many days after gay marriage was legalized were gay marriages allowed to take place?
+How many people identify as gay or bisexual in NYC?
+Same-sex marriage became legal on what date in New York?
+Since Gay marriage became legal, how many days did people have to wait to marry?
+What percentage of New Yorkers are Christians?
+What percentage of New Yorkers follow the Catholic faith?
+About how many Jews live in New York City?
+What borough has the largest population of Jewish people?
+What is the third most popular faith in New York City?
+What was the most prominent religion in New York as of 2014?
+The second most prominent religion in New York is what?
+Half the population of Jews live in what borough of New York City?
+What percentage of people in 2014 had no religion?
+The third most popular religion in NYC is what?
+What is New York City's Gini Coefficient?
+What borough has a Gini Coefficient of 0.6?
+What previous mayor of New York is a billionaire?
+In 2014, millionaires made up what percentage of New York City's population?
+What is the average weekly wage in Manhattan?
+The average weekly earnings for a worker in NYC was what in 2014?
+By 2013, which city had the most billionaires living in the city?
+What is the common name for New York's high technology sector?
+Who created the Global Economic Power Index that ranked New York first?
+In what year did the Port of New York and New Jersey deal with unprecedented cargo volume?
+In what year was New York ranked first on the Global Economic Power Index?
+What fraction of New Yorkers in the private sector are employed by foreign companies?
+What publication ranked New York first in the 2013 American Cities of the Future rankings?
+What was the 2015 assessed value of all the property in New York?
+How much was Time Warner Center worth in 2006?
+What was the price per square foot of 450 Park Avenue when it sold in July 2007?
+What was the price per square meter of 660 Madison Avenue in June 2007?
+Of the top 10 zip codes with the most expensive housing prices in the United States, how many are in Manhattan?
+Which building has the highest market value in NYC?
+The previous record beaten by Park Avenue was for what real estate?
+What is the popular name of New York's advertising industry?
+About how many people work in the New York fashion industry?
+About how much does it cost per year to pay workers in the New York fashion industry?
+With Interpublic Group, what company has a combined annual revenue of roughly US$21 billion?
+NYC's fashion industry employs how many people?
+The Two highest advertising agencies in the world located in NYC are called what?
+How many New Yorkers work in the food processing field?
+What is the annual revenue of the food processing industry?
+In what borough is the garment business prominent?
+What dollar amount of chocolate does New York export annually?
+Where is the "Chocolate District" located?
+In what borough is Godiva based?
+What is the number one specialty food export of New York?
+What type of food is NYC's leading food export?
+Which one of the world's largest chocolate makers is stationed in Manhattan?
+As of 2013, how many people worked for a securities business in New York?
+What percentage of New York private sector jobs are in the securities industry?
+How much tax revenue does the securities industry generate?
+What is the average income in the New York securities industry?
+What percentage of the city's wages does the securities industry provide?
+22 Percent of NYC's total wages are from what industry?
+On what street is the New York Stock Exchange headquartered?
+What is the street address of NASDAQ?
+In 2012, how many investment banking fees were paid out to Wall Street?
+In 2013-4, what percentage of New York state tax revenues came from the securities business on Wall Street?
+Who was the previous overseer of the London interbank offered rate?
+The New York Stock exchange is located where in NYC?
+The NASDAQ is located on what street in NYC?
+How many square meters of office space does Manhattan have?
+About how many million square feet of office space is present in Midtown Manhattan?
+How much office space did Manhatten possess in 2015?
+In what borough is Silicon Alley located?
+What is the street address of the headquarters of Verizon Communciations?
+How much did Verizon spend on fiber optic upgrades in New York City?
+Approximately how many tech sector jobs are in New York City?
+The technology sector of work in NYC has how many employees in its service?
+Along with Cornell University, what institution is involved in the building of Cornell Tech?
+What is the cost to build Cornell Tech?
+On what island is Cornell Tech located?
+About how much capital did Accelerator raise as of the middle of 2014?
+How large is the Alexandria Center for Life Science in square meters?
+In 2011, what school was built on Roosevelt Island?
+How many tourists visited New York in 2011?
+How many people came to visit New York in 2013?
+What is the record number of tourists that have visited New York in a year?
+How much money did tourism create for New York in 2014?
+How many tourists that visited NYC in 2014 broke the record?
+How many tourists visited NYC in 2013?
+What English phrase does I ❤ NY represent?
+When was I ❤ NY first used in advertisements?
+Who owns the trademark to I ❤ NY?
+What is the state song of New York?
+I Love New York was established as advertising in what year?
+What is the state song of New York?
+In what neighborhood does the Halloween Parade take place?
+What company sponsors the Thanksgiving Day parade?
+At what location is a Christmas tree famously lit every year?
+Where in Central Park are performances offered at no cost?
+In what borough is the Unisphere located?
+About how many hotel rooms are there in Manhattan?
+What was the percentage increase of Manhattan hotel rooms between 2013 and 2014?
+Who owns the Waldorf Astoria?
+What was the October 2014 purchase price of the Waldorf Astoria?
+The hotel that sold for the most money in 2014 was which in NYC?
+How many hotel rooms are located in NYC as of the end of 2014?
+Who bought the Waldorf Astoria hotel in NYC in 2014?
+The Waldorf Astoria hotel sold for how many dollars?
+Approximately how many feature films are made in New York City every year?
+How many New Yorkers work in the television and film industry?
+How much money does the New York film and television industry create every year?
+What United States city is the second most popular for pilot episode location filming?
+Along with Warner Music Group, what top three record label is based in New York City?
+What city is North America's biggest media market?
+Out of the top eight advertising agency networks in the world, how many are based in New York?
+How many people work in the New York publishing industry?
+Which New York-based newspaper has won the Pulitzer Prize for journalism?
+Along with the New York Times, what national daily newspaper is based in New York?
+What was the founding year of the New York Daily News?
+Who was the founder of the New York Post?
+How many newspaper offices are located in New York?
+How many magazines can call NYC home?
+How many national newspapers out of the three are from New York?
+Which two national newspapers are located in New York?
+When was the New York Daily News founded?
+Along with ABC and NBC, what other major broadcaster is based in New York?
+What is the name of the city's public television service?
+What comedy channel on cable television is headquartered in New York?
+What cable news channel is based in New York?
+What is the name of the first public-access TV channel in the country?
+In what year did the Manhattan Neighborhood Network begin?
+What is the primary public television station in New York?
+What is the largest public radio station in the US by audience size?
+In what year did the city cease to own WNYC?
+The public-assess TV channel that has been around the longest in the US in what?
+When was the Manhattan Neighborhood Network created?
+The largest public radio station by listeners is what in New York?
+What city department runs the public school system?
+How many students are in New York City public schools?
+About how many public schools are there in New York City?
+How many high schools for gifted students does New York City have?
+How many students regularly attend schools in NYC?
+How many highschools are specialized in NYC?
+What institution aids in the creation of charter schools in New York?
+About how many private schools does New York have?
+About how many students attend schools in the City University of New York system?
+What fraction of Manhattan residents graduated from college?
+What fraction of Manhattan residents have graduate degrees?
+The City University of New York system consists of how many institutions?
+How many students in New York partcipate in higher education?
+What is the largest library in the United States?
+What is the second largest library in the US?
+What is the name of the library system in Queens?
+What is Brooklyn's public library system called?
+Along with Staten Island and the Bronx, what borough is served by the New York Public Library?
+The largest municipal healthcare in the US is what?
+How many hospitals does HHC operate?
+What is the yearly revenue of the New York City Health and Hospitals Corporation?
+How many patients are served annually by HHC?
+How many uninsured New Yorkers take advantage of HHC?
+In what year was the New York City Health and Hospitals Corporation founded?
+How many nursing homes does HHC operate?
+The public hospital that has been around the longest in the US is what?
+Who is the president of HHC?
+What was the first public hospital founded in the United States?
+If the Prime Minister of the United Kingdom becomes sick in New York City, what hospital does he go to?
+Who is the HHC president?
+In what state did the president of HHC previously work?
+What was the president of HHC's previous job title?
+The largest police presence in the US is NYPD with how many people?
+NYPD officers have a nickname that is known as what?
+What does the acronym NYPD stand for?
+About how many police work for the NYPD?
+What is the nickname given to New York City Police Department officers?
+What was the low record for homicides in 2014 in NYC?
+What percentage decrease in violent crime did the city see between 1993 and 2005?
+As of 2002, to what city did New York have a comparable crime rate?
+In what year did the city have less than 500 homicides?
+How many homicides were there in New York City in 2014?
+In the first half of 2010, what percentage of shooting victims were African-American or Hispanic?
+The first major crime groups in NYC were in the 1820s known as what?
+What group controlled the Mafia in New York in the 20th century?
+The Forth Thieves and Roach Guards were two gangs that operated in what area of New York in the 1820s?
+What was a notable 20th century gang in New York?
+What is the largest fire department force in the world?
+What is the second largest fire department force in the world?
+What is the The New York City Fire Department's motto?
+What does FDNY stand for?
+What city is home to the largest municipal fire department in the world?
+How many firefighters work for the New York City Fire Department?
+The FDNY employs about how many paramedics and EMTs?
+What is the motto of the New York City Fire Department?
+New York is home to what largest transportation system in the world?
+What types of fires can start in parks and woodlands?
+What is the address for The New York City Fire Department headquarters?
+Which island is home to the Fire academy in NYC?
+Which borough of NYC is home to the The New York City Fire Department headquarters?
+What is the street address of the New York Fire Department headquarters?
+In what borough is the FDNY headquartered?
+Where is the fire department's training academy located?
+What is the street address of the Bureau of Fire Communications alarm office in Brooklyn?
+Jazz became popular during which decade in NYC?
+Which decade did hip hop start to surface in NYC?
+What was the name of the cultural development that defined the black American literary canon?
+What musical style was prominent in New York in the 1940s?
+What artistic style was prominent in New York in the 1950s?
+What was the name of the new musical style that emerged from New York in the 1970s?
+The fashion capital of the world is what city in the US?
+One of the biggest fashion shows in the world is named what in New York?
+By what other name is abstract expressionism known?
+What is the name of the prominent fashion event that occurs in New York?
+Who ranked New York as the fashion capital of the world?
+The Broadway Musical began in what decade?
+Approximately how many galleries of art are in New York City?
+Along with Broadway, what New York thoroughfare is associated with Broadway musicals?
+Who was Hart's writing partner?
+About how many cultural and artistic organizations are in New York City?
+What technological development led resulted in elaborate stage productions? 
+How many people attended Broadway shows during the 2013-2014 season?
+What is the nickname of the Times Square Theater District?
+What was the dollar amount of the tickets sold on Broadway in 2013-14?
+What was the percentage increase in the Broadway ticket revenue from 2012-3 to 2013-4?
+How many people attended a Broadway show in the 2013-4 season?
+In 2012-3, what number of people saw a show on Broadway?
+How many restaurants are there in NYC?
+How many mobile food vendors operate in New York City?
+How many restaurants is New York home to?
+What public department inspects the restaurants of New York?
+According to Michelin, about how many fine dining restaurants exist in New York?
+The Brooklyn Dodgers were created in what year?
+Which four of the world's most expensive stadiums are located in NYC?
+Which two sports stadiums of New York City were featured on US stamps?
+In what year were the Brooklyn Dodgers founded?
+What professional soccer organization is headquartered in New York?
+How many professional sports leagues have their headquarters in New York?
+About how many major professional sports teams have been based at one time or another in New York?
+NYC is known as the Capital of which sport?
+How many Major League Baseball World Series has NYC teams won?
+It is one of only five areas to contain two teams of what sport?
+How many minor league baseball teams are there in NYC?
+How many World Series have New York teams won?
+How many Major League baseball league pennants have New York teams won?
+How many professional baseball teams are located in New York?
+How many times have two teams from New York played against each other in the World Series?
+What is the nickname for a World Series where two New York teams play against each other?
+The New York Giants and the New York Jets place at which stadium in NYC?
+When was the most recent superbowl held in NYC for football?
+Along what the New York Jets, what NFL team is based in New York?
+What stadium do the New York Jets call home?
+What city is MetLife Stadium located in?
+What Super Bowl took place at MetLife Stadium?
+In what year did a Super Bowl occur at MetLife Stadium?
+There are two hockey teams located in NYC. What are they?
+Which town do the New Jersey Devils hockey team play?
+In what city are the New Jersey Devils located?
+What sport do the New York Rangers play?
+Along with the New York Rangers, what NHL franchise is based in New York?
+Which two national basketball teams play in NYC?
+New York City's women's basketball team is called what?
+The first college basketball championship took place in NYC in what year?
+What Women's National Basketball Association team is based in New York?
+What is the name of the collegiate basketball championship that takes place in New York?
+In what year was the inaugural National Invitation Tournament?
+Along with the Brooklyn Nets, what NBA team is based in New York?
+Which borough of New York hosts the US Open Tennis championships?
+The Wanamaker Mile is an event by which annual track and field meeting?
+The oldest, longest horse races in the US are located in NYC called what?
+Which years did NYC host the PGA golf championships?
+The Amateur Boxing Golden Gloves are held at which location in NYC?
+In what borough is the National Tennis Center located?
+What tennis Grand Slam event is held at the National Tennis Center?
+How many people completed the New York Marathon in 2006?
+What annual sporting competition features the Wanamaker Mile?
+At what venue does the Amateur Boxing Golden Gloves take place?
+A version of baseball played in city streets was nicknamed was in the 1930s?
+What street was renamed in the late 2000s to commemorate the street version of baseball?
+In what borough is Stickball Boulevard located?
+Which subway system is considered the largest in the world?
+How many stations does the  New York City Subway system contain?
+Which station is known as the world's biggest railroad station?
+How many people rode the New York City Subway in 2014?
+What is the nickname given to Grand Central Terminal?
+How many minutes does it take the average New Yorker to get to work?
+What percentage of New Yorkers use public transportation to get to work?
+What percentage of people living in Manhattan own a car?
+In 2005, what percentage of New York residents used mass transit to get to work?
+What percentage of Americans drive cars to work?
+In minutes, how long does it take for the average New Yorker to get to work?
+What percentage of New York households don't own an automobile?
+What percentage of Manhattan residents own an automobile?
+The busiest bus station in the world in the world is called what?
+How many buses visit the Port Authority Bus Terminal each day?
+How many New Yorkers ride the bus on a daily basis?
+What is New York's primary bus terminal?
+The three airports that have the most people come through them in NYC are which?
+What is the second busiest airport in the New York metro area?
+In 2011, what airport did the most international travelers in North America visit?
+What city is Stewart International Airport located close to?
+How many travelers visited JFK, LaGuardia and Newark Liberty in 2012?
+The world's most popular ferry route is which in NYC? 
+How many hours a day does the The Staten Island Ferry run?
+In kilometers, how long is the Staten Island Ferry route?
+Staring in State Island, in what borough does the Staten Island Ferry's route terminate?
+How many passengers ride the Staten Island Ferry annually?
+Which bridge in NYC is the busiest in the world?
+The biggest suspension bridge in the US is what?
+The bridge made with steel-wire is which in NYC?
+The Brooklyn Bridge was the worlds largest until what date?
+What is the busiest bridge for cars in the world?
+Starting in Manhattan, the George Washington Bridge terminates in what New Jersey county?
+What is the longest suspension bridge in the United States?
+What style of architecture was used to design the Brooklyn Bridge?
+In what year did the Brooklyn Bridge cease to be the world's longest suspension bridge?
+Which tunnel do 120,000 vehicles travel through a day in NYC?
+The Holland Tunnel opened in what year?
+The Queens-Midtown Tunnel was finished in what year?
+Who was the first person to drive through The Queens-Midtown Tunnel?
+How many vehicles utilize the Lincoln Tunnel daily?
+What body of water is above the Lincoln Tunnel?
+What borough is connected to New Jersey via the Lincoln Tunnel?
+In what New Jersey city does the Holland Tunnel terminate?
+Who drove through the Queens-Midtown Tunnel before anyone else?
+How many daily bicycle riders are there in NYC?
+Each day, about how many New Yorkers bike?
+About what percentage of New York City travel is done by bike or on foot?
+What company paid for 10,000 bikes for the city's bicycle sharing program?
+Research by what institution of higher learning showed that most New Yorkers support bicycle sharing?
+Who ranked New York as the most walkable large US city in 2015?
+Who supplies NYC with drinkable water?
+From what mountain range does New York's drinking water come from?
+How much is being spent on a water purification plant at the Croton Watershed?
+After the water purification plant at the Croton Watershed is built, how much more water will be added to the city's supply each day?
+What percent increase in water supply will the city see after the Croton Watershed plant is finished?
+In what geographical direction would a New Yorker travel to reach the Croton Watershed?
+How many members are on the NYC city council?
+How many terms can the mayjor of NYC serve in total?
+What is the duration of a New York City councilperson's term?
+How many councilors sit on the City Council?
+How many terms in a row can a person serve as mayor?
+What is the official journal of New York City?
+If someone serves three consecutive terms as mayor and wants to run again, how many years must they wait?
+Which political party holds the majority of most office terms in NYC?
+In 2008, what percentage of voters were democrats?
+Which US president became the first to receive over 80 percent of NYC votes?
+What was the last year that a republican candidate won all four boroughs of NYC?
+Which president won all of NYC in 1924?
+What party are most public officials of New York members of?
+In November 2008, how many New Yorkers were registered as Democrats?
+In what year was the last presidential election when a Republican won New York City?
+How many boroughs did Barack Obama win in the 2012 presidential election?
+What political party was Calvin Coolidge a member of?
+As of 2012, how many physicians were working in New York City?
+Where is the Cornell University/Technion-Israel Institute of Technology located?
+As of 2004, how many Nobel Prize winners had roots in New York institutions?
+How many people are admitted to HHC institutions annually?
+How many people visit HHC emergency rooms every year?
+How many people visit HHC clinics annually?
+What fraction of general hospital discharges receive treatment at HHC?
+What fraction of emergency room visits receive treatment at HHC?
+Being exposed to what type of pollution has been theorized to increase aggression?
+The decrease in crime in New York is sometimes attributed to the decline of what street drug?
+Who commented on New York that "culture just seems to be in the air, like part of the weather"?
+In what library can the book New York, culture capital of the world, 1940–1965 be found?
+What institution of higher education has described New York as the cultural capital of the world?
+Along with Latvia, the consulate of what country has called New York the cultural capital of the world?
+In what borough is the Lincoln Center for the Performing Arts located?
+In what part of Manhattan can you find Lincoln Square?
+In what square is the theater named after Lee Strasberg located?
+At what institution of higher education is the Tisch School of the Arts located?
+In what New York park can one find performances at no cost?
+What New York thoroughfare is Museum Mile located on?
+In what borough is Museum Mile located?
+When was the Guggenheim built?
+In what year was the grand opening of the Museum for African Art on 110th Street?
+In what part of Manhattan is the Museum Mile located?
+Along with New Yorkese, what is another name for the New York dialect?
+What sitcom did the Archie Bunker character feature in?
+What actor performed the role of Archie Bunker?
+What is the transliteration of the way in which New Yorkers are perceived to pronounce the name of their city?
+What Major League Soccer franchise is based in New York?
+What stadium does the New York City FC call home?
+In what city are the New York Red Bulls based?
+What famous soccer player played for the New York Cosmos?
+At what institution of higher education is James M. Shuart Stadium located?
+What fraction of United States rail riders call the New York City Metropolitan Area home?
+How many rail lines are there on New York City's commuter rail network?
+About how many stations does New York City's commuter rail network have?
+The AirTrain has a station at what airport?
+What Amtrak station in New York sees the most use?
+In what borough is Pennsylvania Station located?
+How many 24-hour rapid transit systems are located in New York?
+What 24-hour rapid transit system is in Philadelphia?
+What 24-hour rapid transit system is outside the United States?
+What does the acronym PATH stand for?
+Along with the East Side Access project and 7 Subway Extension, what heavy-rail project is being built in New York City?
+About how many yellow cabs operate in New York?
+Where does the aerial tramway that starts on Roosevelt Island terminate?
+What industry is Broadway associated with?
+What industry is Wall Street associated with?
+What industry is Madison Avenue associated with?
+What New York street is associated with fashion?
+At what time are drivers in New York most likely to experience traffic jams?
+What geographical portion of Connecticut is linked to New York via highway?
+What part of New Jersey can be reached from New York by taking the expressway?
+What island is the borough of Brooklyn located on?
+Queens is located on what part of Long Island?
+The borough of Staten Island is primarily located on what island?
+What architectural style does the Throgs Neck Bridge reflect?
+The Queensboro Bridge utilized what type of construction?
+How many clean diesel and hybrid taxicabs did New York City have in 2010?
+What percentage of the New York City cab fleet was clean diesel or hybrid in 2010?
+What percent reduction of greenhouse gases does Mayor de Blasio want to see by 2050?
+What is the name of a notable green office building in New York?
+What legal case sought to compel the Environmental Protection Agency to regular greenhouse gases?
+How long is Newtown Creek in kilometers?
+How many cubic meters of oil is supposed to be in Newtown Creek?
+What notable accidental fossil fuel discharge occurred at Newtown Creek?
+What type of government does New York City have?
+In what year did New York City adopt the mayor-council form of government?
+What numbered department of the Supreme Court is located in Brooklyn?
+In what borough is the Appellate Division of the Supreme Court located?
+What branch of government are the administrative courts a part of?
+In what borough is the main courthouse of the District Court for the Southern District of New York located?
+What federal district court has its main courthouse in Brooklyn?
+What square is home to the US Court of International Trade?
+What federal district court has jurisdiction over Staten Island?
+In what borough is the New York City Hall found?
+Four-fifths of the ZIP codes that provide the highest amount of political contributions in the United States are located in what borough?
+What ZIP code was responsible for the greatest amount of contributions in the 2004 presidential election for both candidates?
+How much money in cents does New York City receive for every dollar paid in federal taxes?
+How much more money does the city give to the state of New York annually than it receives?
+Each year, how much more money does New York City give to the federal government than it gets back?
+What is the new name of the Sister City Program of the City of New York, Inc.?
+In what year did the Sister City Program of the City of New York, Inc. have its name changed?

@@ -1,0 +1,115 @@
+#statements
+#
+#category: ATTRIBUTE_IS_VALUE
+the number of leader terrorists of Al Quada directly involved in the 911 attacks that day was ten
+the area of land in New York City is 304 point 8 square miles
+the mean snowfall between 1981 and 2010 in NYC has been 25 point 8 inches
+the number of Hispanic people living in the New York metropolitan area is 4 point 8 million
+the percentage of New York households that do not own an automobile is 52
+#
+#category: EXISTENTIAL_SENTENCE
+there are 120 school and universities in NYC
+there are more than 200 newspaper offices located in New York
+there are 24000 restaurants in New York
+#
+#category: PASSIVE_CONSTRUCTION
+the United Nations is headquartered in New York
+New York City is located in the Northeastern region of the United States
+the sculptures of eagles are located on the 61st floor of the Chrysler Building
+the Two highest advertising agencies in the world located in NYC are called Omnicom Group and Interpublic Group
+Manhattan is located in Silicon Alley
+the Second Department of the Supreme Court is located in Brooklyn
+#
+#category: PREPOSITIONAL_PHRASE_FRONTING
+after the building of new courthouse African burial grounds were discovered in the 1990s
+during the Draft Riots of 1863 approximately 120 people died
+in the early 1920s London was the second most highly populated city in the world
+in January New York City experiences the coldest temperatures
+#
+#category: SUBJECT_LINKING_VERB_COMPLEMENT
+the Lenapehoking was the Lenape homeland
+Pelham Bay Park is the largest park in New York City
+British Bankers Association was the previous overseer of the London interbank offered rate
+the name of the citys public television service is NYCTV
+the George Washington Bridge is the busiest bridge in the world
+President Franklin d Roosevelt was the first person to drive through the Queens-Midtown Tunnel
+#
+#category: SUBJECT_VERB_OBJECT
+Estevao Gomes commanded the Spanish expedition
+General Peter Minuit acquired Manhattan Island through the purchase of glass beads
+Great Fire of New York took place under the British occupation
+the Hudson River separates New Jersey from the United States
+Queens contains the highest population of Asian-Americans
+the Bronx has the largest population of ethnic Albanians
+the New York film and television industry creates 7 point 1 billion every year
+the Global Language Monitor ranked New York as the fashion capital of the world
+the New Jersey Devils hockey team plays Newark
+the Amateur Boxing Golden Gloves takes place at Madison Square Garden
+#
+#questions
+#
+#category: HOW_QUESTION
+? How many school and universities are in NYC
+? About how many people died during the Draft Riots of 1863
+? How many leader terrorists of Al Quada were involved with the 911 attacks directly that day
+? How many square miles are land in NYC
+? The mean snowfall between 1981 and 2010 in NYC has been how many inches
+? How many Hispanic people live in the New York metropolitan area
+? How much money does the New York film and television industry create every year
+? How many newspaper offices are located in New York
+? How many restaurants is New York home to
+#
+#category: WHAT_QUESTION
+? What was the name of the Lenape homeland
+? What was the myth that Manhattan was bought for by General Peter Minuit
+? What notable catastrophe took place under the British occupation
+? In the early 1920s what was the second most highly populated city in the world
+? What floor of the Chrysler Building has sculptures of eagles at its corners
+? What month in New York City is the coldest
+? What is the largest park in New York City
+? What New York borough contains the highest population of Asian-Americans
+? What borough has the largest population of ethnic Albanians
+? The Two highest advertising agencies in the world located in NYC are called what
+? What is the name of the citys public television service
+? What percentage of New York households dont own an automobile
+? What numbered department of the Supreme Court is located in Brooklyn
+#
+#category: WHEN_QUESTION
+? When was as African burial ground discovered after the building of new courthouse
+#
+#category: WHERE_IN_ON_AT_QUESTION
+? In what city is the United Nations based
+#
+.wg United Nations
+.ph The United Nations is headquartered in New York
+.wg New York
+.rw
+#
+? In what geographical region of the United States is New York City located
+#
+.wg geographical region
+.ph New York City is located in the Northeastern region of the United States
+.wg Northeastern
+.rw
+#
+? In what borough is Silicon Alley located
+.wg Silicon Alley
+.ph Manhattan is located in Silicon Alley
+.wg Manhattan
+.rw
+? At what venue does the Amateur Boxing Golden Gloves take place
+.wg Amateur Boxing Golden Gloves
+.ph Amateur Boxing Golden Gloves takes place at Madison Square Garden
+.wg Madison Square Garden
+.rw
+#
+#category: WHICH_QUESTION
+? The Hudson River separates NYC from which US state
+? Which town do the New Jersey Devils hockey team play
+? Which bridge in NYC is the busiest in the world
+#
+#category: WHO_QUESTION
+? Who commanded the Spanish expedition
+? Who was the previous overseer of the London interbank offered rate
+? Who ranked New York as the fashion capital of the world
+? Who was the first person to drive through The Queens-Midtown Tunnel

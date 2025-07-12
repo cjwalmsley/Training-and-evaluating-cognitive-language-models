@@ -3,6 +3,21 @@ from collections import Counter
 from unidecode import unidecode
 import tarfile
 import warnings
+import nltk
+from nltk.corpus import stopwords
+
+def convert_stopwords_to_lower_case(a_string):
+    try:
+        stopwords.words('english')
+    except LookupError:
+        nltk.download('stopwords')
+    stop_words = set(stopwords.words('english'))
+    words = a_string.split()
+    # Convert stopwords to lowercase
+    lower_case_stopwords = [word.lower() for word in stop_words]
+    # Replace stopwords in the string with their lowercase versions
+    cleaned_string = ' '.join([word if word.lower() not in lower_case_stopwords else word.lower() for word in words])
+    return cleaned_string
 
 
 def remove_quotes(text):
@@ -42,7 +57,6 @@ def replace_decimal_in_matched_string(matched_string):
 
 def convert_decimal_point_to_word(a_string):
     #Replace "." with 'point' if it is part of a number.
-
     # Regex to find numbers with a decimal point:
     # \d+\.\d+  matches numbers like 1.23
     # \d+\.     matches numbers like 1. (dot at the end after digits)
@@ -50,6 +64,13 @@ def convert_decimal_point_to_word(a_string):
     # The order matters to match \d+\.\d+ before \d+\. or \.\d+ for overlapping cases.
     pattern = r'\d+\.\d+|\d+\.|\.\d+'
     return re.sub(pattern, replace_decimal_in_matched_string, a_string)
+
+def remove_full_stop(a_string):
+    #if the last character of a sentence is "." remove it
+    if a_string.strip().endswith('.'):
+        return a_string[:-1]
+    else:
+        return a_string
 
 def remove_accents(text):
     #Convert accented characters to unaccented ones
@@ -75,23 +96,16 @@ def clean_text(a_series, is_question):
     #takes a dataframe series and applies reformatting
     if is_question:
         a_series = a_series.apply(move_question_mark_to_start)
-    for function_name in (convert_decimal_point_to_word, remove_accents, remove_special_characters):
+    for function_name in (remove_full_stop, convert_decimal_point_to_word, remove_accents, remove_special_characters):
         a_series = a_series.apply(function_name)
     return a_series
 
-def write_training_file(a_dataframe, a_filepath_minus_extension):
+def write_training_file(a_dataframe, a_filepath):
     #write a file that can be used to train ANNABELL
-    output_filepath = a_filepath_minus_extension + ".txt"
-    compressed_output_filepath = a_filepath_minus_extension + ".tar.xz"
-    with open(output_filepath, "w") as output_file:
+    with open(a_filepath, "w") as file:
         for statement in a_dataframe["statement"]:
-            output_file.write(statement + "\n")
-    #check that the file looks correct
-    print(f"file created: {output_filepath}")
-    #compress the file to tar.xz format
-    with tarfile.open(compressed_output_filepath, "w:xz") as tar:
-        tar.add(output_filepath, arcname="output_filepath.txt")
-    print(f"Compressed file created: {compressed_output_filepath}")
+            file.write(statement + "\n")
+    print(f"file created: {a_filepath}")
 
 def write_testing_file(a_dataframe, a_filepath):        #write a file that can be used to test ANNABELL
     with open(a_filepath, "w") as test_file:

@@ -7,7 +7,8 @@ import pandas as pd
 import sys
 import os
 import json
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+
 
 class DeclarativeStatement(BaseModel):
   question: str
@@ -57,16 +58,16 @@ def load_squad_dataset():
 def filter_dataset_split(the_dataset_split, title, number_of_sentences, id=None):
 
     if id is not None:
-        the_dataset = the_dataset_split.filter(lambda x: x["id"] == id)
+        filtered_database_split = the_dataset_split.filter(lambda x: x["id"] == id)
     elif title != 'all':
-        the_dataset = the_dataset_split.filter(lambda x: x["title"] == title)
+        filtered_database_split = the_dataset_split.filter(lambda x: x["title"] == title)
         if number_of_sentences == 'all':
             pass
         else:
-            the_dataset = the_dataset.select(range(min(number_of_sentences, len(the_dataset_split))))
+            filtered_database_split = filtered_database_split.select(range(min(number_of_sentences, len(the_dataset_split))))
     else:
-        the_dataset = the_dataset_split
-    return the_dataset
+        filtered_database_split = the_dataset_split
+    return filtered_database_split
 
 def generate_declarative_sentences(ds, number_of_sentences, the_model_string, the_options, id=None, title="all"):
 
@@ -110,10 +111,10 @@ def generate_declarative_sentences(ds, number_of_sentences, the_model_string, th
                     output_file.write(file_entry)
                     total_elapsed = total_elapsed + elapsed
                     examples_generated = examples_generated + 1
-                except IndexError as index_error:
-                    log_writer.log("Index Error processing example with id: " + str(example_id) + "\t" + str(index_error))
-                #except Exception as error:
-                 #   log_writer.log("Error processing example with id: " + str(example_id) + "\t" + str(error))
+                #except IndexError as index_error:
+                    #log_writer.log("Index Error processing example with id: " + str(example_id) + "\t" + str(index_error))
+                except ValidationError as error:
+                    log_writer.log("Error processing example with id: " + str(example_id) + "\t" + str(error) + "Response: " + response)
                 if examples_generated == number_of_examples:
                     break
             completion_message = "generated: " + str(examples_generated) + " examples\t" + "using  model: " + model_string + "\t" + "total_execution_time_in_seconds: " + str(total_elapsed) + "\toutput_filepath:" + output_filepath + "\n"
