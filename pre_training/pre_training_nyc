@@ -256,51 +256,68 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #
 ? The Two highest advertising agencies in the world located in NYC are called what
 #
-.wg name
+.wg advertising agencies
 .pg
-.wg Lenape
+.wg world
 .pg
-.ph the Lenapehoking was the Lenape homeland
-.wg Lenapehoking
+.wg NYC
+.pg
+.ph the Two highest advertising agencies in the world located in NYC are called Omnicom Group and Interpublic Group
+.wg Omnicom Group
+.prw
+.wg and
+.prw
+.wg Interpublic Group
 .rw
 #
 ? What is the name of the citys public television service
 #
-.wg name
+.wg citys
 .pg
-.wg Lenape
+.wg television service
 .pg
-.ph the Lenapehoking was the Lenape homeland
-.wg Lenapehoking
+.ph the name of the citys public television service is NYCTV
+.wg NYCTV
 .rw
 #
 ? What percentage of New York households dont own an automobile
 #
-.wg name
+.wg New York households
 .pg
-.wg Lenape
+.wg an automobile
 .pg
-.ph the Lenapehoking was the Lenape homeland
-.wg Lenapehoking
+.ph the percentage of New York households that do not own an automobile is 52
+.wg 52
 .rw
 #
 ? What numbered department of the Supreme Court is located in Brooklyn
 #
-.wg name
+.wg numbered department
 .pg
-.wg Lenape
+.wg Supreme Court
 .pg
-.ph the Lenapehoking was the Lenape homeland
-.wg Lenapehoking
+.wg Brooklyn
+.pg
+.ph the Second Department of the Supreme Court is located in Brooklyn
+.wg Second
 .rw
 #
 #category: WHEN_QUESTION
 ? When was as African burial ground discovered after the building of new courthouse
+wg. African burial ground
+.wg new courthouse
+.pg
+.ph after the building of new courthouse African burial grounds were discovered in the 1990s
+.wg 1990s
+.rw
 #
 #category: WHERE_IN_ON_AT_QUESTION
 ? In what city is the United Nations based
 #
+.wg city
+.pg
 .wg United Nations
+.pg
 .ph The United Nations is headquartered in New York
 .wg New York
 .rw
@@ -308,28 +325,122 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? In what geographical region of the United States is New York City located
 #
 .wg geographical region
+.pg
+.wg United States
+.pg
 .ph New York City is located in the Northeastern region of the United States
 .wg Northeastern
 .rw
 #
 ? In what borough is Silicon Alley located
+#
+.wg borough
+.pg
 .wg Silicon Alley
+.pg
 .ph Manhattan is located in Silicon Alley
 .wg Manhattan
 .rw
 ? At what venue does the Amateur Boxing Golden Gloves take place
+#
+.wg venue
+.pg
 .wg Amateur Boxing Golden Gloves
+.pg
 .ph Amateur Boxing Golden Gloves takes place at Madison Square Garden
 .wg Madison Square Garden
 .rw
 #
 #category: WHICH_QUESTION
+#
 ? The Hudson River separates NYC from which US state
+#
+.wg Hudson River
+.pg
+.wg NYC
+.pg
+.wg US state
+.pg
+.ph the Hudson River separates New Jersey from the United States
+.wg New Jersey
+.rw
+#
 ? Which town do the New Jersey Devils hockey team play
+#
+.wg town
+.pg
+.wg New Jersey Devils hockey
+.pg
+.ph the New Jersey Devils hockey team plays Newark
+.wg Newark
+.rw
+#
 ? Which bridge in NYC is the busiest in the world
 #
+.wg bridge
+.pg
+.wg NYC
+.pg
+.wg busiest
+.pg
+.wg world
+.pg
+.ph the George Washington Bridge is the busiest bridge in the world
+.wg the George Washington Bridge
+.rw
+#
 #category: WHO_QUESTION
+#
 ? Who commanded the Spanish expedition
+#
+.commanded
+.pg
+.wg Spanish expedition
+.pg
+.ph Estevao Gomes commanded the Spanish expedition
+.wg Estevao Gomes
+.rw
+#
 ? Who was the previous overseer of the London interbank offered rate
+#
+.wg previous
+.pg
+.wg overseer
+.pg
+.wg London interbank offered rate
+.pg
+.ph British Bankers Association was the previous overseer of the London interbank offered rate
+.wg British Bankers Association
+.rw
+#
 ? Who ranked New York as the fashion capital of the world
+#
+.wg ranked
+.pg
+.wg New York
+.pg
+.wg fashion
+.pg
+.wg capital
+.pg
+.wg world
+.pg
+.ph the Global Language Monitor ranked New York as the fashion capital of the world
+.wg the Global Language Monitor
+.rw
+#
 ? Who was the first person to drive through The Queens-Midtown Tunnel
+#
+.wg first
+.pg
+.wg person
+.pg
+.wg drive
+.pg
+.wg through
+.pg
+.wg The Queens-Midtown Tunnel
+.pg
+.ph President Franklin d Roosevelt was the first person to drive through the Queens-Midtown Tunnel
+.wg President Franklin d Roosevelt
+.rw
