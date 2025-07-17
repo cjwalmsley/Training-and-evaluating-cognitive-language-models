@@ -59,19 +59,11 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 .wg 120
 .rw
 #
-? About how many people died during the Draft Riots of 1863
-#
-.wg people died
-.pg
-.wg Draft Riots of 1863
-.pg
-.ph during the Draft Riots of 1863 approximately 120 people died
-.wg 120
-.rw
-#
 ? How many leader terrorists of Al Quada were involved with the 911 attacks directly that day
 #
-.wg terrorists of Al Quada
+.wg terrorists
+.pg
+.wg Al Quada
 .pg
 .wg 911 attacks
 .pg
@@ -81,7 +73,9 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #
 ? How many square miles are land in NYC
 #
-.wg square miles are land
+.wg square miles
+.pg
+.wg are land
 .pg
 .wg NYC
 .pg
@@ -93,7 +87,9 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #
 .wg mean snowfall
 .pg
-.wg 1981 and 2010
+.wg 1981
+.pg
+.wg 2010
 .pg
 .wg NYC
 .pg
@@ -105,9 +101,13 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #
 ? How many Hispanic people live in the New York metropolitan area
 #
-.wg Hispanic people live
+.wg Hispanic people
 .pg
-.wg New York metropolitan area
+.wg live
+.pg
+.wg New York
+.pg
+.wg metropolitan area
 .pg
 .ph the number of Hispanic people living in the New York metropolitan area is 4 point 8 million
 .wg 4 point 8 million
@@ -119,12 +119,20 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 .pg
 .wg New York
 .pg
-.wg film and television industry
+.wg film
 .pg
-.wg create every year
+.wg television industry
+.pg
+.wg create
+.pg
+.wg every
+.pg
+.wg year
 .pg
 .ph the New York film and television industry creates 7 point 1 billion every year
-.wg 7 point 1 billion
+.wg 7 point
+.prw
+.wg 1 billion
 .rw
 #
 ? How many newspaper offices are located in New York
@@ -369,7 +377,9 @@ wg. African burial ground
 #
 .wg town
 .pg
-.wg New Jersey Devils hockey
+.wg New Jersey Devils
+.pg
+.wg hockey
 .pg
 .ph the New Jersey Devils hockey team plays Newark
 .wg Newark
@@ -386,7 +396,9 @@ wg. African burial ground
 .wg world
 .pg
 .ph the George Washington Bridge is the busiest bridge in the world
-.wg the George Washington Bridge
+.wg the
+.prw
+.wg George Washington Bridge
 .rw
 #
 #category: WHO_QUESTION
@@ -407,7 +419,9 @@ wg. African burial ground
 .pg
 .wg overseer
 .pg
-.wg London interbank offered rate
+.wg London
+.pg
+.wg interbank offered rate
 .pg
 .ph British Bankers Association was the previous overseer of the London interbank offered rate
 .wg British Bankers Association
@@ -426,7 +440,9 @@ wg. African burial ground
 .wg world
 .pg
 .ph the Global Language Monitor ranked New York as the fashion capital of the world
-.wg the Global Language Monitor
+.wg the
+.prw
+.wg Global Language Monitor
 .rw
 #
 ? Who was the first person to drive through The Queens-Midtown Tunnel
@@ -439,8 +455,12 @@ wg. African burial ground
 .pg
 .wg through
 .pg
-.wg The Queens-Midtown Tunnel
+.wg The Queens-Midtown
+.pg
+.wg Tunnel
 .pg
 .ph President Franklin d Roosevelt was the first person to drive through the Queens-Midtown Tunnel
-.wg President Franklin d Roosevelt
+.wg President
+.prw
+.wg Franklin d Roosevelt
 .rw

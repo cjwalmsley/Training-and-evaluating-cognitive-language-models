@@ -47,8 +47,10 @@ RUN apt-get update && \
 
 COPY --from=build /usr/local/bin/annabell /usr/local/bin/annabell
 COPY train_annabell_squad.sh .
-RUN chmod +x train_annabell_squad.sh
+COPY pre_train_annabell_squad_nyc.sh .
 COPY test_annabell_squad.sh .
+RUN chmod +x train_annabell_squad.sh
+RUN chmod +x pre_train_annabell_squad_nyc.sh
 RUN chmod +x test_annabell_squad.sh
 
 ARG UID=10001

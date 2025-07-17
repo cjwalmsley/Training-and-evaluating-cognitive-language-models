@@ -1,0 +1,11 @@
+.monitor display Header always on
+.monitor display InPhB always on
+.monitor display WkPhB always on
+.monitor display WGB always on
+.monitor display PhI always on
+.monitor display WGI always on
+.monitor display AcqAct always on
+.monitor display ElAct always on
+.monitor console on
+.monitor display mode_change on
+.logfile debug_log
