@@ -1,11 +1,11 @@
 {
     "num_ctx": 4096,
-    "repeat_last_n": 0,
+    "repeat_last_n": 64,
     "repeat_penalty": 1.5,
     "temperature": 0,
     "seed": 42,
     "num_predict": 100,
-    "top_k": 0,
-    "top_p": 0.0,
+    "top_k": 1,
+    "top_p": 0.1,
     "min_p": 0.0
 }

@@ -149,7 +149,8 @@ if __name__ == "__main__":
         "llama3",
         "deepseek-r1:8b",
         "gemma3:4b",
-        "gemma3:1b")
+        "gemma3:1b"
+        "gemma3n:e4b")
 
     options = load_options_from_config_file()
 
