@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #script to test ANNABELL in specialist subjects
-#     ./train_annabell_squad.sh
-#    "data/statements/crossvalidation/round1/logs/logfile_squad_test.txt"
-#    "data/statements/crossvalidation/round1/links/links_people_body_skills_squad.dat"
-#    "data/statements/testing/all_statements.txt"
+#     ./test_annabell_squad.sh
+#    "data/statements/testing/test_nyc_log.txt"
+#    "data/statements/testing/training_nyc_weights"
+#    "data/statements/testing/test_nyc_questions.txt"
 
 #the script assumes working directory has the following structure:
 #|---datasets

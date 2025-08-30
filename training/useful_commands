@@ -24,3 +24,9 @@ docker-compose run --entrypoint /bin/bash app
 
 docker compose build --build-arg ANNABELL_VERSION="annabell_change_PhSize"
 
+for testing using the nyc samples
+docker-compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/statements/testing/test_nyc_log.txt \
+  data/statements/testing/training_nyc_weights \
+  data/statements/testing/test_nyc_questions.txt
+
