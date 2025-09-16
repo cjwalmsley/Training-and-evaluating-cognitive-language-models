@@ -1,0 +1,343 @@
+#statements
+#
+#category: ATTRIBUTE_IS_VALUE
+the number of leader terrorists of Al Quada directly involved in the 911 attacks that day was ten
+the area of land in New York City is 304 point 8 square miles
+the mean snowfall between 1981 and 2010 in NYC has been 25 point 8 inches
+the number of Hispanic people living in the New York metropolitan area is 4 point 8 million
+the percentage of New York households that do not own an automobile is 52
+#
+#category: EXISTENTIAL_SENTENCE
+there are 120 school and universities in NYC
+there are more than 200 newspaper offices located in New York
+there are 24000 restaurants in New York
+#
+#category: PASSIVE_CONSTRUCTION
+the United Nations is headquartered in New York
+New York City is located in the Northeastern region of the United States
+the sculptures of eagles are located on the 61st floor of the Chrysler Building
+the Two highest advertising agencies in the world located in NYC are called Omnicom Group and Interpublic Group
+Manhattan is located in Silicon Alley
+the Second Department of the Supreme Court is located in Brooklyn
+#
+#category: PREPOSITIONAL_PHRASE_FRONTING
+after the building of new courthouse African burial grounds were discovered in the 1990s
+during the Draft Riots of 1863 approximately 120 people died
+in the early 1920s London was the second most highly populated city in the world
+in January New York City experiences the coldest temperatures
+#
+#category: SUBJECT_LINKING_VERB_COMPLEMENT
+the Lenapehoking was the Lenape homeland
+Pelham Bay Park is the largest park in New York City
+British Bankers Association was the previous overseer of the London interbank offered rate
+the name of the citys public television service is NYCTV
+the George Washington Bridge is the busiest bridge in the world
+President Franklin d Roosevelt was the first person to drive through the Queens-Midtown Tunnel
+#
+#category: SUBJECT_VERB_OBJECT
+Estevao Gomes commanded the Spanish expedition
+General Peter Minuit acquired Manhattan Island through the purchase of glass beads
+Great Fire of New York took place under the British occupation
+the Hudson River separates New Jersey from the United States
+Queens contains the highest population of Asian-Americans
+the Bronx has the largest population of ethnic Albanians
+the New York film and television industry creates 7 point 1 billion every year
+the Global Language Monitor ranked New York as the fashion capital of the world
+the New Jersey Devils hockey team plays Newark
+the Amateur Boxing Golden Gloves takes place at Madison Square Garden
+#
+#questions
+#
+#category: HOW_QUESTION
+? How many school and universities are in NYC
+#
+.wg school and universities
+.wg NYC
+.ph there are 120 school and universities in NYC
+.wg 120
+.rw
+#
+? How many leader terrorists of Al Quada were involved with the 911 attacks directly that day
+#
+.wg leader terrorists
+.wg Al Quada
+.wg 911 attacks
+.ph the number of leader terrorists of Al Quada directly involved in the 911 attacks that day was ten
+.wg ten
+.rw
+#
+? how many square miles are land in NYC
+.wg square miles
+.wg land
+.ph the area of land in New York City is 304 point 8 square miles
+.wg 304 point 8
+.rw
+#
+? The mean snowfall between 1981 and 2010 in NYC has been how many inches
+#
+.wg snowfall
+.wg 1981
+.wg 2010
+.wg inches
+.ph the mean snowfall between 1981 and 2010 in NYC has been 25 point 8 inches
+.wg 25 point 8
+.rw
+#
+? How many Hispanic people live in the New York metropolitan area
+#
+.wg Hispanic
+.wg live
+.ph the number of Hispanic people live -ing in the New York metropolitan area is 4 point 8 million
+.wg 4 point 8 million
+.rw
+#
+? How much money does the New York film and television industry create every year
+#
+.wg New York
+.wg film
+.wg television industry
+.ph the New York film and television industry creates 7 point 1 billion every year
+.wg 7 point
+.prw
+.wg 1 billion
+.rw
+#
+? How many newspaper offices are located in New York
+#
+.wg newspaper
+.wg New York
+.ph there are more than 200 newspaper offices located in New York
+.wg more than 200
+.rw
+#
+? How many restaurants is New York home to
+#
+.wg restaurants
+.wg New York
+.ph there are 24000 restaurants in New York
+.wg 24000
+.rw
+#
+#category: WHAT_QUESTION
+? What was the name of the Lenape homeland
+#
+.wg Lenape
+.ph the Lenapehoking was the Lenape homeland
+.wg Lenapehoking
+.rw
+#
+? What was the myth that Manhattan was bought for by General Peter Minuit
+#
+.wg Manhattan
+.wg Peter Minuit
+.ph General Peter Minuit acquired Manhattan Island through the purchase of glass beads
+.wg glass beads
+.rw
+#
+? What notable catastrophe took place under the British occupation
+#
+.wg British
+.ph Great Fire of New York took place under the British occupation
+.wg Great Fire
+.prw
+.wg of New York
+.rw
+#
+? In the early 1920s what was the second most highly populated city in the world
+#
+.wg 1920s
+.wg most
+.wg highly populated
+.wg world
+.ph in the early 1920s London was the second most highly populated city in the world
+.wg London
+.rw
+#
+? What floor of the Chrysler Building has sculptures of eagles at its corners
+#
+.wg floor
+.wg Chrysler Building
+.wg eagles
+.ph the sculptures of eagles are located on the 61st floor of the Chrysler Building
+.wg 61st
+.rw
+#
+? What month in New York City is the coldest
+#
+.wg New York City
+.wg coldest
+.ph in January New York City experiences the coldest temperatures
+.wg January
+.rw
+#
+? What is the largest park in New York City
+#
+.wg park
+.wg New York City
+.ph Pelham Bay Park is the largest park in New York City
+.wg Pelham Bay Park
+.rw
+#
+? What New York borough contains the highest population of Asian-Americans
+#
+.wg highest
+.wg Asian-Americans
+.ph Queens contains the highest population of Asian-Americans
+.wg Queens
+.rw
+#
+? What borough has the largest population of ethnic Albanians
+#
+.wg largest
+.wg Albanians
+.ph the Bronx has the largest population of ethnic Albanians
+.wg the Bronx
+.rw
+#
+? the Two highest advertising agencies in the world located in NYC are called what
+#
+.wg Two
+.wg advertising agencies
+.wg world
+.wg NYC
+.ph the Two highest advertising agencies in the world located in NYC are called Omnicom Group and Interpublic Group
+.wg Omnicom Group
+.prw
+.wg and
+.prw
+.wg Interpublic Group
+.rw
+#
+? What is the name of the citys public television service
+#
+.wg citys
+.wg television service
+.ph the name of the citys public television service is NYCTV
+.wg NYCTV
+.rw
+#
+? What percentage of New York households dont own an automobile
+#
+.wg New York
+.wg automobile
+.ph the percentage of New York households that do not own an automobile is 52
+.wg 52
+.rw
+#
+? What numbered department of the Supreme Court is located in Brooklyn
+#
+.wg department
+.wg Supreme Court
+.wg Brooklyn
+.ph the second department of the Supreme Court is located in Brooklyn
+.wg second
+.rw
+#
+#category: WHEN_QUESTION
+? When was as African burial ground discovered after the building of new courthouse
+wg. burial ground
+.wg courthouse
+.ph after the building of new courthouse African burial grounds were discovered in the 1990s
+.wg 1990s
+.rw
+#
+#category: WHERE_IN_ON_AT_QUESTION
+? In what city is the United Nations based
+#
+.wg United Nations
+.ph The United Nations is headquartered in New York
+.wg New York
+.rw
+#
+? In what geographical region of the United States is New York City located
+#
+.wg region
+.wg United States
+wg New York City
+.ph New York City is located in the Northeastern region of the United States
+.wg Northeastern
+.rw
+#
+? In what borough is Silicon Alley located
+#
+.wg Silicon Alley
+.ph Manhattan is located in Silicon Alley
+.wg Manhattan
+.rw
+? At what venue does the Amateur Boxing Golden Gloves take place
+#
+.wg venue
+.wg Golden Gloves
+.ph Amateur Boxing Golden Gloves takes place at Madison Square Garden
+.wg Madison Square Garden
+.rw
+#
+#category: WHICH_QUESTION
+#
+? The Hudson River separates NYC from which US state
+#
+.wg River
+.ph the Hudson River separates New Jersey from the United States
+.wg New Jersey
+.rw
+#
+? Which town do the New Jersey Devils hockey team play
+#
+.wg New Jersey Devils
+.wg hockey
+.ph the New Jersey Devils hockey team plays Newark
+.wg Newark
+.rw
+#
+? Which bridge in NYC is the busiest in the world
+#
+.wg busiest
+.ph the George Washington Bridge is the busiest bridge in the world
+.wg the
+.prw
+.wg George Washington Bridge
+.rw
+#
+#category: WHO_QUESTION
+#
+? Who commanded the Spanish expedition
+#
+.wg Spanish expedition
+.ph Estevao Gomes commanded the Spanish expedition
+.wg Estevao Gomes
+.rw
+#
+? Who was the previous overseer of the London interbank offered rate
+#
+.wg overseer
+.wg London
+.wg interbank offered rate
+.ph British Bankers Association was the previous overseer of the London interbank offered rate
+.wg British Bankers Association
+.rw
+#
+? Who ranked New York as the fashion capital of the world
+#
+.wg ranked
+.wg New York
+.wg fashion
+.wg world
+.ph the Global Language Monitor ranked New York as the fashion capital of the world
+.wg the
+.prw
+.wg Global Language Monitor
+.rw
+#
+? Who was the first person to drive through The Queens-Midtown Tunnel
+#
+.wg first
+.wg person
+.wg drive
+.wg through
+.wg The Queens-Midtown
+.wg Tunnel
+.ph President Franklin d Roosevelt was the first person to drive through the Queens-Midtown Tunnel
+.wg President
+.prw
+.wg Franklin d Roosevelt
+.rw

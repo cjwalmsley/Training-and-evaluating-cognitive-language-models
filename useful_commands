@@ -1,0 +1,64 @@
+To prepare the training directory in compressed format:
+tar -cvJf statements.tar.xz -C "/Volumes/X9 Pro/training/annabell" statements
+
+#copy the pre-training statements file to the mounted docker directory
+sudo cp /Users/chris/PycharmProjects/dataset/pre_training/pre_training_nyc /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/training
+
+#change the owner of the pre-training statements file so that Docker can change permissions if needed
+sudo chown 10001:10001 /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/training/pre_training_nyc
+
+#instantiate a docker image with a shell
+docker-compose run --entrypoint /bin/bash app
+
+#build the docker image with a specific source code package
+docker compose build --build-arg ANNABELL_VERSION="annabell_change_PhSize"
+
+
+Experiment 4
+
+#run the nyc training with the annabell people/body/skills/base.  Time the results
+docker compose run --remove-orphans --entrypoint /bin/bash app -c "time ./train_annabell_squad.sh data/statements/pre-training/logfile_nyc_training.txt data/statements/pre-training/links_people_body_skills.dat data/statements/training/people_body_skills_nyc.dat data/statements/training/nyc_statements.txt" 2>&1 | tee nyc_train_time_log.txt
+
+#for testing using the nyc samples + annabell pretrained/nyc trained
+docker-compose run --remove-orphans --entrypoint /bin/bash app -c ./test_annabell_squad.sh \
+  data/statements/testing/test_nyc_log.txt \
+  data/statements/training/people_body_skills_nyc.dat \
+  data/statements/testing/test_nyc_questions.txt
+
+Experiment 5
+
+#pretrain ANNABELL with language basics using the samples from the NYC subset of the SQuAD dataset
+docker compose run --remove-orphans --entrypoint /bin/bash app -c "time ./pre_train_annabell_squad_nyc.sh \
+  data/statements/pre-training/logfile_pretraining_nyc.txt \
+  data/statements/pre-training/pre_training.txt \
+  data/statements/pre-training/pretraining_nyc_squad.dat" 2>&1 | tee nyc_train_time_log.txt
+
+#run the nyc training with the pretrained NYC weights.  Time the results
+docker compose run --remove-orphans --entrypoint /bin/bash app -c "time ./train_annabell_squad.sh data/statements/training/logfile_nyc_training.txt data/statements/pre-training/pretraining_nyc_squad.dat data/statements/training/nyc.dat data/statements/training/nyc_statements.txt" 2>&1 | tee nyc_train_time_log.txt
+
+#for testing using the nyc samples + nyc pretrained
+docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/statements/testing/test_nyc_log.txt \
+  data/statements/training/nyc.dat \
+  data/statements/testing/test_nyc_questions_without_pretrain.txt
+
+#Experiment 6 - pretrain with people and NYC samples, then train with NYC
+#run the nyc pre-training with the pretrained people weights.  Time the results
+docker compose run --remove-orphans --entrypoint ./train_annabell_squad.sh app data/statements/pre-training/logfile_people_nyc_pretraining.txt data/statements/pre-training/links_people.dat data/statements/pre-training/people_nyc_samples.dat data/statements/pre-training/pre_training_nyc_samples.txt
+
+#train with the nyc statements
+docker compose run --remove-orphans --entrypoint ./train_annabell_squad.sh app data/statements/training/logfile_nyc_training.txt data/statements/pre-training/people_nyc_samples.dat data/statements/training/people_nyc_samples_nyc.dat data/statements/training/nyc_statements.txt
+
+docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/statements/testing/test_nyc_log.txt\
+  data/statements/training/people_nyc_samples_nyc.dat \
+  data/statements/testing/test_nyc_questions_without_pretrain.txt
+
+links_people.dat
+
+#mount rclone gdrive
+rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/experiments
+
+rclone copy gdrive:PHD/work/experiments/weights /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat
+
+rclone copy /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat gdrive:'/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/weights'

@@ -19,13 +19,19 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
-LOGFILE=$1
+LOGFILE_BASE=$1
+DATETIME=$(date +%Y-%m-%d_%H-%M-%S)
+# Insert datetime before the file extension
+LOGFILE="${LOGFILE_BASE%.*}_${DATETIME}.${LOGFILE_BASE##*.}"
 TRAINING_FILE=$2
 PRETRAINED_WEIGHTS=$3
 
-(
+# The time command's output (stderr) is appended to the log file.
+{ time (
 #turn on logging
 echo .logfile "$LOGFILE"
+#record the stats
+echo .stat
 #train using the commands provided in the file
 echo .f "$TRAINING_FILE"
 #save the weights
@@ -36,4 +42,4 @@ echo .stat
 echo .logfile off
 #shut down ANNABELL
 echo .q
-) | annabell
+) | annabell; } 2>> "$LOGFILE"

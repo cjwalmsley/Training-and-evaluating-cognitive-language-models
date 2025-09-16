@@ -52,83 +52,50 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? How many school and universities are in NYC
 #
 .wg school and universities
-.pg
 .wg NYC
-.pg
 .ph there are 120 school and universities in NYC
 .wg 120
 .rw
 #
 ? How many leader terrorists of Al Quada were involved with the 911 attacks directly that day
 #
-.wg terrorists
-.pg
+.wg leader terrorists
 .wg Al Quada
-.pg
 .wg 911 attacks
-.pg
 .ph the number of leader terrorists of Al Quada directly involved in the 911 attacks that day was ten
 .wg ten
 .rw
 #
-? How many square miles are land in NYC
-#
+? how many square miles are land in NYC
 .wg square miles
-.pg
-.wg are land
-.pg
-.wg NYC
-.pg
-.ph the area of land in New York City is 304 point 8
+.wg land
+.ph the area of land in New York City is 304 point 8 square miles
 .wg 304 point 8
 .rw
 #
 ? The mean snowfall between 1981 and 2010 in NYC has been how many inches
 #
-.wg mean snowfall
-.pg
+.wg snowfall
 .wg 1981
-.pg
 .wg 2010
-.pg
-.wg NYC
-.pg
 .wg inches
-.pg
 .ph the mean snowfall between 1981 and 2010 in NYC has been 25 point 8 inches
 .wg 25 point 8
 .rw
 #
 ? How many Hispanic people live in the New York metropolitan area
 #
-.wg Hispanic people
-.pg
+.wg Hispanic
 .wg live
-.pg
-.wg New York
-.pg
-.wg metropolitan area
-.pg
-.ph the number of Hispanic people living in the New York metropolitan area is 4 point 8 million
+.ph the number of Hispanic people live -ing in the New York metropolitan area is 4 point 8 million
 .wg 4 point 8 million
 .rw
 #
 ? How much money does the New York film and television industry create every year
 #
-.wg money
-.pg
 .wg New York
-.pg
 .wg film
-.pg
 .wg television industry
-.pg
-.wg create
-.pg
-.wg every
-.pg
-.wg year
-.pg
 .ph the New York film and television industry creates 7 point 1 billion every year
 .wg 7 point
 .prw
@@ -137,10 +104,8 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #
 ? How many newspaper offices are located in New York
 #
-.wg newspaper offices
-.pg
+.wg newspaper
 .wg New York
-.pg
 .ph there are more than 200 newspaper offices located in New York
 .wg more than 200
 .rw
@@ -148,9 +113,7 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? How many restaurants is New York home to
 #
 .wg restaurants
-.pg
 .wg New York
-.pg
 .ph there are 24000 restaurants in New York
 .wg 24000
 .rw
@@ -158,10 +121,7 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #category: WHAT_QUESTION
 ? What was the name of the Lenape homeland
 #
-.wg name
-.pg
 .wg Lenape
-.pg
 .ph the Lenapehoking was the Lenape homeland
 .wg Lenapehoking
 .rw
@@ -169,19 +129,14 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? What was the myth that Manhattan was bought for by General Peter Minuit
 #
 .wg Manhattan
-.pg
 .wg Peter Minuit
-.pg
 .ph General Peter Minuit acquired Manhattan Island through the purchase of glass beads
 .wg glass beads
 .rw
 #
 ? What notable catastrophe took place under the British occupation
 #
-.wg catastrophe
-.pg
 .wg British
-.pg
 .ph Great Fire of New York took place under the British occupation
 .wg Great Fire
 .prw
@@ -191,13 +146,9 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? In the early 1920s what was the second most highly populated city in the world
 #
 .wg 1920s
-.pg
-.wg second most
-.pg
-.wg highly populated city
-.pg
+.wg most
+.wg highly populated
 .wg world
-.pg
 .ph in the early 1920s London was the second most highly populated city in the world
 .wg London
 .rw
@@ -205,47 +156,31 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? What floor of the Chrysler Building has sculptures of eagles at its corners
 #
 .wg floor
-.pg
 .wg Chrysler Building
-.pg
-.wg sculptures of eagles
-.pg
+.wg eagles
 .ph the sculptures of eagles are located on the 61st floor of the Chrysler Building
 .wg 61st
 .rw
 #
 ? What month in New York City is the coldest
 #
-.wg month
-.pg
 .wg New York City
-.pg
 .wg coldest
-.pg
 .ph in January New York City experiences the coldest temperatures
 .wg January
 .rw
 #
 ? What is the largest park in New York City
 #
-.wg largest
-.pg
 .wg park
-.pg
 .wg New York City
-.pg
 .ph Pelham Bay Park is the largest park in New York City
 .wg Pelham Bay Park
 .rw
 #
 ? What New York borough contains the highest population of Asian-Americans
 #
-.wg New York
-.pg
-.wg borough
-.pg
 .wg highest
-.pg
 .wg Asian-Americans
 .ph Queens contains the highest population of Asian-Americans
 .wg Queens
@@ -253,23 +188,18 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 #
 ? What borough has the largest population of ethnic Albanians
 #
-.wg borough
-.pg
 .wg largest
-.pg
 .wg Albanians
 .ph the Bronx has the largest population of ethnic Albanians
 .wg the Bronx
 .rw
 #
-? The Two highest advertising agencies in the world located in NYC are called what
+? the Two highest advertising agencies in the world located in NYC are called what
 #
+.wg Two
 .wg advertising agencies
-.pg
 .wg world
-.pg
 .wg NYC
-.pg
 .ph the Two highest advertising agencies in the world located in NYC are called Omnicom Group and Interpublic Group
 .wg Omnicom Group
 .prw
@@ -281,40 +211,32 @@ the Amateur Boxing Golden Gloves takes place at Madison Square Garden
 ? What is the name of the citys public television service
 #
 .wg citys
-.pg
 .wg television service
-.pg
 .ph the name of the citys public television service is NYCTV
 .wg NYCTV
 .rw
 #
 ? What percentage of New York households dont own an automobile
 #
-.wg New York households
-.pg
-.wg an automobile
-.pg
+.wg New York
+.wg automobile
 .ph the percentage of New York households that do not own an automobile is 52
 .wg 52
 .rw
 #
 ? What numbered department of the Supreme Court is located in Brooklyn
 #
-.wg numbered department
-.pg
+.wg department
 .wg Supreme Court
-.pg
 .wg Brooklyn
-.pg
-.ph the Second Department of the Supreme Court is located in Brooklyn
-.wg Second
+.ph the second department of the Supreme Court is located in Brooklyn
+.wg second
 .rw
 #
 #category: WHEN_QUESTION
 ? When was as African burial ground discovered after the building of new courthouse
-wg. African burial ground
-.wg new courthouse
-.pg
+wg. burial ground
+.wg courthouse
 .ph after the building of new courthouse African burial grounds were discovered in the 1990s
 .wg 1990s
 .rw
@@ -322,39 +244,30 @@ wg. African burial ground
 #category: WHERE_IN_ON_AT_QUESTION
 ? In what city is the United Nations based
 #
-.wg city
-.pg
 .wg United Nations
-.pg
 .ph The United Nations is headquartered in New York
 .wg New York
 .rw
 #
 ? In what geographical region of the United States is New York City located
 #
-.wg geographical region
-.pg
+.wg region
 .wg United States
-.pg
+wg New York City
 .ph New York City is located in the Northeastern region of the United States
 .wg Northeastern
 .rw
 #
 ? In what borough is Silicon Alley located
 #
-.wg borough
-.pg
 .wg Silicon Alley
-.pg
 .ph Manhattan is located in Silicon Alley
 .wg Manhattan
 .rw
 ? At what venue does the Amateur Boxing Golden Gloves take place
 #
 .wg venue
-.pg
-.wg Amateur Boxing Golden Gloves
-.pg
+.wg Golden Gloves
 .ph Amateur Boxing Golden Gloves takes place at Madison Square Garden
 .wg Madison Square Garden
 .rw
@@ -363,38 +276,22 @@ wg. African burial ground
 #
 ? The Hudson River separates NYC from which US state
 #
-.wg Hudson River
-.pg
-.wg NYC
-.pg
-.wg US state
-.pg
+.wg River
 .ph the Hudson River separates New Jersey from the United States
 .wg New Jersey
 .rw
 #
 ? Which town do the New Jersey Devils hockey team play
 #
-.wg town
-.pg
 .wg New Jersey Devils
-.pg
 .wg hockey
-.pg
 .ph the New Jersey Devils hockey team plays Newark
 .wg Newark
 .rw
 #
 ? Which bridge in NYC is the busiest in the world
 #
-.wg bridge
-.pg
-.wg NYC
-.pg
 .wg busiest
-.pg
-.wg world
-.pg
 .ph the George Washington Bridge is the busiest bridge in the world
 .wg the
 .prw
@@ -405,24 +302,16 @@ wg. African burial ground
 #
 ? Who commanded the Spanish expedition
 #
-.commanded
-.pg
 .wg Spanish expedition
-.pg
 .ph Estevao Gomes commanded the Spanish expedition
 .wg Estevao Gomes
 .rw
 #
 ? Who was the previous overseer of the London interbank offered rate
 #
-.wg previous
-.pg
 .wg overseer
-.pg
 .wg London
-.pg
 .wg interbank offered rate
-.pg
 .ph British Bankers Association was the previous overseer of the London interbank offered rate
 .wg British Bankers Association
 .rw
@@ -430,15 +319,9 @@ wg. African burial ground
 ? Who ranked New York as the fashion capital of the world
 #
 .wg ranked
-.pg
 .wg New York
-.pg
 .wg fashion
-.pg
-.wg capital
-.pg
 .wg world
-.pg
 .ph the Global Language Monitor ranked New York as the fashion capital of the world
 .wg the
 .prw
@@ -448,17 +331,11 @@ wg. African burial ground
 ? Who was the first person to drive through The Queens-Midtown Tunnel
 #
 .wg first
-.pg
 .wg person
-.pg
 .wg drive
-.pg
 .wg through
-.pg
 .wg The Queens-Midtown
-.pg
 .wg Tunnel
-.pg
 .ph President Franklin d Roosevelt was the first person to drive through the Queens-Midtown Tunnel
 .wg President
 .prw

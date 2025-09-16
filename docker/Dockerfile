@@ -21,7 +21,7 @@ RUN echo "Setting up dependencies..." && \
     make && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ${ANNABELL_VERSION}.tar.xz /app/
+COPY /source_code/${ANNABELL_VERSION}.tar.xz /app/
 
 RUN echo "Setting up Annabell..." && \
     cd /app/ && \
@@ -46,9 +46,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/bin/annabell /usr/local/bin/annabell
-COPY train_annabell_squad.sh .
-COPY pre_train_annabell_squad_nyc.sh .
-COPY test_annabell_squad.sh .
+COPY /scripts/train_annabell_squad.sh .
+COPY /scripts/pre_train_annabell_squad_nyc.sh .
+COPY /scripts/test_annabell_squad.sh .
 RUN chmod +x train_annabell_squad.sh
 RUN chmod +x pre_train_annabell_squad_nyc.sh
 RUN chmod +x test_annabell_squad.sh
