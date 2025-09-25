@@ -1,0 +1,36 @@
+#.f ./data/debug/annabell_commands
+#Silicon Alley and location generalisation
+Silicon Alley is locate -d in the borough of Manhattan
+? in what borough is Silicon Alley locate -d
+#
+.wg Silicon Alley
+.ph Silicon Alley is locate -d in the borough of Manhattan
+.wg Manhattan
+.rw
+.? in what borough is Silicon Alley locate -d
+.x
+#
+Tinpan Alley is locate -d in the borough of Queens
+? in what borough is Tinpan Alley locate -d
+.x
+Long Alley is locate -d in the borough of New Jersey
+? in what borough is Long Alley locate -d
+.x
+Long Alley is locate -d in the borough of New-Jersey
+? in what borough is Long Alley locate -d
+.x
+#stonewall riots
+the Stonewall riots happen -ed in Manhattan
+? in what borough did the Stonewall riots happen
+.wg Stonewall riots
+.ph the Stonewall riots happen -ed in Manhattan
+.wg Manhattan
+.rw
+? in what borough did the Stonewall riots happen
+.x
+? in what neighborhood did the Stonewall riots occur
+.x
+#reponse is the same
+the Stonewall riots occur -ed in the Greenwich Village neighborhood
+? in what neighborhood did the Stonewall riots occur
+.x

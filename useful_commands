@@ -128,6 +128,8 @@ cp /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_samp
 #mount rclone gdrive
 rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/experiments
 
+rclone mount gdrive:PHD /home/chris/gdrive
+
 rclone copy gdrive:PHD/work/experiments/weights /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat
 
 rclone copy /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat gdrive:'/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/weights'

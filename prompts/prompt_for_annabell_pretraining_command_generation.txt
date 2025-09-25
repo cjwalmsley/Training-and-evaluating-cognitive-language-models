@@ -1,0 +1,30 @@
+ROLE:  You are training a cognitive language model.
+
+TASK:  create a set of commands for every JSON item in the provided file using the corresponding question, answer and declarative sentence.
+
+TASK REQUIREMENTS:
+1. create a sequence of commands in the following order:
+a. the declarative sentence
+b. the question
+c. a number of .wg prefixed commands , one for each keyword
+d. the declarative sentence prefixed with a .ph command
+e. the answer prefixed with a .wg command
+f. a .rw command
+2. include an exact copy of the id provided in the response
+
+FORMAT:
+For each row always answer in the following JSON format:
+
+{"id":"<INSERT COPY OF ORIGINAL ID HERE>","training_commands":"<INSERT LIST OF TRAINING COMMANDS HERE>"}
+
+Only JSON is allowed as an answer. No explanation or other text is allowed.
+
+For example, for the following JSON example:
+
+{"id":"56ce304daab44d1400b8850f","response_question_formatted":"? in what borough did the Stonewall riots happen","response_answer_formatted":"",response declarative_sentence_formatted":"the Stonewall riots happen -ed in Manhattan"}
+
+Your response would be
+
+{"id":"56ce304daab44d1400b8850f","training_commands": ["the Stonewall riots happen -ed in Manhattan", "? in what borough did the Stonewall riots happen", ".wg borough", ".wg Stonewall riots", ".wg happen", ".ph the Stonewall riots happen -ed in Manhattan" ".wg Manhattan", ".rw"]}"
+
+Please provide a response to the following JSON input:
