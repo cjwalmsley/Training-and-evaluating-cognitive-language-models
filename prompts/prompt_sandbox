@@ -1,32 +1,77 @@
-You are a writing assistant whose job is to write a declarative statement using a supplied question and answer.
-You will respond with 3 sections:
-the statement, the question, and the answer.
-****
-Your response in each section must follow these formating rules:
-****
-words with a suffix must be split in the form: base –suffix.  for example: animals should be animal –s, writing should be write -ing,
-****
-proper nouns must begin with capital letters
-****
-unless the word is a proper noun all letters must always be lowercase
-****
-For example:
-given this question: The Basilica of the Sacred Heart at Notre Dame is beside to which structure?
-and this answer: The Main Building.
-your output would be:
-the Basilica of the Sacred Heart at Notre Dame is beside to which structure?
-the Main Building
-the Basilica of the Sacred Heart at Notre Dame is beside the Main Building
-****
-Another example:
-given this question: In what year were the five boroughs combined into one city?
-answer: 1898
-your output would be:
-in what year were the five boroughs combined into one city?
-1898
-the five borough -s were combined into one city in 1898
-****
-in all cases proper nouns must begin with capital letters.
-provide the specified response for the following question and answer:
-question: What is in front of the Notre Dame Main Building?
-answer: a copper statue of Christ
+the United Nations is base -d in New York
+there are 120 school and university -s in NYC
+the name of the Lenape homeland was Lenapehoking
+Estevao Gomes command -ed the Spanish expedite -ion
+the myth is that Manhattan was bought for glass bead -s by General Peter Minuit
+an African burial ground was discover -ed in the 1990s after the build -ing of a new courthouse
+the Great Fire of New York was a notable catastrophe that took place under the British occupy -ation
+in the ear -ly 1920s London was the second most high -ly populate -d city in the world
+10 lead -er terror -ist -s of Al Quada were involve -d with the 911 attack -s direct -ly that day
+New York City is locate -d in the Northeast -ern geography -ical region of the United States
+the Hudson River separate -s NYC from the US state of New Jersey
+there are 304 point 8 square mile -s of land in NYC
+the 61st floor of the Chrysler Building has sculpture -s of eagle -s at its corner -s
+the cold -est month in New York City is January
+the mean snowfall between 1981 and 2010 in NYC has been 25 point 8 inch -es
+the large -st park in New York City is Pelham Bay Park
+Queens contain -s the high -est populate -ion of Asian-American -s
+the Bronx has the large -st populate -ion of ethnic Albania -an -s
+4 point 8 million Hispanic people live in the New York metropolitan area
+the two high -est advertise -ing agency -es in the world locate -d in NYC are call -ed Omnicom Group and Interpublic Group
+the British Bankers Association was the previous overseer of the London interbank offer -ed rate
+Silicon Alley is locate -d in the borough of Manhattan
+the New York film and television industry create -s  7 point 1 billion every year
+more than 200 newspaper office -s are locate -d in New York
+the name of the city s public television service is NYCTV
+the Global Language Monitor rank -ed New York as the fashion capital of the world
+New York is home to 24000 restaurant -s
+the New Jersey Devils hockey team play -s in Newark
+the Amateur Box -ing Golden Gloves take -s place at Madison Square Garden
+52  of New York household -s do nt own an automobile
+the busi -est bridge in NYC is The George Washington Bridge
+President Franklin D Roosevelt was the first person to drive through The Queens-Midtown Tunnel
+the Second number -ed department of the Supreme Court is locate -d in Brooklyn
+
+
+
+? in what city is the United Nations base -d
+? how many school and university -s are in NYC
+? what was the name of the Lenape homeland
+? who command -ed the Spanish expedite -ion
+? what was the myth that Manhattan was bought for by General Peter Minuit
+? when was as African burial ground discover -ed after the build -ing of new courthouse
+? what notable catastrophe took place under the British occupy -ation
+? in the ear -ly 1920s what was the second most high -ly populate -d city in the world
+? how many lead -er terror -ist -s of Al Quada were involve -d with the 911 attack -s direct -ly that day
+? in what geography -ical region of the United States is New York City locate -d
+? the Hudson River separate -s NYC from which US state
+? how many square mile -s are land in NYC
+? what floor of the Chrysler Building has sculpture -s of eagle -s at its corner -s
+? what month in New York City is the cold -est
+? the mean snowfall between 1981 and 2010 in NYC has been how many inch -es
+? what is the large -st park in New York City
+? what New York borough contain -s the high -est populate -ion of Asian-American -s
+? what borough has the large -st populate -ion of ethnic Albania -an -s
+? how many Hispanic people live in the New York metropolitan area
+? the Two high -est advertise -ing agency -es in the world locate -d in NYC are call -ed what
+? who was the previous overseer of the London interbank offer -ed rate
+? in what borough is Silicon Alley locate -d
+? how much money does the New York film and television industry create every year
+? how many newspaper office -s are locate -d in New York
+? what is the name of the city s public television service
+? who rank -ed New York as the fashion capital of the world
+? how many restaurant -s is New York home to
+? which town do the New Jersey Devils hockey team play
+? at what venue does the Amateur Box -ing Golden Gloves take place
+? what percentage of New York household -s do nt own an automobile
+? which bridge in NYC is the busi -est in the world
+? who was the first person to drive through The Queens-Midtown Tunnel
+? what number -ed department of the Supreme Court is locate -d in Brooklyn
+
+corrections:
+
+
+? the Two high -est advertise -ing agency -es in the world locate -d in NYC are call -ed what
+52  of New York household -s do nt own an automobile
+? what percentage of New York household -s do nt own an automobile
+10 lead -er terrorist -s of Al Quada were involve -d with the 911 attack -s direct -ly that day

@@ -5,6 +5,18 @@ import tarfile
 import warnings
 import nltk
 from nltk.corpus import stopwords
+from datasets import load_dataset, load_from_disk
+
+def load_squad_dataset(ds_filename="squad_dataset"):
+    # check if dataset is available on disk, if not load it
+    try:
+        print("Loading dataset from: " + ds_filename)
+        ds = load_from_disk(ds_filename)
+    except FileNotFoundError:
+        print("File not found, loading dataset from Huggingface and saving to: " + ds_filename)
+        ds = load_dataset("rajpurkar/squad")
+        ds.save_to_disk(ds_filename)
+    return ds
 
 def convert_stopwords_to_lower_case(a_string):
     try:
@@ -19,11 +31,24 @@ def convert_stopwords_to_lower_case(a_string):
     cleaned_string = ' '.join([word if word.lower() not in lower_case_stopwords else word.lower() for word in words])
     return cleaned_string
 
+def convert_first_character_to_lower_case_if_stopword(a_string):
+    try:
+        stopwords.words('english')
+    except LookupError:
+        nltk.download('stopwords')
+    stop_words = set(stopwords.words('english'))
+    words = a_string.split()
+    if words and words[0].lower() in stop_words:
+        words[0] = words[0].lower()
+    cleaned_string = ' '.join(words)
+    return cleaned_string
+
 
 def remove_quotes(text):
     # remove " form the text
     cleaned_text = text.replace('"', '')
     return cleaned_text
+
 
 def remove_quotes_from_file(filepath):
     with open(filepath, "r") as file:
@@ -36,9 +61,9 @@ def remove_quotes_from_file(filepath):
     print(f"Cleaned data saved to {cleaned_filepath}")
     return cleaned_filepath
 
+
 #move the ? from the end of each question to the start
 def move_question_mark_to_start(question, add_if_missing=True):
-
     if question.strip().endswith("?"):
         edited_question = "? " + question[:-1]
     else:
@@ -50,10 +75,32 @@ def move_question_mark_to_start(question, add_if_missing=True):
 
     return edited_question
 
+def any_word_match(row):
+    # Split both strings into sets of words for efficient lookup
+    try:
+        stopwords.words('english')
+    except LookupError:
+        nltk.download('stopwords')
+    stop_words = set(stopwords.words('english'))
+    test_words = set(row["test_answer"].split())
+    response_words = set(row["response_answer"].split())
+    intersecting_words = test_words.intersection(response_words)
+    open_class_intersecting_words = intersecting_words - stop_words
+
+    return open_class_intersecting_words != set()
+
+
 def replace_decimal_in_matched_string(matched_string):
     #callable function to support the regex
     number_str = matched_string.group(0)
     return number_str.replace('.', ' point ')
+
+def truncate_to_max_words(text, max_words=20):
+	words = text.split()
+	if len(words) > max_words:
+		return ' '.join(words[:max_words])
+	else:
+		return text
 
 def convert_decimal_point_to_word(a_string):
     #Replace "." with 'point' if it is part of a number.
@@ -65,6 +112,7 @@ def convert_decimal_point_to_word(a_string):
     pattern = r'\d+\.\d+|\d+\.|\.\d+'
     return re.sub(pattern, replace_decimal_in_matched_string, a_string)
 
+
 def remove_full_stop(a_string):
     #if the last character of a sentence is "." remove it
     if a_string.strip().endswith('.'):
@@ -72,10 +120,22 @@ def remove_full_stop(a_string):
     else:
         return a_string
 
+
+def replace_percent(a_string):
+    cleaned_text = re.sub(r"%", ' percent', a_string)
+    return cleaned_text
+
+
+def replace_dont_apostrophe(a_string):
+    cleaned_text = re.sub(r"don't", 'do not', a_string)
+    return cleaned_text
+
+
 def remove_accents(text):
     #Convert accented characters to unaccented ones
     text_unaccented = unidecode(text)
     return text_unaccented
+
 
 #remove all special characters except question marks and hyphen form the statements
 def remove_special_characters(text):
@@ -86,11 +146,15 @@ def remove_special_characters(text):
     cleaned_text = re.sub(r'[^A-Za-z0-9\s?-]+', '', text)
     return cleaned_text
 
+
 def filter_by_max_words(the_df, max_words=10):
     #returnes a new dataframe filtered such that each question, answer and statement has less than 11 words
 
-    filtered_df = the_df[the_df.apply(lambda row: len(row["question"].split()) <= max_words and len(row["answer"][0].split()) <= max_words and len(row["statement"].split()) <= max_words , axis=1)]
+    filtered_df = the_df[the_df.apply(
+        lambda row: len(row["question"].split()) <= max_words and len(row["answer"][0].split()) <= max_words and len(
+            row["statement"].split()) <= max_words, axis=1)]
     return filtered_df
+
 
 def clean_text(a_series, is_question):
     #takes a dataframe series and applies reformatting
@@ -100,30 +164,55 @@ def clean_text(a_series, is_question):
         a_series = a_series.apply(function_name)
     return a_series
 
-def write_training_file(a_dataframe, a_filepath):
+
+def format_text(text, is_question=False):
+    #apply the formatting rules to the text
+    text = convert_first_character_to_lower_case_if_stopword(text)
+    text = remove_full_stop(text)
+    text = convert_decimal_point_to_word(text)
+    text = replace_percent(text)
+    text = replace_dont_apostrophe(text)
+    text = remove_accents(text)
+    if is_question:
+        text = move_question_mark_to_start(text)
+    text = remove_special_characters(text)
+    return text
+
+
+def is_pretraining_question(the_question, the_pretraining_questions):
+    result = the_question in the_pretraining_questions
+    if result:
+        print(f"Pretraining question found: {the_question}")
+    return result
+
+
+def write_training_file(a_series, a_filepath):
     #write a file that can be used to train ANNABELL
     with open(a_filepath, "w") as file:
-        for statement in a_dataframe["statement"]:
+        for statement in a_series:
             file.write(statement + "\n")
     print(f"file created: {a_filepath}")
 
-def write_testing_file(a_dataframe, a_filepath):        #write a file that can be used to test ANNABELL
+
+def write_testing_file(a_list, a_filepath):  #write a file that can be used to test ANNABELL
     with open(a_filepath, "w") as test_file:
-        for index, row in a_dataframe.iterrows():
-            question = row["response_question"]
+        for question in a_list:
             test_file.write(f"{question}\n.x\n")
+    print(f"file created: {a_filepath}")
+
 
 #produce a summary of a dataset by splits
 def dataset_summary(a_dataset):
     for split in a_dataset.keys():
-        ds_split=a_dataset[split].to_pandas()
+        ds_split = a_dataset[split].to_pandas()
         print("summary of " + split + " split")
         print(ds_split.info())
-        titles=ds_split["title"]
+        titles = ds_split["title"]
         print("number of titles: " + str(len(set(titles))))
         print((set(titles)))
         bag_of_titles = Counter(titles)
-        print("titles with most numerous examples: " + str((bag_of_titles.most_common(20))) +"\n")
+        print("titles with most numerous examples: " + str((bag_of_titles.most_common(20))) + "\n")
+
 
 def data_frame_up_to_statement_title(a_dataframe, a_statemment):
     row = a_dataframe[a_dataframe["statement"] == a_statemment]
@@ -137,6 +226,7 @@ def data_frame_up_to_statement_title(a_dataframe, a_statemment):
     filtered_train_df = a_dataframe.iloc[:title_index[0]]
     print(f"Filtered DataFrame shape: {filtered_train_df.shape}")
     return filtered_train_df
+
 
 def question_and_answer_pairs_from_log_file(test_log_filepath):
     with open(test_log_filepath, "r") as test_log_file:
@@ -152,7 +242,7 @@ def question_and_answer_pairs_from_log_file(test_log_filepath):
             new_pair_index = question_and_answer_pairs.index(new_pair)
             previous_pair_index = new_pair_index - 1
             previous_pair = question_and_answer_pairs[previous_pair_index]
-            previous_answer = test_log_lines[index -1].strip()
+            previous_answer = test_log_lines[index - 1].strip()
             if previous_answer is None:
                 warnings.warn(f"Previous answer is None for question: {question}")
             previous_pair[-1] = previous_answer

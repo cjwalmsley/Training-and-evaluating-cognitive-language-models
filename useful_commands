@@ -54,7 +54,76 @@ docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
   data/statements/training/people_nyc_samples_nyc.dat \
   data/statements/testing/test_nyc_questions_without_pretrain.txt
 
-links_people.dat
+#experiment 7 train and test with pretraining data only
+
+#train with the manually crafted pre-training nvy data
+docker compose run --remove-orphans --entrypoint ./pre_train_annabell_squad_nyc.sh app data/pre-training/logfile_nyc_pre-training.txt data/pre-training/pre_training_nyc_samples_manual.txt data/pre-training/nyc_manual_samples.dat
+
+#copy the weights to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training/nyc_manual_samples.dat "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/7/pre_training"
+
+#copy the logs to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training/logfile_nyc_pre-training_2025-09-22_08-45-56.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/7/logs"
+
+#copy the test_questions to the docker directory
+cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/data/nyc_declarative_sentences_pretraining_testing_20250922_115917.txt" /Users/chris/PycharmProjects/dataset/docker/shared_data/testing
+
+#test with the pretraining samples
+docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/testing/test_nyc_pre-training_log.txt\
+  data/pre-training/nyc_manual_samples.dat \
+  data/testing/nyc_declarative_sentences_pretraining_testing_20250922_115917.txt
+
+#copy logfile to gdrive
+
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_pre-training_log_2025-09-22_11-09-09.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/7/logs"
+
+#experiment 8
+#with the improved manual pretraining file, pretrain, train, and test annabell
+#train with the manually crafted pre-training nvy data
+docker compose run --remove-orphans --entrypoint ./pre_train_annabell_squad_nyc.sh app data/pre-training/logfile_nyc_pre-training.txt data/pre-training/pre_training_nyc_samples_manual.txt data/pre-training/nyc_manual_samples.dat
+
+#test the manual pretraining to ensure it is 100% correct
+
+#copy the weights to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training/nyc_manual_samples.dat "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/pre_training"
+
+#copy the logs to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training/logfile_nyc_pre-training_2025-09-23_12-07-03.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/logs"
+
+docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/testing/test_nyc_pre-training_log.txt\
+  data/pre-training/nyc_manual_samples.dat \
+  data/testing/nyc_declarative_sentences_pretraining_testing_20250922_115917.txt
+
+#copy the test logs to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_pre-training_log_2025-09-23_12-31-23.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/logs"
+
+#copy the training file to the docker dir
+cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/data/nyc_declarative_sentences_training_20250923_175353.txt" /Users/chris/PycharmProjects/dataset/docker/shared_data/training
+
+# run the training of the NYC samples
+docker compose run --remove-orphans --entrypoint ./train_annabell_squad.sh app data/training/logfile_nyc_training.txt data/pre-training/nyc_manual_samples.dat data/training/nyc_samples.dat data/training/nyc_declarative_sentences_training_20250923_175353.txt
+
+#copy the training logs to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/training/logfile_nyc_training_2025-09-23_16-54-46.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/logs"
+
+#copy the weights to the gdrive
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/training/nyc_samples.dat "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/training"
+
+#test the model trained with the nyc samples
+
+copy the testing questions to the docker directory:
+cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/data/nyc_declarative_sentences_testing_20250924_062527.txt" /Users/chris/PycharmProjects/dataset/docker/shared_data/testing
+
+docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/testing/test_nyc_samples_log.txt\
+  data/training/nyc_samples.dat \
+  data/testing/nyc_declarative_sentences_testing_20250924_062527.txt
+
+#copy th logfiles to gdrive:
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_samples_log_2025-09-24_05-28-54.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/logs"
+
 
 #mount rclone gdrive
 rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/experiments
