@@ -78,7 +78,7 @@ docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
 
 cp /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_pre-training_log_2025-09-22_11-09-09.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/7/logs"
 
-#experiment 8
+
 #with the improved manual pretraining file, pretrain, train, and test annabell
 #train with the manually crafted pre-training nvy data
 docker compose run --remove-orphans --entrypoint ./pre_train_annabell_squad_nyc.sh app data/pre-training/logfile_nyc_pre-training.txt data/pre-training/pre_training_nyc_samples_manual.txt data/pre-training/nyc_manual_samples.dat
@@ -124,6 +124,12 @@ docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
 #copy th logfiles to gdrive:
 cp /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_samples_log_2025-09-24_05-28-54.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/8/logs"
 
+#experiment 9
+#copy th pretraining file to the docker area
+cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/pre_training/nyc_squad_pretraining_commands_20250929_075818.txt" /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training
+
+#run the pretraining
+docker compose run --remove-orphans --entrypoint ./pre_train_annabell_squad_nyc.sh app data/pre-training/logfile_nyc_squad_pretraining_commands.txt data/pre-training/nyc_squad_pretraining_commands_20250929_075818.txt data/pre-training/nyc_squad_pretraining_commands_20250929_075818.dat
 
 #mount rclone gdrive
 rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/experiments
@@ -133,3 +139,15 @@ rclone mount gdrive:PHD /home/chris/gdrive
 rclone copy gdrive:PHD/work/experiments/weights /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat
 
 rclone copy /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat gdrive:'/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/weights'
+
+# ID: 56ce304daab44d1400b8850e
+the city in the United States with the high -est populate -ion is New York
+? what city in the United States has the high -est populate -ion
+.wg city
+.wg United
+.wg States
+.wg high
+.wg populate
+.ph the city in the United States with the high -est populate -ion is New York
+ .wg New York
+ .rw

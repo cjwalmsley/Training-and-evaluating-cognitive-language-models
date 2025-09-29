@@ -24,6 +24,56 @@ def load_squad_dataset(ds_filename="squad_dataset"):
     return ds
 
 
+def create_list_of_commands(a_row):
+    commands = []
+    id_row = "# ID: " + str(a_row["id"])
+    commands.append(id_row)
+    statement = a_row["response_declarative_sentence_formatted"]
+    commands.append(statement)
+    question = a_row["response_question_formatted"]
+    commands.append(question)
+    key_words = remove_stopwords(question)
+    key_words = remove_suffixes(key_words)
+    key_words = remove_question_mark(key_words)
+    for word in key_words.split():
+        commands.append(f".wg {word}")
+    commands.append(f".ph {statement}")
+    answer = a_row["response_answer_formatted"]
+    answer_words = answer.split()
+    if len(answer_words) < 4:
+        commands.append(f".wg {answer}")
+    else:
+        commands.append(f".wg {" ".join(answer_words[:3])}")
+        commands.append(".prw")
+        commands.append(f".wg {" ".join(answer_words[3:])}")
+    commands.append(".rw")
+    return commands
+
+
+def remove_question_mark(a_string):
+    # remove any question marks from the string
+    cleaned_string = a_string.replace("?", "")
+    return cleaned_string
+
+
+def remove_stopwords(a_string):
+    try:
+        stopwords.words("english")
+    except LookupError:
+        nltk.download("stopwords")
+    stop_words = set(stopwords.words("english"))
+    words = a_string.split()
+    cleaned_string = " ".join([word for word in words if word not in stop_words])
+    return cleaned_string
+
+
+def remove_suffixes(a_string):
+    # remove any words prefixed with "-"
+    words = a_string.split()
+    cleaned_string = " ".join([word for word in words if not word.startswith("-")])
+    return cleaned_string
+
+
 def convert_stopwords_to_lower_case(a_string):
     try:
         stopwords.words("english")
@@ -240,11 +290,12 @@ def is_pretraining_question(the_question, the_pretraining_questions):
     return result
 
 
-def write_training_file(a_series, a_filepath):
+def write_training_file(a_list, a_filepath):
     # write a file that can be used to train ANNABELL
     with open(a_filepath, "w") as file:
-        for statement in a_series:
-            file.write(statement + "\n")
+        for tuple in a_list:
+            file.write(f"#id: {tuple[0]}\n")
+            file.write(f"{tuple[-1]}\n")
     print(f"file created: {a_filepath}")
 
 
@@ -252,8 +303,10 @@ def write_testing_file(
     a_list, a_filepath
 ):  # write a file that can be used to test ANNABELL
     with open(a_filepath, "w") as test_file:
-        for question in a_list:
-            test_file.write(f"{question}\n.x\n")
+        for tuple in a_list:
+            test_file.write(f"#id: {tuple[0]}\n")
+            test_file.write(f"{tuple[-1]}\n.x\n")
+            test_file.write("#END OF TESTING SAMPLE\n")
     print(f"file created: {a_filepath}")
 
 
