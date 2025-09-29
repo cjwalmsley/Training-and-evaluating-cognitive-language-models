@@ -131,10 +131,41 @@ cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Dr
 #run the pretraining
 docker compose run --remove-orphans --entrypoint ./pre_train_annabell_squad_nyc.sh app data/pre-training/logfile_nyc_squad_pretraining_commands.txt data/pre-training/nyc_squad_pretraining_commands_20250929_075818.txt data/pre-training/nyc_squad_pretraining_commands_20250929_075818.dat
 
-#mount rclone gdrive
-rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/experiments
+#move the logfiles to the experiment folder
+mv /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training/logfile_nyc_squad_pretraining_commands* "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/logs"
 
-rclone mount gdrive:PHD /home/chris/gdrive
+#copy the weights too
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/pre-training/nyc_squad_pretraining_commands_20250929_075818.dat "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/pre_training"
+
+#copy the training files to the dcoker directory
+cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/training/nyc_squad_training_commands_20250929_075818.txt" /Users/chris/PycharmProjects/dataset/docker/shared_data/training
+
+#train using the nyc dataset minus the pretraining examples
+docker compose run --remove-orphans --entrypoint ./train_annabell_squad.sh app data/training/logfile_nyc_training.txt data/pre-training/nyc_squad_pretraining_commands_20250929_075818.dat data/training/nyc_squad_training_commands_20250929_075818.dat data/training/nyc_squad_training_commands_20250929_075818.txt
+
+#move the logfiles to the experiment directory
+mv /Users/chris/PycharmProjects/dataset/docker/shared_data/training/logfile_nyc_training_2025-09-29_13-43-58.txt "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/logs"
+
+#copy the weights too
+cp /Users/chris/PycharmProjects/dataset/docker/shared_data/training/nyc_squad_training_commands_20250929_075818.dat "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/training"
+
+#copy the testing commands file to the docker directory
+cp "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/testing/nyc_squad_testing_commands_20250929_075818.txt" /Users/chris/PycharmProjects/dataset/docker/shared_data/testing
+
+#run the testing
+docker compose run --remove-orphans --entrypoint ./test_annabell_squad.sh app \
+  data/testing/test_nyc_samples_log.txt\
+  data/training/nyc_squad_training_commands_20250929_075818.dat \
+  data/testing/nyc_squad_testing_commands_20250929_075818.txt
+
+#move the testing files to the gdrive
+mv /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_samples_log_2025-09-29_14-00-53.txt
+"/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/logs"
+
+#mount rclone gdrive
+rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/
+
+rclone mount gdrive:PHD/work/experiments /home/chris/gdrive
 
 rclone copy gdrive:PHD/work/experiments/weights /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat
 
