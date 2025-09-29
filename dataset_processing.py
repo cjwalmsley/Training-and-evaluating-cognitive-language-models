@@ -342,6 +342,26 @@ def data_frame_up_to_statement_title(a_dataframe, a_statemment):
     print(f"Filtered DataFrame shape: {filtered_train_df.shape}")
     return filtered_train_df
 
+def ids_questions_answers_from_log_file(test_log_filepath):
+    with open(test_log_filepath, "r") as test_log_file:
+        test_log_lines = test_log_file.readlines()
+
+#parse the line with hte id and extract the id number then parse the line with the question and extract the question then parse the line with the END OF TESTING SAMPLE and extract the content of the previous line
+
+    ids_questions_answers = []
+    for index, line in enumerate(test_log_lines):
+        if line.startswith("#id:"):
+            id_number = line.strip().split(":")[-1].strip()
+        elif line.startswith("?"):
+            question = line.strip()
+        elif line.startswith("#END OF TESTING SAMPLE"):
+            previous_line = test_log_lines[index - 1].strip()
+            answer = previous_line
+            ids_questions_answers.append((id_number, question, answer))
+        else:
+            continue
+
+    return ids_questions_answers
 
 def question_and_answer_pairs_from_log_file(test_log_filepath):
     with open(test_log_filepath, "r") as test_log_file:

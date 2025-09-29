@@ -163,9 +163,9 @@ mv /Users/chris/PycharmProjects/dataset/docker/shared_data/testing/test_nyc_samp
 "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/9/logs"
 
 #mount rclone gdrive
-rclone mount gdrive:PHD/work/experiments /Users/chris/gdrive/
+rclone mount gdrive:PhD /Users/chris/gdrive/
 
-rclone mount gdrive:PHD/work/experiments /home/chris/gdrive
+rclone mount gdrive:PhD /home/chris/gdrive
 
 rclone copy gdrive:PHD/work/experiments/weights /Users/chris/PycharmProjects/dataset/docker/docker_train/shared_data/statements/pre-training/links_people_body_skills.dat
 
