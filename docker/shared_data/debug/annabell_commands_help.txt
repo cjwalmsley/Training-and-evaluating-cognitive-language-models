@@ -1,0 +1,40 @@
+The training procedure can be simplified by using macros, which execute some standard sequences of
+training commands.
+All macros have the format:
+command /cue/phrase/word group/
+or
+command /first cue & second cue/phrase/word group/
+where command is one of the following commands:
+.ph suggests a phrase to be retrieved by the association process;
+.wg suggests a word group to be extracted from the working phrase;
+.pg insert the working phrase and the current word group in the top of the goal stack;
+.po sends the word group to output and produces a partial reward for the past state-action
+sequence;
+.o sends the word group to output and produces a (conclusive) reward for the past state-
+action sequence;
+
+cue is a word group that must be extracted from the current working phrase and used as a cue, phrase is
+the phrase that must be retrieved from the long-term memory using cue, and word group is an optional
+group of words extracted from phrase.
+If phrase is omitted, the standard form of a phrase:
+cue , word group
+is retrieved from the long term memory. This form can be used to perform simple substitutions, e.g. to
+translate the second person to the first person
+
+let us count backwards
+count back from three
+
+command /cue/phrase/word group/
+command = pg - insert the working phrase and the current word group in the top of the goal stack;
+cue = count - cue is a word group that must be extracted from the current working phrase and used as a cue
+word group = count -
+.pg /count/let us count backwards/count/
+
+==
+
+.wg count
+.ph let us count backwards
+.wg count
+.push_goal
+
+what does it mean to have word or phrases in the goal stack?

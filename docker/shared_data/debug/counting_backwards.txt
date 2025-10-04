@@ -1,0 +1,24 @@
+let us count backwards
+ten
+nine
+eight
+seven
+six
+five
+four
+three
+two
+one
+count back from three
+.wg count
+.ph let us count backwards
+.wg count
+.push_goal
+.rip
+.ph three
+.sctx three
+.ph three
+.drop_goal
+.snto
+count back from three
+.x
