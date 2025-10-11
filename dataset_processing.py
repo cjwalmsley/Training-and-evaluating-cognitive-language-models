@@ -50,6 +50,30 @@ def create_list_of_commands(a_row):
     return commands
 
 
+def filter_dataset_by_limits(df, column_names, max_words_limit, max_word_length_limit):
+    for column_name in column_names:
+        df = df[df[column_name].str.split().str.len() <= max_words_limit]
+        df = df[
+            ~df[column_name]
+            .str.split()
+            .apply(
+                lambda words: any(len(word) > max_word_length_limit for word in words)
+            )
+        ]
+    return df
+
+
+def join_concurrent_capitalized_words(a_dataframe, the_columns_to_process):
+    # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
+    for column in the_columns_to_process:
+        a_dataframe[column] = a_dataframe[column].str.replace(
+            r"(\b[A-Z][a-zA-Z]*(?:\s+[A-Z][a-zA-Z]*)+\b)",
+            lambda m: "-".join(m.group(0).split()),
+            regex=True,
+        )
+    return a_dataframe
+
+
 def remove_question_mark(a_string):
     # remove any question marks from the string
     cleaned_string = a_string.replace("?", "")
@@ -342,11 +366,12 @@ def data_frame_up_to_statement_title(a_dataframe, a_statemment):
     print(f"Filtered DataFrame shape: {filtered_train_df.shape}")
     return filtered_train_df
 
+
 def ids_questions_answers_from_log_file(test_log_filepath):
     with open(test_log_filepath, "r") as test_log_file:
         test_log_lines = test_log_file.readlines()
 
-#parse the line with hte id and extract the id number then parse the line with the question and extract the question then parse the line with the END OF TESTING SAMPLE and extract the content of the previous line
+    # parse the line with hte id and extract the id number then parse the line with the question and extract the question then parse the line with the END OF TESTING SAMPLE and extract the content of the previous line
 
     ids_questions_answers = []
     for index, line in enumerate(test_log_lines):
@@ -362,6 +387,7 @@ def ids_questions_answers_from_log_file(test_log_filepath):
             continue
 
     return ids_questions_answers
+
 
 def question_and_answer_pairs_from_log_file(test_log_filepath):
     with open(test_log_filepath, "r") as test_log_file:

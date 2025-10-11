@@ -1,31 +1,4 @@
-#.f annabell_commands_2
-.logfile commands_log.txt
-#stonewall riots
-the Stonewall riots happen -ed in Manhattan
-? in what borough did the Stonewall riots happen
-.wg borough
-.wg Stonewall riots
-.wg happen
-.ph the Stonewall riots happen -ed in Manhattan
-.wg Manhattan
-.rw
-? in what borough did the Stonewall riots happen
-.x
-? in what neighborhood did the Stonewall riots occur
-.x
-#reponse is the same
-the Stonewall riots occur -ed in the Greenwich Village neighborhood
-? in what neighborhood did the Stonewall riots occur
-.wg neighborhood
-.wg Stonewall riots
-.wg occur
-.ph the Stonewall riots occur -ed in the Greenwich Village neighborhood
-.wg Greenwich Village
-.rw
-? in what neighborhood did the Stonewall riots occur
-.x
-the Campdown riots occur -ed in the Central Park neighborhood
-? in what neighborhood did the Campdown riots occur
-the Trumpton riots occur -ed in the Midtown neighborhood
-? in what neighborhood did the Trumpton riots occur
-#how to handle Proper Nouns - in quotes?
+Giovanni-da-Verrazzano call -ed the area Nouvelle-Angouleme when he stake -d a claim on it
+? what did Giovanni-da-Verrazzano call the area when he stake -d claim on it
+.pg call
+.wg

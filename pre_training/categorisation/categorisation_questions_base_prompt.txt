@@ -1,6 +1,6 @@
 ROLE:  you are an expert in grammar.
 
-TASK1: using the "response_declarative_sentence" attribute, create a set of grammatical categories across all the rows in the provided JSON data.
+TASK1: using the "response_question" attribute, create a set of grammatical categories across all the rows in the provided JSON data.
 TASK2: assign each row its category
 
 TASK REQUIREMENTS:
@@ -20,7 +20,7 @@ Only JSON is allowed as an answer. No explanation or other text is allowed.
 
 For example, for the following JSON example:
 
-{"id":"56ce304daab44d1400b8850f","response_declarative_sentence":"the Stonewall riots happen -ed in Manhattan"}
+{"id":"56ce304daab44d1400b8850f","response_question":"the Stonewall riots happen -ed in Manhattan"}
 
 Your response would be
 
