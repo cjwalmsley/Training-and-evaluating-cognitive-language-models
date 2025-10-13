@@ -2,3 +2,17 @@ Giovanni-da-Verrazzano call -ed the area Nouvelle-Angouleme when he stake -d a c
 ? what did Giovanni-da-Verrazzano call the area when he stake -d claim on it
 .pg call
 .wg
+
+#id:56ce31baaab44d1400b8853a
+#sentence_category: Passive Construction
+the trade -ing post that precede -d New-York-City was call -ed New-Amsterdam
+#question_category: Wh-Object\/Complement Question
+? what was the trade -ing post that precede -d New-York-City call -ed
+.wg trade
+.wg post
+.wg precede
+.wg New-York-City
+.wg call
+.ph the trade -ing post that precede -d New-York-City was call -ed New-Amsterdam
+.wg New-Amsterdam
+.rw

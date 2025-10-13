@@ -8,5 +8,7 @@
 .monitor display ElAct always on
 .monitor display GoalPh always on
 .monitor display GoalWG always on
+.monitor display CurrStartPh always on
+.monitor display StartPh always on
 .monitor console on
 .monitor display mode_change on
