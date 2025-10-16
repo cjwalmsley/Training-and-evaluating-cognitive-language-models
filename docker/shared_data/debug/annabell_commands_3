@@ -4,15 +4,18 @@ the trade -ing post that precede -d New-York-City was call -ed New-Amsterdam
 #question_category: Wh-Object\/Complement Question
 ? what was the trade -ing post that precede -d New-York-City call -ed
 .wg trade
-.wg post
-.wg precede
+.pg
+.rip
 .wg New-York-City
 .wg call
 .ph the trade -ing post that precede -d New-York-City was call -ed New-Amsterdam
 .wg New-Amsterdam
 .rw
+
 ? what was the trade -ing post that precede -d New-York-City call -ed
-.x
+.xr
+
 the work -ing club that precede -d New-York-city was call -ed Squares
+
 ? what was the work -ing club that precede -d New-York-City call -ed
-.x
+.xr
