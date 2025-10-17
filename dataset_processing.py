@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from datasets import load_dataset, load_from_disk
 from scipy.spatial.distance import cosine
 import ollama
+import pandas as pd
 
 
 def load_squad_dataset(ds_filename="squad_dataset"):
@@ -48,6 +49,188 @@ def create_list_of_commands(a_row):
         commands.append(f".wg {" ".join(answer_words[3:])}")
     commands.append(".rw")
     return commands
+
+
+def read_dataset(dataset_filepath, maximum_number_of_words, maximum_word_length):
+    # load the dataset
+    the_df = pd.read_json(dataset_filepath, lines=True)
+    # remove any rows where the max number of words or max numbr of characters is exceeded
+    join_concurrent_capitalized_words(
+        the_df,
+        [
+            "response_declarative_sentence_formatted",
+            "response_question_formatted",
+            "response_answer_formatted",
+        ],
+    )
+    the_df = filter_dataset_by_limits(
+        the_df,
+        [
+            "response_declarative_sentence_formatted",
+            "response_question_formatted",
+            "response_declarative_sentence_formatted",
+        ],
+        maximum_number_of_words,
+        maximum_word_length,
+    )
+    the_df.reset_index(drop=True, inplace=True)
+    return the_df
+
+
+def merge_categories(
+    the_df, categorised_questions_filepath, categorised_sentences_filepath
+):
+    # add categories to the questions and declarative sentences, creating 2 new columns - question category and sentence category
+    categorised_questions_df = pd.read_json(categorised_questions_filepath, lines=True)
+    categorised_questions_df = categorised_questions_df.rename(
+        columns={"category": "question_category"}
+    )
+    the_df = the_df.merge(
+        categorised_questions_df[["id", "question_category"]], on="id", how="left"
+    )
+    categorised_sentences_df = pd.read_json(categorised_sentences_filepath, lines=True)
+    categorised_sentences_df = categorised_sentences_df.rename(
+        columns={"category": "sentence_category"}
+    )
+    categorised_sentences_df["sentence_category"].value_counts()
+    the_df = the_df.merge(
+        categorised_sentences_df[["id", "sentence_category"]], on="id", how="left"
+    )
+    return the_df
+
+
+def select_pretraining_data(
+    the_df, use_manual_pretraining_data, percentage_of_pretraining_samples
+):
+    # pick a random sample of pretraining rows or use a pre-selected, manually generated set
+    # for each category, pick an equal number of samples
+    question_categories = the_df["question_category"].unique()
+    sentence_categories = the_df["sentence_category"].unique()
+    print(f"Question categories: {question_categories}")
+    print(f"Sentence categories: {sentence_categories}")
+    if use_manual_pretraining_data:
+        raise Exception("not implemented yet")
+    if not use_manual_pretraining_data:
+        the_df["is_pretraining"] = False
+        number_of_pretraining_samples = (
+            len(the_df) * percentage_of_pretraining_samples // 100
+        )
+        print(f"Number of pretraining samples: {number_of_pretraining_samples}")
+    samples_per_category = number_of_pretraining_samples // (
+        len(question_categories) + len(sentence_categories)
+    )
+    print(f"Samples per category: {samples_per_category}")
+    # sample from the question categories
+    # sample from the question categories
+    for category in question_categories:
+        category_df = the_df[the_df["question_category"] == category]
+        samples_to_take = samples_per_category
+        if len(category_df) < samples_per_category:
+            print(
+                f"Warning: Not enough samples in question category '{category}'. Taking all {len(category_df)} samples."
+            )
+            samples_to_take = len(category_df)
+        if samples_to_take > 0:
+            sampled_category_df = category_df.sample(n=samples_to_take, random_state=42)
+            the_df.loc[sampled_category_df.index, "is_pretraining"] = True
+
+    # sample from the sentence categories starting with those that are already selected for pretraining
+    for category in sentence_categories:
+        category_df = the_df[the_df["sentence_category"] == category]
+        already_selected_df = category_df[category_df["is_pretraining"] == True]
+        already_selected_count = len(already_selected_df)
+        remaining_samples = samples_per_category - already_selected_count
+        if remaining_samples > 0:
+            not_selected_df = category_df[category_df["is_pretraining"] == False]
+            samples_to_take = remaining_samples
+            if len(not_selected_df) < remaining_samples:
+                print(
+                    f"Warning: Not enough samples in sentence category '{category}'. Taking all {len(not_selected_df)} available samples."
+                )
+                samples_to_take = len(not_selected_df)
+            if samples_to_take > 0:
+                sampled_category_df = not_selected_df.sample(
+                    n=samples_to_take, random_state=42
+                )
+                the_df.loc[sampled_category_df.index, "is_pretraining"] = True
+
+    # print the counts of samples in the question and sentence categories
+    print("Pretraining samples by question category:")
+    print(the_df[the_df["is_pretraining"] == True]["question_category"].value_counts())
+    print("Pretraining samples by sentence category:")
+    print(the_df[the_df["is_pretraining"] == True]["sentence_category"].value_counts())
+    total_pretraining_count = the_df["is_pretraining"].sum()
+    print(
+        f"Total number of samples selected for pretraining: {total_pretraining_count}"
+    )
+
+    return the_df
+
+
+def write_pretraining_file(the_filepath, the_df):
+    with open(the_filepath, "w") as commands_file:
+        for index, row in the_df.iterrows():
+            commands = row["created_commands"]
+            for command in commands:
+                commands_file.write(command + "\n")
+    print(f"Wrote {the_filepath}")
+
+    with open(the_filepath, "r") as commands_file:
+        lines = commands_file.readlines()
+    number_of_reward_lines = sum(1 for line in lines if line.startswith(".rw"))
+    print(f"Number of reward lines: {number_of_reward_lines}")
+    print(f"Number of commands: {len(lines)}")
+    for line in lines[:20]:
+        print(line.strip())
+
+
+def write_training_file(the_filepath, the_df):
+    list_of_training_tuples = list(
+        zip(
+            the_df["id"],
+            the_df["response_declarative_sentence_formatted"],
+        )
+    )
+
+    with open(the_filepath, "w") as file:
+        for tuple in list_of_training_tuples:
+            file.write(f"#id: {tuple[0]}\n")
+            file.write(f"{tuple[-1]}\n")
+            # write a blank line to signal to ANNABELL the end of the context
+            file.write("\n")
+    print(f"file written: {the_filepath}")
+
+    with open(the_filepath, "r") as commands_file:
+        lines = commands_file.readlines()
+        print(f"Number of commands: {len(lines)}")
+        print("First 20 lines:")
+        for line in lines[:20]:
+            print(line.strip())
+
+
+def write_testing_file(the_filepath, the_df):
+    list_of_testing_tuples = list(
+        zip(
+            the_df["id"],
+            the_df["response_question_formatted"],
+        )
+    )
+
+    with open(the_filepath, "w") as test_file:
+        for tuple in list_of_testing_tuples:
+            test_file.write(f"#id: {tuple[0]}\n")
+            test_file.write(f"{tuple[-1]}\n.x\n")
+            test_file.write("#END OF TESTING SAMPLE\n")
+            # write a blank line to signal to ANNABELL the end of the context
+            test_file.write("\n")
+    print(f"file written: {the_filepath}")
+
+    with open(the_filepath, "r") as commands_file:
+        lines = commands_file.readlines()
+        print(f"Number of commands: {len(lines)}")
+        print("First 20 lines:")
+        for line in lines[:20]:
+            print(line.strip())
 
 
 def filter_dataset_by_limits(df, column_names, max_words_limit, max_word_length_limit):
@@ -312,26 +495,6 @@ def is_pretraining_question(the_question, the_pretraining_questions):
     if result:
         print(f"Pretraining question found: {the_question}")
     return result
-
-
-def write_training_file(a_list, a_filepath):
-    # write a file that can be used to train ANNABELL
-    with open(a_filepath, "w") as file:
-        for tuple in a_list:
-            file.write(f"#id: {tuple[0]}\n")
-            file.write(f"{tuple[-1]}\n")
-    print(f"file created: {a_filepath}")
-
-
-def write_testing_file(
-    a_list, a_filepath
-):  # write a file that can be used to test ANNABELL
-    with open(a_filepath, "w") as test_file:
-        for tuple in a_list:
-            test_file.write(f"#id: {tuple[0]}\n")
-            test_file.write(f"{tuple[-1]}\n.x\n")
-            test_file.write("#END OF TESTING SAMPLE\n")
-    print(f"file created: {a_filepath}")
 
 
 # produce a summary of a dataset by splits
