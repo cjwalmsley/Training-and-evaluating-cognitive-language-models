@@ -48,6 +48,8 @@ def create_list_of_commands(a_row):
         commands.append(".prw")
         commands.append(f".wg {" ".join(answer_words[3:])}")
     commands.append(".rw")
+    #add a blank line to terminate the context
+    commands.append("\n")
     return commands
 
 

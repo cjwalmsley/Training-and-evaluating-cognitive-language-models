@@ -5,3 +5,6 @@ pandas
 requests
 jupyter
 nltk
+unidecode
+scipy
+tabulate
