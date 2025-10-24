@@ -180,5 +180,56 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(generator.commands, expected_phrases)
 
+    def test_write_answer_commands_short_sentence_short_answer(self):
+        """Test write_answer_commands with a short sentence and short answer."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, "the sky is blue",self.question, "blue", max_words=10
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph the sky is blue",
+            ".wg blue",
+            ".rw"
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
+    def test_write_answer_commands_short_sentence_long_answer(self):
+        """Test write_answer_commands with a short sentence and long answer."""
+        declarative_sentence = "the color of the sky is blue and sometimes grey"
+        answer = "blue and sometimes grey"
+        generator = AnnabellCommandGenerator(
+            self.sample_id, declarative_sentence, self.question, answer, max_words=10
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            f".ph {declarative_sentence}",
+            ".wg blue and sometimes",
+            ".prw",
+            ".wg grey",
+            ".rw"
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
+    def test_write_answer_commands_long_sentence(self):
+        """Test write_answer_commands with a long sentence where the answer is split across phrases."""
+        declarative_sentence = "the sky is a brilliant blue with some patches of grey"
+        answer = "blue with some patches of grey"
+        generator = AnnabellCommandGenerator(
+            self.sample_id, declarative_sentence, self.question, answer, max_words=5
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".sctx blue with some patches of",
+            ".wg blue with some",
+            ".prw",
+            ".wg patches of",
+            ".prw",
+            ".sctx grey",
+            ".wg grey",
+            ".rw"
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
+
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)

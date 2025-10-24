@@ -63,8 +63,14 @@ class AnnabellCommandGenerator:
         cleaned_string = a_string.replace("?", "").strip()
         return cleaned_string
 
-    def question_length(self):
+    def question_word_length(self):
         return len(self.question.split())
+
+    def sentence_word_length(self):
+        return len(self.declarative_sentence.split())
+
+    def answer_word_length(self):
+        return len(self.answer.split())
 
     def write_question(self):
         """#if the length of the question is greater than max_words that the model can process in a phrase, the question must be split into 2 or more phrases.
@@ -82,7 +88,7 @@ class AnnabellCommandGenerator:
         .wg call
 
     """
-        if self.question_length() <= self.max_words:
+        if self.question_word_length() <= self.max_words:
             self.commands.append(self.question)
         else:
             # split the question into phrases of max_words length
@@ -120,28 +126,62 @@ class AnnabellCommandGenerator:
             phrases.append(phrase)
         return phrases
 
+    def write_declarative_sentence(self):
+
+        for phrase in self.phrases_in_context(self.declarative_sentence):
+            self.commands.append(phrase)
+
+    def write_answer_commands(self):
+        if self.sentence_word_length() <= self.max_words:
+
+            self.commands.append(f".ph {self.declarative_sentence}")
+            #the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
+            answer_words = self.answer.split()
+            if len(answer_words) < 4:
+                self.commands.append(f".wg {self.answer}")
+            else:
+                self.commands.append(f".wg {" ".join(answer_words[:3])}")
+                self.commands.append(".prw")
+                self.commands.append(f".wg {" ".join(answer_words[3:])}")
+            self.commands.append(".rw")
+        else:
+            answer_words = self.answer.split()
+            phrases = self.phrases_in_context(self.declarative_sentence)
+            #construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
+            phrase_answer_words = {}
+            for phrase in phrases:
+                phrase_answer_words[phrase] = []
+                for word in answer_words:
+                    if word in phrase:
+                        phrase_answer_words[phrase].append(word)
+            #for each phrase in the declarative sentence, write the phrase command and the answer words
+            for phrase, answer_words in phrase_answer_words.items():
+                if len(answer_words) == 0:
+                    continue
+                else:
+                    self.commands.append(f".sctx {phrase}")
+                    if len(answer_words) < 4:
+                        self.commands.append(f".wg {" ".join(answer_words)}")
+                    else:
+                        self.commands.append(f".wg {" ".join(answer_words[:3])}")
+                        self.commands.append(".prw")
+                        self.commands.append(f".wg {" ".join(answer_words[3:])}")
+                        self.commands.append(".prw")
+            self.commands.append(".rw")
+
+
+
     def create_list_of_commands(self):
 
         self.commands = []
 
         self.commands.append("#id: " + str(self.sample_id))
-
-        self.commands.append(self.declarative_sentence)
+        self.write_declarative_sentence()
+        # add a blank line to terminate the context
         self.commands.append(self.blank_line())
-
         self.write_question()
         self.write_question_commands()
-
-        self.commands.append(f".ph {self.declarative_sentence}")
-        #the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
-        answer_words = self.answer.split()
-        if len(answer_words) < 4:
-            self.commands.append(f".wg {self.answer}")
-        else:
-            self.commands.append(f".wg {" ".join(answer_words[:3])}")
-            self.commands.append(".prw")
-            self.commands.append(f".wg {" ".join(answer_words[3:])}")
-        self.commands.append(".rw")
+        self.write_answer_commands()
         #add a blank line to terminate the context
         self.commands.append("\n")
         return self.commands
