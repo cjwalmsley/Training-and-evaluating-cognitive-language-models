@@ -24,34 +24,69 @@ def load_squad_dataset(ds_filename="squad_dataset"):
         ds.save_to_disk(ds_filename)
     return ds
 
+class AnnabellCommandGenerator:
 
-def create_list_of_commands(a_row):
-    commands = []
-    id_row = "# ID: " + str(a_row["id"])
-    commands.append(id_row)
-    statement = a_row["response_declarative_sentence_formatted"]
-    commands.append(statement)
-    question = a_row["response_question_formatted"]
-    commands.append(question)
-    key_words = remove_stopwords(question)
-    key_words = remove_suffixes(key_words)
-    key_words = remove_question_mark(key_words)
-    for word in key_words.split():
-        commands.append(f".wg {word}")
-    commands.append(f".ph {statement}")
-    answer = a_row["response_answer_formatted"]
-    answer_words = answer.split()
-    if len(answer_words) < 4:
-        commands.append(f".wg {answer}")
-    else:
-        commands.append(f".wg {" ".join(answer_words[:3])}")
-        commands.append(".prw")
-        commands.append(f".wg {" ".join(answer_words[3:])}")
-    commands.append(".rw")
-    #add a blank line to terminate the context
-    commands.append("\n")
-    return commands
+    #creates the set of commands required to train annabell for a single training sample
+    def __init__(self, sample_id, declarative_sentence, question, answer, max_words=10):
+        self.sample_id = sample_id
+        self.declarative_sentence = declarative_sentence
+        self.question = question
+        self.answer = answer
+        self.max_words = max_words
+        self.commands = []
 
+    @staticmethod
+    def blank_line():
+        return "\n"
+
+    @staticmethod
+    def remove_stopwords(a_string):
+        try:
+            stopwords.words("english")
+        except LookupError:
+            nltk.download("stopwords")
+        stop_words = set(stopwords.words("english"))
+        words = a_string.split()
+        cleaned_string = " ".join([word for word in words if word not in stop_words])
+        return cleaned_string
+
+    @staticmethod
+    def remove_suffixes(a_string):
+        # remove any words prefixed with "-"
+        words = a_string.split()
+        cleaned_string = " ".join([word for word in words if not word.startswith("-")])
+        return cleaned_string
+
+    @staticmethod
+    def remove_question_mark(a_string):
+        # remove any question marks from the string
+        cleaned_string = a_string.replace("?", "").strip()
+        return cleaned_string
+
+    def create_list_of_commands(self):
+
+        self.commands.append("#id: " + str(self.sample_id))
+        self.commands.append(self.declarative_sentence)
+        self.commands.append(self.blank_line())
+        self.commands.append(self.question)
+        key_words = self.remove_stopwords(self.question)
+        key_words = self.remove_suffixes(key_words)
+        key_words = self.remove_question_mark(key_words)
+        for word in key_words.split():
+            self.commands.append(f".wg {word}")
+        self.commands.append(f".ph {self.declarative_sentence}")
+        #the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
+        answer_words = self.answer.split()
+        if len(answer_words) < 4:
+            self.commands.append(f".wg {self.answer}")
+        else:
+            self.commands.append(f".wg {" ".join(answer_words[:3])}")
+            self.commands.append(".prw")
+            self.commands.append(f".wg {" ".join(answer_words[3:])}")
+        self.commands.append(".rw")
+        #add a blank line to terminate the context
+        self.commands.append("\n")
+        return self.commands
 
 def read_dataset(dataset_filepath, maximum_number_of_words, maximum_word_length):
     # load the dataset
@@ -259,28 +294,13 @@ def join_concurrent_capitalized_words(a_dataframe, the_columns_to_process):
     return a_dataframe
 
 
-def remove_question_mark(a_string):
-    # remove any question marks from the string
-    cleaned_string = a_string.replace("?", "")
-    return cleaned_string
 
 
-def remove_stopwords(a_string):
-    try:
-        stopwords.words("english")
-    except LookupError:
-        nltk.download("stopwords")
-    stop_words = set(stopwords.words("english"))
-    words = a_string.split()
-    cleaned_string = " ".join([word for word in words if word not in stop_words])
-    return cleaned_string
 
 
-def remove_suffixes(a_string):
-    # remove any words prefixed with "-"
-    words = a_string.split()
-    cleaned_string = " ".join([word for word in words if not word.startswith("-")])
-    return cleaned_string
+
+
+
 
 
 def convert_stopwords_to_lower_case(a_string):

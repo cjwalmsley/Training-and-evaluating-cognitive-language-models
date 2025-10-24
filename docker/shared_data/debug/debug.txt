@@ -1,3 +1,3 @@
-.logfile debug_log.txt
+.logfile data/debug/debug_log.txt
 .stat
-.f monitor.txt
+.f data/debug/monitor.txt

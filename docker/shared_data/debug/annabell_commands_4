@@ -1,23 +1,26 @@
-#.f data/debug/annabell_commands_3
+#.f data/debug/annabell_commands_4
 #id:56ce31baaab44d1400b8853a
 #sentence_category: Passive Construction
 the trade -ing post that precede -d New-York-City was call
 -ed New-Amsterdam
+
 #question_category: Wh-Object\/Complement Question
 ? what was the trade -ing post that precede -d
 New-York-City call -ed
 .sctx ? what was the trade -ing post that precede -d
-.ph ? what was the trade -ing post that precede -d
 .wg trade
-.pg
-.rip
+.wg post
+.wg precede
 .sctx New-York-City call -ed
-.ph New-York-City call -ed
 .wg New-York-City
 .wg call
-.drop_goal
-.rip
 .sctx -ed New-Amsterdam
-.ph -ed New-Amsterdam
 .wg New-Amsterdam
 .rw
+? what was the trade -ing post that precede -d
+New-York-City call -ed
+.x
+
+? what was the trade -ing post that precede -d
+New-York-City call -ed
+.x
