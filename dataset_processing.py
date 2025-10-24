@@ -63,17 +63,58 @@ class AnnabellCommandGenerator:
         cleaned_string = a_string.replace("?", "").strip()
         return cleaned_string
 
-    def create_list_of_commands(self):
+    def write_question_commands(self):
+        """#if the length of the question is greater than max_words that the model can process in a phrase, the question must be split into 2 or more phrases.
+        for example if max_words = 10 ,  the question:
+        ? what was the trade -ing post that precede -d New-York-City call -ed
+        should be split into the following commands
+        ? what was the trade -ing post that precede -d
+        New-York-City call -ed
+        .sctx ? what was the trade -ing post that precede -d
+        .wg trade
+        .wg post
+        .wg precede
+        .sctx New-York-City call -ed
+        .wg New-York-City
+        .wg call
 
-        self.commands.append("#id: " + str(self.sample_id))
-        self.commands.append(self.declarative_sentence)
-        self.commands.append(self.blank_line())
-        self.commands.append(self.question)
-        key_words = self.remove_stopwords(self.question)
+    """
+        question_words = self.question.split()
+        if len(question_words) <= self.max_words:
+            self.write_question_commands_for_phrase(self.question)
+        else:
+            self.write_question_commands_for_context(self.question)
+
+    def write_question_commands_for_phrase(self, phrase):
+        key_words = self.remove_stopwords(phrase)
         key_words = self.remove_suffixes(key_words)
         key_words = self.remove_question_mark(key_words)
         for word in key_words.split():
             self.commands.append(f".wg {word}")
+
+    def write_question_commands_for_context(self, context):
+        # split the context into phrases of max_words length
+        context_words = context.split()
+        number_of_phrases = (len(context_words) + self.max_words - 1) // self.max_words
+        for i in range(number_of_phrases):
+            phrase_words = context_words[i * self.max_words : (i + 1) * self.max_words]
+            phrase = " ".join(phrase_words)
+            self.commands.append(f".sctx {phrase}")
+            self.write_question_commands_for_phrase(phrase)
+
+    def create_list_of_commands(self):
+
+        self.commands = []
+
+        self.commands.append("#id: " + str(self.sample_id))
+
+        self.commands.append(self.declarative_sentence)
+        self.commands.append(self.blank_line())
+
+        self.commands.append(self.question)
+
+        self.write_question_commands()
+
         self.commands.append(f".ph {self.declarative_sentence}")
         #the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
         answer_words = self.answer.split()

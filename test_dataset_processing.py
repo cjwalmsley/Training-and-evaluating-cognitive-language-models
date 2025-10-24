@@ -11,6 +11,7 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         self.question = "what color is the sky?"
         self.short_answer = "blue"
         self.long_answer = "blue with patches of grey"
+        self.long_question = "? what was the trade -ing post that precede -d New-York-City call -ed"
 
     def test_remove_stopwords(self):
         """Test the static method remove_stopwords."""
@@ -97,6 +98,66 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         ]
 
         self.assertEqual(commands, expected_commands)
+
+    def test_write_question_commands_for_phrase(self):
+        """Test the write_question_commands_for_phrase method."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, self.declarative_sentence, self.question, self.short_answer
+        )
+        generator.write_question_commands_for_phrase("what color is the sky?")
+        expected_commands = [
+            ".wg color",
+            ".wg sky",
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
+    def test_write_question_commands_for_context(self):
+        """Test the write_question_commands_for_context method."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, self.declarative_sentence, self.long_question, self.short_answer, max_words=5
+        )
+        generator.write_question_commands_for_context(self.long_question)
+        expected_commands = [
+            ".sctx ? what was the trade",
+            ".wg trade",
+            ".sctx -ing post that precede -d",
+            ".wg post",
+            ".wg precede",
+            ".sctx New-York-City call -ed",
+            ".wg New-York-City",
+            ".wg call",
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
+    def test_write_question_commands_short_question(self):
+        """Test the write_question_commands method with a short question."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, self.declarative_sentence, self.question, self.short_answer
+        )
+        generator.write_question_commands()
+        expected_commands = [
+            ".wg color",
+            ".wg sky",
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
+    def test_write_question_commands_long_question(self):
+        """Test the write_question_commands method with a long question."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, self.declarative_sentence, self.long_question, self.short_answer, max_words=5
+        )
+        generator.write_question_commands()
+        expected_commands = [
+            ".sctx ? what was the trade",
+            ".wg trade",
+            ".sctx -ing post that precede -d",
+            ".wg post",
+            ".wg precede",
+            ".sctx New-York-City call -ed",
+            ".wg New-York-City",
+            ".wg call",
+        ]
+        self.assertEqual(generator.commands, expected_commands)
 
 
 if __name__ == '__main__':
