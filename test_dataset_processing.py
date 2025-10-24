@@ -159,6 +159,26 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(generator.commands, expected_commands)
 
+    def test_write_question_short_question(self):
+        """Test the write_question method with a short question."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, self.declarative_sentence, self.question, self.short_answer
+        )
+        generator.write_question()
+        self.assertEqual(generator.commands, [self.question])
+
+    def test_write_question_long_question(self):
+        """Test the write_question method with a long question."""
+        generator = AnnabellCommandGenerator(
+            self.sample_id, self.declarative_sentence, self.long_question, self.short_answer, max_words=5
+        )
+        generator.write_question()
+        expected_phrases = [
+            "? what was the trade",
+            "-ing post that precede -d",
+            "New-York-City call -ed"
+        ]
+        self.assertEqual(generator.commands, expected_phrases)
 
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)

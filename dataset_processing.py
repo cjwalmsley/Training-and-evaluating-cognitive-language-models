@@ -63,7 +63,10 @@ class AnnabellCommandGenerator:
         cleaned_string = a_string.replace("?", "").strip()
         return cleaned_string
 
-    def write_question_commands(self):
+    def question_length(self):
+        return len(self.question.split())
+
+    def write_question(self):
         """#if the length of the question is greater than max_words that the model can process in a phrase, the question must be split into 2 or more phrases.
         for example if max_words = 10 ,  the question:
         ? what was the trade -ing post that precede -d New-York-City call -ed
@@ -79,6 +82,15 @@ class AnnabellCommandGenerator:
         .wg call
 
     """
+        if self.question_length() <= self.max_words:
+            self.commands.append(self.question)
+        else:
+            # split the question into phrases of max_words length
+            for phrase in self.phrases_in_context(self.question):
+                self.commands.append(phrase)
+
+    def write_question_commands(self):
+
         question_words = self.question.split()
         if len(question_words) <= self.max_words:
             self.write_question_commands_for_phrase(self.question)
@@ -94,13 +106,19 @@ class AnnabellCommandGenerator:
 
     def write_question_commands_for_context(self, context):
         # split the context into phrases of max_words length
+        for phrase in self.phrases_in_context(context):
+            self.commands.append(f".sctx {phrase}")
+            self.write_question_commands_for_phrase(phrase)
+
+    def phrases_in_context(self, context):
+        phrases = []
         context_words = context.split()
         number_of_phrases = (len(context_words) + self.max_words - 1) // self.max_words
         for i in range(number_of_phrases):
             phrase_words = context_words[i * self.max_words : (i + 1) * self.max_words]
             phrase = " ".join(phrase_words)
-            self.commands.append(f".sctx {phrase}")
-            self.write_question_commands_for_phrase(phrase)
+            phrases.append(phrase)
+        return phrases
 
     def create_list_of_commands(self):
 
@@ -111,8 +129,7 @@ class AnnabellCommandGenerator:
         self.commands.append(self.declarative_sentence)
         self.commands.append(self.blank_line())
 
-        self.commands.append(self.question)
-
+        self.write_question()
         self.write_question_commands()
 
         self.commands.append(f".ph {self.declarative_sentence}")
