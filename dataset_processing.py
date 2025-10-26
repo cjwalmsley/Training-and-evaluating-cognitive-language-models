@@ -24,9 +24,10 @@ def load_squad_dataset(ds_filename="squad_dataset"):
         ds.save_to_disk(ds_filename)
     return ds
 
+
 class AnnabellCommandGenerator:
 
-    #creates the set of commands required to train annabell for a single training sample
+    # creates the set of commands required to train annabell for a single training sample
     def __init__(self, sample_id, declarative_sentence, question, answer, max_words=10):
         self.sample_id = sample_id
         self.declarative_sentence = declarative_sentence
@@ -87,7 +88,7 @@ class AnnabellCommandGenerator:
         .wg New-York-City
         .wg call
 
-    """
+        """
         if self.question_word_length() <= self.max_words:
             self.commands.append(self.question)
         else:
@@ -126,6 +127,16 @@ class AnnabellCommandGenerator:
             phrases.append(phrase)
         return phrases
 
+    def phrases_and_answer_words(self, phrases, answer_words):
+        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
+        phrase_answer_words = {}
+        for phrase in phrases:
+            phrase_answer_words[phrase] = []
+            for word in answer_words:
+                if word in phrase:
+                    phrase_answer_words[phrase].append(word)
+        return phrase_answer_words
+
     def write_declarative_sentence(self):
 
         for phrase in self.phrases_in_context(self.declarative_sentence):
@@ -133,43 +144,42 @@ class AnnabellCommandGenerator:
 
     def write_answer_commands(self):
         if self.sentence_word_length() <= self.max_words:
-
-            self.commands.append(f".ph {self.declarative_sentence}")
-            #the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
-            answer_words = self.answer.split()
-            if len(answer_words) < 4:
-                self.commands.append(f".wg {self.answer}")
-            else:
-                self.commands.append(f".wg {" ".join(answer_words[:3])}")
-                self.commands.append(".prw")
-                self.commands.append(f".wg {" ".join(answer_words[3:])}")
-            self.commands.append(".rw")
+            self.write_short_answer_commands()
         else:
-            answer_words = self.answer.split()
-            phrases = self.phrases_in_context(self.declarative_sentence)
-            #construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
-            phrase_answer_words = {}
-            for phrase in phrases:
-                phrase_answer_words[phrase] = []
-                for word in answer_words:
-                    if word in phrase:
-                        phrase_answer_words[phrase].append(word)
-            #for each phrase in the declarative sentence, write the phrase command and the answer words
-            for phrase, answer_words in phrase_answer_words.items():
-                if len(answer_words) == 0:
-                    continue
+            self.write_long_answer_commands()
+
+        self.commands.append(".rw")
+
+    def write_short_answer_commands(self):
+        self.commands.append(f".ph {self.declarative_sentence}")
+        # the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
+
+        answer_words = self.answer.split()
+        if len(answer_words) < 4:
+            self.commands.append(f".wg {self.answer}")
+        else:
+            self.commands.append(f".wg {" ".join(answer_words[:3])}")
+            self.commands.append(".prw")
+            self.commands.append(f".wg {" ".join(answer_words[3:])}")
+
+    def write_long_answer_commands(self):
+        answer_words = self.answer.split()
+        phrases = self.phrases_in_context(self.declarative_sentence)
+        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
+        phrase_answer_words = self.phrases_and_answer_words(phrases, answer_words)
+        # for each phrase in the declarative sentence, write the phrase command and the answer words
+        for phrase, answer_words in phrase_answer_words.items():
+            if len(answer_words) == 0:
+                continue
+            else:
+                self.commands.append(f".ph {phrase}")
+                if len(answer_words) < 4:
+                    self.commands.append(f".wg {" ".join(answer_words)}")
                 else:
-                    self.commands.append(f".sctx {phrase}")
-                    if len(answer_words) < 4:
-                        self.commands.append(f".wg {" ".join(answer_words)}")
-                    else:
-                        self.commands.append(f".wg {" ".join(answer_words[:3])}")
-                        self.commands.append(".prw")
-                        self.commands.append(f".wg {" ".join(answer_words[3:])}")
-                        self.commands.append(".prw")
-            self.commands.append(".rw")
-
-
+                    self.commands.append(f".wg {" ".join(answer_words[:3])}")
+                    self.commands.append(".prw")
+                    self.commands.append(f".wg {" ".join(answer_words[3:])}")
+                    self.commands.append(".prw")
 
     def create_list_of_commands(self):
 
@@ -182,34 +192,71 @@ class AnnabellCommandGenerator:
         self.write_question()
         self.write_question_commands()
         self.write_answer_commands()
-        #add a blank line to terminate the context
-        self.commands.append("\n")
+        # add a blank line to terminate the context
+        self.commands.append(self.blank_line())
         return self.commands
 
-def read_dataset(dataset_filepath, maximum_number_of_words, maximum_word_length):
-    # load the dataset
-    the_df = pd.read_json(dataset_filepath, lines=True)
-    # remove any rows where the max number of words or max numbr of characters is exceeded
-    join_concurrent_capitalized_words(
-        the_df,
-        [
-            "response_declarative_sentence_formatted",
-            "response_question_formatted",
-            "response_answer_formatted",
-        ],
-    )
-    the_df = filter_dataset_by_limits(
-        the_df,
-        [
-            "response_declarative_sentence_formatted",
-            "response_question_formatted",
-            "response_declarative_sentence_formatted",
-        ],
-        maximum_number_of_words,
-        maximum_word_length,
-    )
-    the_df.reset_index(drop=True, inplace=True)
-    return the_df
+
+class DatasetPreProcessor:
+
+    def __init__(
+        self,
+        dataset_filepath,
+        max_words_limit=25,
+        max_word_length_limit=50,
+        columns_to_process=None,
+    ):
+
+        if columns_to_process is None:
+            columns_to_process = [
+                "response_declarative_sentence_formatted",
+                "response_question_formatted",
+                "response_answer_formatted",
+            ]
+        self.dataset_filepath = dataset_filepath
+        self.dataset = pd.read_json(dataset_filepath, lines=True)
+        self.columns_to_process = columns_to_process
+        self.max_words_limit = max_words_limit
+        self.max_word_length_limit = max_word_length_limit
+
+    def preprocess_data(self):
+        self.remove_whitespace()
+        self.join_concurrent_capitalized_words()
+        self.filter_dataset_by_limits()
+        self.dataset.reset_index(drop=True, inplace=True)
+
+    def remove_whitespace(self):
+        # Strip whitespace from all string columns
+        for col in self.dataset.select_dtypes(include=["object"]):
+            self.dataset[col] = self.dataset[col].str.strip()
+
+    def join_concurrent_capitalized_words(self):
+        # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
+        for column in self.columns_to_process:
+            self.dataset[column] = self.dataset[column].str.replace(
+                r"(\b[A-Z][a-zA-Z]*(?:\s+[A-Z][a-zA-Z]*)+\b)",
+                lambda m: "-".join(m.group(0).split()),
+                regex=True,
+            )
+
+    def filter_dataset_by_limits(self):
+        for column_name in self.columns_to_process:
+            # Ensure the column is of string type, handling potential non-string data
+            self.dataset[column_name] = self.dataset[column_name].astype(str)
+
+            # Filter out rows where the sentence exceeds the maximum number of words
+            word_count_mask = (
+                self.dataset[column_name].str.split().str.len() <= self.max_words_limit
+            )
+            self.dataset = self.dataset[word_count_mask]
+
+            # Filter out rows where any word exceeds the maximum length
+            word_length_mask = self.dataset[column_name].apply(
+                lambda sentence: all(
+                    len(word) <= self.max_word_length_limit for word in sentence.split()
+                )
+            )
+            self.dataset = self.dataset[word_length_mask]
 
 
 def merge_categories(
@@ -366,39 +413,6 @@ def write_testing_file(the_filepath, the_df):
         print("First 20 lines:")
         for line in lines[:20]:
             print(line.strip())
-
-
-def filter_dataset_by_limits(df, column_names, max_words_limit, max_word_length_limit):
-    for column_name in column_names:
-        df = df[df[column_name].str.split().str.len() <= max_words_limit]
-        df = df[
-            ~df[column_name]
-            .str.split()
-            .apply(
-                lambda words: any(len(word) > max_word_length_limit for word in words)
-            )
-        ]
-    return df
-
-
-def join_concurrent_capitalized_words(a_dataframe, the_columns_to_process):
-    # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
-    for column in the_columns_to_process:
-        a_dataframe[column] = a_dataframe[column].str.replace(
-            r"(\b[A-Z][a-zA-Z]*(?:\s+[A-Z][a-zA-Z]*)+\b)",
-            lambda m: "-".join(m.group(0).split()),
-            regex=True,
-        )
-    return a_dataframe
-
-
-
-
-
-
-
-
-
 
 
 def convert_stopwords_to_lower_case(a_string):
@@ -610,13 +624,6 @@ def format_text(text, is_question=False):
     return text
 
 
-def is_pretraining_question(the_question, the_pretraining_questions):
-    result = the_question in the_pretraining_questions
-    if result:
-        print(f"Pretraining question found: {the_question}")
-    return result
-
-
 # produce a summary of a dataset by splits
 def dataset_summary(a_dataset):
     for split in a_dataset.keys():
@@ -632,22 +639,6 @@ def dataset_summary(a_dataset):
             + str((bag_of_titles.most_common(20)))
             + "\n"
         )
-
-
-def data_frame_up_to_statement_title(a_dataframe, a_statemment):
-    row = a_dataframe[a_dataframe["statement"] == a_statemment]
-    row_index = row.index
-    print(f"Row index of statement: '{a_statemment}': {row_index}")
-    target_title = row["title"].values[0]
-    # find the index of the first row where the title is "Tuscon_Arizona"
-    title_index = a_dataframe[a_dataframe["title"] == target_title].index
-    print(
-        f"Index of first row with title {target_title}: {title_index[0] if not title_index.empty else 'Not found'}"
-    )
-    # filter the dataset so that all the rows up to the title index are included
-    filtered_train_df = a_dataframe.iloc[: title_index[0]]
-    print(f"Filtered DataFrame shape: {filtered_train_df.shape}")
-    return filtered_train_df
 
 
 def ids_questions_answers_from_log_file(test_log_filepath):
@@ -670,31 +661,6 @@ def ids_questions_answers_from_log_file(test_log_filepath):
             continue
 
     return ids_questions_answers
-
-
-def question_and_answer_pairs_from_log_file(test_log_filepath):
-    with open(test_log_filepath, "r") as test_log_file:
-        test_log_lines = test_log_file.readlines()
-
-    question_and_answer_pairs = []
-    for index, line in enumerate(test_log_lines):
-        if line.startswith("?") or line.startswith(".stat") and index != 0:
-            new_pair = [None, None]
-            question = line.strip()
-            new_pair[0] = question
-            question_and_answer_pairs.append(new_pair)
-            new_pair_index = question_and_answer_pairs.index(new_pair)
-            previous_pair_index = new_pair_index - 1
-            previous_pair = question_and_answer_pairs[previous_pair_index]
-            previous_answer = test_log_lines[index - 1].strip()
-            if previous_answer is None:
-                warnings.warn(f"Previous answer is None for question: {question}")
-            previous_pair[-1] = previous_answer
-            if previous_pair[-1] is None:
-                warnings.warn(f"Previous answer is None for question: {question}")
-        else:
-            continue
-    return question_and_answer_pairs
 
 
 def embedding_for_sentence(a_string):

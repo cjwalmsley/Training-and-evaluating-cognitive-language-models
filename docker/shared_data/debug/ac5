@@ -1,0 +1,16 @@
+#id: 56ce3569aab44d1400b885ae
+Henry-Hudson call -ed the river that is now know -n
+as the Hudson-River the North-River
+
+? what did Henry-Hudson call the river that is now
+call -ed the Hudson-River
+.sctx ? what did Henry-Hudson call the river that is now
+.wg Henry-Hudson
+.wg call
+.wg river
+.sctx call -ed the Hudson-River
+.wg call
+.wg Hudson-River
+.ph as the Hudson-River the North-River
+.wg North-River
+.rw
