@@ -10,19 +10,23 @@ import ollama
 import pandas as pd
 
 
-def load_squad_dataset(ds_filename="squad_dataset"):
+def load_squad_dataset(ds_filepath="squad_dataset"):
     # check if dataset is available on disk, if not load it
     try:
-        print("Loading dataset from: " + ds_filename)
-        ds = load_from_disk(ds_filename)
+        print("Loading dataset from: " + ds_filepath)
+        ds = load_from_disk(ds_filepath)
     except FileNotFoundError:
         print(
             "File not found, loading dataset from Huggingface and saving to: "
-            + ds_filename
+            + ds_filepath
         )
         ds = load_dataset("rajpurkar/squad")
-        ds.save_to_disk(ds_filename)
+        save_squad_dataset(ds, ds_filepath)
     return ds
+
+
+def save_squad_dataset(ds, save_filepath):
+    ds.save_to_disk(save_filepath)
 
 
 class AnnabellCommandGenerator:

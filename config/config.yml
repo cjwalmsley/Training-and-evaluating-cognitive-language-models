@@ -1,0 +1,39 @@
+# config.yml
+
+project_name: "Training-and-evaluating-cognitive-language-models"
+
+file_locations:
+  base_directory_windows: "G:\\My Drive\\Shared with Julia\\Education\\Kent University\\PhD\\work\\annabell"
+  base_directory_linux: "/home/chris/gdrive/work/annabell"
+  base_directory_mac: "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell"
+  prompt_data_directory: "experiments/data/prompts"
+  prompt_inputs_jsonl_filename: "prompt_inputs.jsonl"
+  base_prompt_filename: "base_prompt.txt"
+  responses_data_directory: "experiments/data/responses"
+  responses_jsonl_filename: "responses.jsonl"
+
+dataset:
+  dataset_directory: "datasets/squad_dataset"
+
+ollama:
+  options:
+    num_ctx: 4096
+    repeat_last_n: 64
+    repeat_penalty: 1.5
+    temperature: 0
+    seed: 42
+    num_predict: 100
+    top_k: 1
+    top_p: 0.1
+    min_p: 0.0
+  model: "qwen3:4b"
+  stream: false
+  think: false
+  models:
+    - "llama3.2"
+    - "llama3"
+    - "deepseek-r1:8b"
+    - "gemma3:4b"
+    - "gemma3:1b"
+    - "gemma3n:e4b"
+    - "qwen3:4b"

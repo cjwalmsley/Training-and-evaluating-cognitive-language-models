@@ -1,3 +1,6 @@
+pyyaml
+pydantic-settings
+pydantic
 ollama
 datasets
 datetime
