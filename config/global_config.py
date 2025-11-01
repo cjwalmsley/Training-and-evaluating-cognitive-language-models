@@ -11,7 +11,7 @@ from .config_models import Settings
 # Find the project root by looking for a known file/directory (e.g., '.git' or 'requirements.txt')
 # This makes the path resolution robust, regardless of where scripts are run from.
 PROJECT_ROOT = Path(__file__).parent.parent
-CONFIG_YAML_PATH = PROJECT_ROOT / "config" / "config.yml"
+CONFIG_YAML_PATH = PROJECT_ROOT / "config" / "global_config.yml"
 
 
 def load_settings() -> Settings:
@@ -43,7 +43,7 @@ def load_settings() -> Settings:
         sys.exit(1)
 
 
-class PlatformConfig:
+class GlobalConfig:
     """
     A convenient, platform-aware wrapper around the main Settings object.
     Provides easy access to platform-specific paths and other configurations.

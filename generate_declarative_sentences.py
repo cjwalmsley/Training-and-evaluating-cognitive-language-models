@@ -1,18 +1,16 @@
 import logging
 import ollama
-import logger as my_logger
 from dataset_processing import load_squad_dataset
 import timeit
 from datetime import datetime
 import pandas as pd
 import sys
-import os
 import json
 from pydantic import BaseModel, ValidationError
-from config.config import PlatformConfig
+from config.global_config import GlobalConfig
 
 logger = logging.getLogger(__name__)
-platform_config = PlatformConfig()
+global_config = GlobalConfig()
 
 
 class DeclarativeStatement(BaseModel):
@@ -31,12 +29,12 @@ def generated_model_from_prompt(the_prompt, id_string):
 def generate_response_with_prompt(the_prompt):
 
     generated_text = ollama.generate(
-        model=platform_config.ollama_model(),
+        model=global_config.ollama_model(),
         prompt=the_prompt,
         format=DeclarativeStatement.model_json_schema(),
-        stream=platform_config.ollama_stream(),
-        think=platform_config.ollama_think(),
-        options=platform_config.ollama_options_dict(),
+        stream=global_config.ollama_stream(),
+        think=global_config.ollama_think(),
+        options=global_config.ollama_options_dict(),
     )
     logger.info("Generated response: " + str(generated_text.response).strip())
     logger.info("Total duration: " + str(generated_text.total_duration))
@@ -49,12 +47,10 @@ def prompt_prefix_from_file():
     return prompt_prefix
 
 
-def prepare_prompt(question, answer):
-
-    prompt_suffix = "question: " + question + "\nanswer: " + answer
-
-    prompt = prompt_prefix_from_file() + "\n" + prompt_suffix
-    return prompt
+def process_prompt(the_base_prompt, the_line, the_id):
+    the_prompt = the_base_prompt + "\n" + the_line
+    generated_json = generated_model_from_prompt(the_prompt, the_id)
+    return generated_json
 
 
 def items_with_title(the_dataset, the_title):
@@ -62,10 +58,10 @@ def items_with_title(the_dataset, the_title):
     return df[df.apply(lambda x: x["title"] == the_title, axis=1)]
 
 
-def filter_dataset_split(the_dataset_split, title, number_of_sentences, id=None):
+def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=None):
 
-    if id is not None:
-        filtered_database_split = the_dataset_split.filter(lambda x: x["id"] == id)
+    if the_id is not None:
+        filtered_database_split = the_dataset_split.filter(lambda x: x["id"] == the_id)
     elif title != "all":
         filtered_database_split = the_dataset_split.filter(
             lambda x: x["title"] == title
@@ -78,134 +74,121 @@ def filter_dataset_split(the_dataset_split, title, number_of_sentences, id=None)
             )
     else:
         filtered_database_split = the_dataset_split
-    return filtered_database_split
+    # Create the 'answer' column from the 'answers' dictionary
+    # make a dataframe from the dataset split
+    filtered_dataframe = pd.DataFrame(filtered_database_split)
+
+    filtered_dataframe["answer"] = filtered_dataframe["answers"].apply(
+        lambda x: x["text"][0] if x["text"] else ""
+    )
+
+    # Drop the original, now unneeded, columns
+    filtered_dataframe = filtered_dataframe.drop(
+        columns=["context", "title", "answers"]
+    )
+
+    # Add the new column for the response, which will now be at the end
+    filtered_dataframe["response_declarative_sentence"] = (
+        "<INSERT RESPONSE SENTENCE HERE>"
+    )
+
+    # Reorder columns to a specific, desired order
+    final_columns = [
+        "id",
+        "question",
+        "answer",
+        "response_declarative_sentence",
+    ]
+    filtered_dataframe = filtered_dataframe[final_columns]
+
+    filtered_dataframe.reset_index(drop=True, inplace=True)
+    # write the dataframe to a jsonl file
+    filtered_dataframe.to_json(
+        global_config.prompt_inputs_jsonl_filepath(), orient="records", lines=True
+    )
+    logger.info("dataframe written to: " + global_config.prompt_inputs_jsonl_filepath())
+    return filtered_dataframe
 
 
 def generate_declarative_sentences(
-    ds, number_of_sentences, the_model_string, the_options, id=None, title="all"
+    ds, number_of_sentences, the_model_string, the_options, the_id=None, title="all"
 ):
 
-    # set up output directories depending on machine and connected storage
-    if os.path.exists("/Volumes/X9 Pro/datasets"):
-        output_directory = "/Volumes/X9 Pro/datasets"
-    elif os.path.exists("/Users/chris/datasets"):
-        output_directory = "/Users/chris/datasets"
-    else:
-        output_directory = "/home/chris/datasets"
-
-    log_writer = my_logger.LogWriter("declarative_statement_generation.log")
-
     for ds_split_name in ("train", "validation"):
-        total_elapsed = 0
+        prompt_json_l_filepath = global_config.prompt_inputs_jsonl_filepath()
+        response_filepath = global_config.responses_jsonl_filepath()
+        base_prompt_filepath = global_config.base_prompt_filepath()
         examples_generated = 0
-        output_filename = (
-            "declarative_sentences_"
-            + ds_split_name
+        output_filepath = (
+            ds_split_name
             + "_"
-            + the_model_string
+            + global_config.ollama_model()
             + "_"
             + datetime.now().strftime("%Y%m%d_%H%M%S")
-            + ".tsv"
+            + "_"
+            + global_config.responses_jsonl_filepath()
         )
-        output_filepath = os.path.join(output_directory, output_filename)
         dataset_split = ds[ds_split_name]
+        logger.info("Filtering dataset split: " + ds_split_name)
         filtered_database_split = filter_dataset_split(
-            dataset_split, title, number_of_sentences, id
+            dataset_split, title, number_of_sentences, the_id
         )
-        number_of_examples = filtered_database_split.num_rows
-        log_writer.log(
+        number_of_examples = len(filtered_database_split)
+        logger.info(
             "generating: " + str(number_of_examples) + " examples\t"
-            "database_split: "
-            + ds_split_name
-            + "\tusing  model: "
-            + the_model_string
-            + "\twith: options: "
-            + str(the_options)
-            + "\twith prompt_prefix: "
-            + prompt_prefix_from_file()
+            "database_split: " + ds_split_name + "\tusing  model: " + the_model_string
         )
-        with open(output_filepath, "w") as output_file:
-            output_file.write(
-                "id\ttitle\tquestion\tanswer\tresponse_question\tresponse_answer\tstatement\n"
-            )
-            for example in filtered_database_split:
-                try:
-                    example_id = example["id"]
-                    title = example["title"]
-                    question = example["question"]
-                    answer = example["answers"]["text"][0]
-                    prompt = prepare_prompt(question, answer)
-                    start_time = timeit.default_timer()
-                    response = generated_model_from_prompt(prompt, example_id)
-                    response_question = response.question
-                    response_answer = response.answer
-                    statement = response.statement
-                    elapsed = timeit.default_timer() - start_time
-                    log_writer.log(
-                        "processed example: "
-                        + str(examples_generated)
-                        + "\tmodel_string: "
-                        + model_string
-                        + "\texecution_time_in_seconds: "
-                        + str(elapsed)
-                        + "\tprompt_question: "
-                        + question
-                        + "\tprompt_answer: "
-                        + answer
-                        + "\tresponse_question: "
-                        + response_question
-                        + "\tresponse_question: "
-                        + response_answer
-                        + "\tstatement: "
-                        + statement
-                    )
-                    file_entry = (
-                        example_id
-                        + "\t"
-                        + title
-                        + "\t"
-                        + question
-                        + "\t"
-                        + answer
-                        + "\t"
-                        + response_question
-                        + "\t"
-                        + response_answer
-                        + "\t"
-                        + statement
-                        + "\n"
-                    )
-                    output_file.write(file_entry)
-                    total_elapsed = total_elapsed + elapsed
+
+        with open(base_prompt_filepath, "r") as base_prompt_file:
+            base_prompt = base_prompt_file.read()
+        with open(prompt_json_l_filepath, "r") as prompt_json_l_file:
+            prompt_json_l = prompt_json_l_file.readlines()
+        start_time = timeit.default_timer()
+        for line in prompt_json_l:
+            # convert the json line to a dict to get the id
+            line_dict = json.loads(line)
+            the_id = line_dict["id"]
+            # Create a dictionary for the prompt
+            prompt_dict = {
+                "question": line_dict["question"],
+                "answer": line_dict["answer"],
+                "response_declarative_sentence": line_dict[
+                    "response_declarative_sentence"
+                ],
+            }
+            # Convert the dictionary to a JSON string
+            line_json = json.dumps(prompt_dict)
+            try:
+                response_model = process_prompt(base_prompt, line_json, the_id)
+                logger.info("Response:\n" + str(response_model))
+                with open(response_filepath, "a") as response_file:
+                    response_file.write(response_model.model_dump_json() + "\n")
                     examples_generated = examples_generated + 1
-                # except IndexError as index_error:
-                # log_writer.log("Index Error processing example with id: " + str(example_id) + "\t" + str(index_error))
-                except ValidationError as error:
-                    log_writer.log(
-                        "Error processing example with id: "
-                        + str(example_id)
-                        + "\t"
-                        + str(error)
-                        + "Response: "
-                        + response
-                    )
-                if examples_generated == number_of_examples:
-                    break
-            completion_message = (
-                "generated: "
-                + str(examples_generated)
-                + " examples\t"
-                + "using  model: "
-                + model_string
-                + "\t"
-                + "total_execution_time_in_seconds: "
-                + str(total_elapsed)
-                + "\toutput_filepath:"
-                + output_filepath
-                + "\n"
-            )
-            log_writer.log(completion_message)
-            print(completion_message)
+            except ValidationError as error:
+                logger.critical(
+                    "Error processing example with id: "
+                    + str(the_id)
+                    + "\t"
+                    + str(error)
+                )
+            if examples_generated == number_of_examples:
+                break
+        end_time = timeit.default_timer()
+        total_elapsed = end_time - start_time
+        completion_message = (
+            "generated: "
+            + str(examples_generated)
+            + " examples\t"
+            + "using  model: "
+            + model_string
+            + "\t"
+            + "total_execution_time_in_seconds: "
+            + str(total_elapsed)
+            + "\toutput_filepath:"
+            + output_filepath
+            + "\n"
+        )
+        logger.info(completion_message)
 
 
 def clean_line(a_string):
@@ -213,32 +196,13 @@ def clean_line(a_string):
     return cleaned_string
 
 
-def clean_file(a_filepath):
-    with open(a_filepath, "r") as unclean_file:
-        unclean_lines = unclean_file.readlines()
-    clean_lines = [clean_line(unclean_line) for unclean_line in unclean_lines]
-    clean_filepath = "clean_" + a_filepath
-    with open(clean_filepath, "w") as clean_file:
-        for line in clean_lines:
-            clean_file.write(line)
-    print("cleaned: " + a_filepath + " new file: " + clean_filepath)
-    return clean_filepath
-
-
-def load_options_from_config_file(config_filepath="options_config.json"):
-
-    with open(config_filepath, "r") as config_file:
-        options = json.load(config_file)
-    return options
-
-
 if __name__ == "__main__":
 
-    print(f"🚀 Starting project: {platform_config.project_name}")
-    print(f"   Using API key starting with: {platform_config.wandb_api_key()[:4]}...")
+    print(f"🚀 Starting project: {global_config.project_name}")
+    print(f"   Using API key starting with: {global_config.wandb_api_key()[:4]}...")
 
-    model_strings = platform_config.ollama_models()
-    options = platform_config.ollama_options_dict()
+    model_strings = global_config.ollama_models()
+    options = global_config.ollama_options_dict()
 
     print("\n--- Model Config ---")
     print(f"   options: {options}")
@@ -246,7 +210,7 @@ if __name__ == "__main__":
 
     # You can even export the final, validated config
     print("\n--- Final Settings (as JSON) ---")
-    print(platform_config.settings.model_dump_json(indent=2))
+    print(global_config.settings.model_dump_json(indent=2))
 
     if len(sys.argv) == 4:
         model_string = sys.argv[1]
@@ -263,11 +227,11 @@ if __name__ == "__main__":
         )
         # Default execution if no args or wrong number of args are provided
         model_string = model_strings[-1]
-        title_arg = "New_York_City"
+        title_arg = "all"
         num_sentences_arg = 5
 
-    dataset = load_squad_dataset(platform_config.dataset_directory())
+    dataset = load_squad_dataset(global_config.dataset_directory())
 
     generate_declarative_sentences(
-        dataset, num_sentences_arg, model_string, options, id=None, title=title_arg
+        dataset, num_sentences_arg, model_string, options, the_id=None, title=title_arg
     )
