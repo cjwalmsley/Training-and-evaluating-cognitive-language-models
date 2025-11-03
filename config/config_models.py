@@ -13,14 +13,17 @@ class DatasetConfig(BaseModel):
 
 
 class FileLocations(BaseModel):
-    base_directory_windows: str
     base_directory_linux: str
     base_directory_mac: str
+    base_directory_windows: str
     prompt_data_directory: str
     prompt_inputs_jsonl_filename: "str"
     responses_data_directory: str
     responses_jsonl_filename: str
     base_prompt_filename: str
+    docker_data_directory_mac: str
+    docker_data_directory_linux: str
+    docker_data_directory_windows: str
 
 
 class OllamaOptions(BaseModel):

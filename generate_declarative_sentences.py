@@ -76,7 +76,12 @@ def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=N
         filtered_database_split = the_dataset_split
     # Create the 'answer' column from the 'answers' dictionary
     # make a dataframe from the dataset split
-    filtered_dataframe = pd.DataFrame(filtered_database_split)
+    return filtered_database_split
+
+
+def create_prompt_input_dataframe(the_dataset):
+
+    filtered_dataframe = pd.DataFrame(the_dataset)
 
     filtered_dataframe["answer"] = filtered_dataframe["answers"].apply(
         lambda x: x["text"][0] if x["text"] else ""
@@ -102,38 +107,70 @@ def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=N
     filtered_dataframe = filtered_dataframe[final_columns]
 
     filtered_dataframe.reset_index(drop=True, inplace=True)
-    # write the dataframe to a jsonl file
-    filtered_dataframe.to_json(
-        global_config.prompt_inputs_jsonl_filepath(), orient="records", lines=True
-    )
-    logger.info("dataframe written to: " + global_config.prompt_inputs_jsonl_filepath())
+
     return filtered_dataframe
 
 
+def create_prompt_input_jsonl(the_dataframe):
+    # write the dataframe to a jsonl file
+    the_dataframe.to_json(
+        global_config.prompt_inputs_jsonl_filepath(), orient="records", lines=True
+    )
+    logger.info("dataframe written to: " + global_config.prompt_inputs_jsonl_filepath())
+    return the_dataframe
+
+
+def prompt_tuple_from_json_line(the_json_line):
+
+    # convert the json line to a dict to get the id
+    line_dict = json.loads(the_json_line)
+    the_id = line_dict["id"]
+    # Create a dictionary for the prompt
+    prompt_dict = {
+        "question": line_dict["question"],
+        "answer": line_dict["answer"],
+        "response_declarative_sentence": line_dict["response_declarative_sentence"],
+    }
+    # Convert the dictionary to a JSON string
+    line_json = json.dumps(prompt_dict)
+    return the_id, line_json
+
+
+def timestamped_response_filepath(ds_split_name):
+    suffix = ".jsonl"
+    filepath = (
+        global_config.responses_jsonl_filepath().removesuffix(suffix)
+        + "_"
+        + ds_split_name
+        + "_"
+        + datetime.now().strftime("%Y%m%d_%H%M%S")
+        + suffix
+    )
+    return filepath
+
+
 def generate_declarative_sentences(
-    ds, number_of_sentences, the_model_string, the_options, the_id=None, title="all"
+    ds, number_of_sentences, the_model_string, splits, debug_id=None, title="all"
 ):
 
-    for ds_split_name in ("train", "validation"):
+    for ds_split_name in splits:
         prompt_json_l_filepath = global_config.prompt_inputs_jsonl_filepath()
-        response_filepath = global_config.responses_jsonl_filepath()
         base_prompt_filepath = global_config.base_prompt_filepath()
         examples_generated = 0
-        output_filepath = (
-            ds_split_name
-            + "_"
-            + global_config.ollama_model()
-            + "_"
-            + datetime.now().strftime("%Y%m%d_%H%M%S")
-            + "_"
-            + global_config.responses_jsonl_filepath()
-        )
+        # create output filepath using response_filepath with the model string and current datetime appended to the filename
+
+        output_filepath = timestamped_response_filepath(ds_split_name)
+
         dataset_split = ds[ds_split_name]
         logger.info("Filtering dataset split: " + ds_split_name)
         filtered_database_split = filter_dataset_split(
-            dataset_split, title, number_of_sentences, the_id
+            dataset_split, title, number_of_sentences, debug_id
         )
-        number_of_examples = len(filtered_database_split)
+
+        prepared_dataframe = create_prompt_input_dataframe(filtered_database_split)
+        create_prompt_input_jsonl(prepared_dataframe)
+        number_of_examples = len(prepared_dataframe)
+
         logger.info(
             "generating: " + str(number_of_examples) + " examples\t"
             "database_split: " + ds_split_name + "\tusing  model: " + the_model_string
@@ -145,25 +182,14 @@ def generate_declarative_sentences(
             prompt_json_l = prompt_json_l_file.readlines()
         start_time = timeit.default_timer()
         for line in prompt_json_l:
-            # convert the json line to a dict to get the id
-            line_dict = json.loads(line)
-            the_id = line_dict["id"]
-            # Create a dictionary for the prompt
-            prompt_dict = {
-                "question": line_dict["question"],
-                "answer": line_dict["answer"],
-                "response_declarative_sentence": line_dict[
-                    "response_declarative_sentence"
-                ],
-            }
-            # Convert the dictionary to a JSON string
-            line_json = json.dumps(prompt_dict)
+            the_id, line_json = prompt_tuple_from_json_line(line)
+
             try:
                 response_model = process_prompt(base_prompt, line_json, the_id)
                 logger.info("Response:\n" + str(response_model))
-                with open(response_filepath, "a") as response_file:
+                with open(output_filepath, "a") as response_file:
                     response_file.write(response_model.model_dump_json() + "\n")
-                    examples_generated = examples_generated + 1
+
             except ValidationError as error:
                 logger.critical(
                     "Error processing example with id: "
@@ -171,6 +197,13 @@ def generate_declarative_sentences(
                     + "\t"
                     + str(error)
                 )
+            examples_generated = examples_generated + 1
+            logger.info(
+                "generated: "
+                + str(examples_generated)
+                + " of: "
+                + str(number_of_examples)
+            )
             if examples_generated == number_of_examples:
                 break
         end_time = timeit.default_timer()
@@ -212,7 +245,7 @@ if __name__ == "__main__":
     print("\n--- Final Settings (as JSON) ---")
     print(global_config.settings.model_dump_json(indent=2))
 
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 5:
         model_string = sys.argv[1]
         title_arg = sys.argv[2]
         num_sentences_arg = sys.argv[3]
@@ -227,11 +260,18 @@ if __name__ == "__main__":
         )
         # Default execution if no args or wrong number of args are provided
         model_string = model_strings[-1]
-        title_arg = "all"
+        title_arg = "New_York_City"
         num_sentences_arg = 5
+
+    splits = ["train"]
 
     dataset = load_squad_dataset(global_config.dataset_directory())
 
     generate_declarative_sentences(
-        dataset, num_sentences_arg, model_string, options, the_id=None, title=title_arg
+        dataset,
+        num_sentences_arg,
+        model_string,
+        splits,
+        debug_id=None,
+        title=title_arg,
     )

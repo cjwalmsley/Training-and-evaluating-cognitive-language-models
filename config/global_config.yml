@@ -11,6 +11,9 @@ file_locations:
   base_prompt_filename: "base_prompt.txt"
   responses_data_directory: "experiments/data/responses"
   responses_jsonl_filename: "responses.jsonl"
+  docker_data_directory_mac: "/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
+  docker_data_directory_linux: "/home/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
+  docker_data_directory_windows: "C:\\PycharmProjects\\Training-and-evaluating-cognitive-language-models\\docker"
 
 dataset:
   dataset_directory: "datasets/squad_dataset"

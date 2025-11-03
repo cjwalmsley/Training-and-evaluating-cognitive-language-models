@@ -43,6 +43,34 @@ def load_settings() -> Settings:
         sys.exit(1)
 
 
+class AbstractPlatformConfig:
+    """
+    An abstract base class for platform-specific configuration.
+    Subclasses should implement methods to return platform-specific paths.
+    """
+
+    def get_base_directory(self, settings) -> str:
+        raise NotImplementedError("Subclasses must implement this method.")
+
+
+class MacConfig(AbstractPlatformConfig):
+
+    def get_base_directory(self, settings) -> str:
+        return settings.file_locations.mac_base_directory
+
+
+class LinuxConfig(AbstractPlatformConfig):
+
+    def get_base_directory(self, settings) -> str:
+        return settings.file_locations.mac_base_directory
+
+
+class WindowsConfig(AbstractPlatformConfig):
+
+    def get_base_directory(self, settings) -> str:
+        return settings.file_locations.windows_base_directory
+
+
 class GlobalConfig:
     """
     A convenient, platform-aware wrapper around the main Settings object.
@@ -52,18 +80,23 @@ class GlobalConfig:
     def __init__(self):
         self.settings = load_settings()
         self.project_name = self.settings.project_name
+        self.platform_config = self.get_platform_config()
+
+    def get_platform_config(self) -> AbstractPlatformConfig:
+        """Sets the platform-specific configuration based on the current OS."""
+        os_name = platform.system()
+        if os_name == "Windows":
+            return WindowsConfig()
+        elif os_name == "Linux":
+            return LinuxConfig()
+        elif os_name == "Darwin":  # macOS
+            return MacConfig()
+        else:
+            raise OSError(f"Unsupported operating system: {os_name}")
 
     def get_base_directory(self) -> str:
         """Returns the appropriate base directory for the current operating system."""
-        os_name = platform.system()
-        if os_name == "Windows":
-            return self.settings.file_locations.base_directory_windows
-        elif os_name == "Linux":
-            return self.settings.file_locations.base_directory_linux
-        elif os_name == "Darwin":  # macOS
-            return self.settings.file_locations.base_directory_mac
-        else:
-            raise OSError(f"Unsupported operating system: {os_name}")
+        return self.platform_config.get_base_directory(self.settings)
 
     def dataset_directory(self) -> str:
         """Returns the full, absolute path to the dataset directory."""
