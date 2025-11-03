@@ -24,6 +24,19 @@ class FileLocations(BaseModel):
     docker_data_directory_mac: str
     docker_data_directory_linux: str
     docker_data_directory_windows: str
+    pre_training_directory: str
+    training_directory: str
+    testing_directory: str
+    experiments_directory: str
+    log_archive_directory: str
+    pre_training_filename: str
+    training_filename: str
+    testing_filename: str
+    prepared_dataset_directory: str
+    prepared_dataset_filename: str
+    pretraining_validation_testing_filename: str
+    categorised_questions_filename: str
+    categorised_statements_filename: str
 
 
 class OllamaOptions(BaseModel):
@@ -36,6 +49,13 @@ class OllamaOptions(BaseModel):
     top_k: int = 1
     top_p: float = 0.1
     min_p: float = 0.0
+
+
+class Experiments(BaseModel):
+    experiment_name: str
+    percentage_of_pretraining_samples: float
+    maximum_number_of_words: int
+    maximum_word_length: int
 
 
 # 2. A nested model for model hyperparameters

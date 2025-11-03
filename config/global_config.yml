@@ -14,6 +14,27 @@ file_locations:
   docker_data_directory_mac: "/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
   docker_data_directory_linux: "/home/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
   docker_data_directory_windows: "C:\\PycharmProjects\\Training-and-evaluating-cognitive-language-models\\docker"
+  pre_training_directory: "pre_training"
+  pre_training_filename: "nyc_squad_pretraining_commands.txt"
+  training_directory: "training"
+  training_filename: "nyc_squad_training_commands.txt"
+  testing_directory: "testing"
+  testing_filename: "nyc_squad_testing_commands.txt"
+  experiments_directory: "experiments"
+  log_archive_directory: "logs"
+  prepared_dataset_directory: "data"
+  pretraining_validation_testing_filename: "nyc_squad_pretraining_validation_testing_commands.txt"
+  categorised_questions_filename: "llm_question_categorisation_results.jsonl"
+  categorised_statements_filename: "llm_statement_categorisation_results.jsonl"
+
+experiments:
+  experiment_name: "15"
+  percentage_of_pretraining_samples: 10
+  use_manual_pretraining_data: false
+  maximum_number_of_words: 50
+  maximum_word_length: 25
+  prepared_dataset_filename: "response_formatted_20250924_174653.jsonl"
+
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
