@@ -26,6 +26,7 @@ file_locations:
   pretraining_validation_testing_filename: "nyc_squad_pretraining_validation_testing_commands.txt"
   categorised_questions_filename: "llm_question_categorisation_results.jsonl"
   categorised_statements_filename: "llm_statement_categorisation_results.jsonl"
+  prepared_dataset_with_commands_filepath: "nyc_squad_with_pretraining_commands.jsonl"
 
 experiments:
   experiment_name: "15"

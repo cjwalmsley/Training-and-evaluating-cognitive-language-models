@@ -37,6 +37,7 @@ class FileLocations(BaseModel):
     pretraining_validation_testing_filename: str
     categorised_questions_filename: str
     categorised_statements_filename: str
+    prepared_dataset_with_commands_filepath: str
 
 
 class OllamaOptions(BaseModel):

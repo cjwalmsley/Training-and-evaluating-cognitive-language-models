@@ -142,6 +142,27 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return self.platform_config.get_docker_data_directory(self.settings)
 
+    def docker_pre_training_directory(self) -> str:
+
+        return os.path.join(
+            self.get_docker_data_directory(),
+            self.settings.file_locations.pre_training_directory,
+        )
+
+    def docker_training_directory(self) -> str:
+
+        return os.path.join(
+            self.get_docker_data_directory(),
+            self.settings.file_locations.training_directory,
+        )
+
+    def docker_testing_directory(self) -> str:
+
+        return os.path.join(
+            self.get_docker_data_directory(),
+            self.settings.file_locations.testing_directory,
+        )
+
     def pre_training_directory(self) -> str:
 
         directory_path = os.path.join(
@@ -153,11 +174,15 @@ class GlobalConfig(metaclass=SingletonMeta):
             os.makedirs(directory_path, exist_ok=True)
         return directory_path
 
+    def pre_training_filename(self) -> str:
+
+        return self.settings.file_locations.pre_training_filename
+
     def pre_training_filepath(self) -> str:
 
         return os.path.join(
             self.pre_training_directory(),
-            self.settings.file_locations.pre_training_filename,
+            self.pre_training_filename(),
         )
 
     def prepared_dataset_directory(self) -> str:
@@ -188,11 +213,15 @@ class GlobalConfig(metaclass=SingletonMeta):
             os.makedirs(directory_path, exist_ok=True)
         return directory_path
 
+    def training_filename(self) -> str:
+
+        return self.settings.file_locations.training_filename
+
     def training_filepath(self) -> str:
 
         return os.path.join(
             self.training_directory(),
-            self.settings.file_locations.training_filename,
+            self.training_filename(),
         )
 
     def testing_directory(self) -> str:
@@ -206,11 +235,15 @@ class GlobalConfig(metaclass=SingletonMeta):
             os.makedirs(directory_path, exist_ok=True)
         return directory_path
 
+    def testing_filename(self) -> str:
+
+        return self.settings.file_locations.testing_filename
+
     def testing_filepath(self) -> str:
 
         return os.path.join(
             self.testing_directory(),
-            self.settings.file_locations.testing_filename,
+            self.testing_filename(),
         )
 
     def categorised_questions_filepath(self) -> str:
@@ -220,6 +253,13 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.categorised_questions_filename,
         )
 
+    def prepared_dataset_with_commands_filepath(self) -> str:
+
+        return os.path.join(
+            self.prepared_dataset_directory(),
+            self.settings.file_locations.prepared_dataset_with_commands_filepath,
+        )
+
     def categorised_statements_filepath(self) -> str:
 
         return os.path.join(
@@ -227,11 +267,15 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.categorised_statements_filename,
         )
 
+    def pre_training_validation_testing_filename(self) -> str:
+
+        return self.settings.file_locations.pretraining_validation_testing_filename
+
     def pretraining_validation_testing_filepath(self) -> str:
 
         return os.path.join(
             self.testing_directory(),
-            self.settings.file_locations.pretraining_validation_testing_filename,
+            self.pre_training_validation_testing_filename(),
         )
 
     def log_archive_directory(self) -> str:

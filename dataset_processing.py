@@ -285,23 +285,19 @@ def merge_categories(
     return the_df
 
 
-def select_pretraining_data(
-    the_df, use_manual_pretraining_data, percentage_of_pretraining_samples
-):
+def select_pretraining_data(the_df, percentage_of_pretraining_samples):
     # pick a random sample of pretraining rows or use a pre-selected, manually generated set
     # for each category, pick an equal number of samples
     question_categories = the_df["question_category"].unique()
     sentence_categories = the_df["sentence_category"].unique()
     print(f"Question categories: {question_categories}")
     print(f"Sentence categories: {sentence_categories}")
-    if use_manual_pretraining_data:
-        raise Exception("not implemented yet")
-    if not use_manual_pretraining_data:
-        the_df["is_pretraining"] = False
-        number_of_pretraining_samples = (
-            len(the_df) * percentage_of_pretraining_samples // 100
-        )
-        print(f"Number of pretraining samples: {number_of_pretraining_samples}")
+
+    the_df["is_pretraining"] = False
+    number_of_pretraining_samples = (
+        len(the_df) * percentage_of_pretraining_samples // 100
+    )
+    print(f"Number of pretraining samples: {number_of_pretraining_samples}")
     samples_per_category = number_of_pretraining_samples // (
         len(question_categories) + len(sentence_categories)
     )
