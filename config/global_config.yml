@@ -23,18 +23,17 @@ file_locations:
   experiments_directory: "experiments"
   log_archive_directory: "logs"
   prepared_dataset_directory: "data"
+  prepared_dataset_filename: "response_formatted_20250924_174653.jsonl"
   pretraining_validation_testing_filename: "nyc_squad_pretraining_validation_testing_commands.txt"
   categorised_questions_filename: "llm_question_categorisation_results.jsonl"
-  categorised_statements_filename: "llm_statement_categorisation_results.jsonl"
+  categorised_statements_filename: "llm_sentence_categorisation_results.jsonl"
   prepared_dataset_with_commands_filepath: "nyc_squad_with_pretraining_commands.jsonl"
 
 experiments:
   experiment_name: "15"
   percentage_of_pretraining_samples: 10
-  use_manual_pretraining_data: false
   maximum_number_of_words: 50
   maximum_word_length: 25
-  prepared_dataset_filename: "response_formatted_20250924_174653.jsonl"
 
 
 dataset:

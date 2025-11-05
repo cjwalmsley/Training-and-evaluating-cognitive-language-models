@@ -167,7 +167,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         directory_path = os.path.join(
             self.get_experiments_directory(),
-            self.settings.experiment_name,
+            self.settings.experiments.experiment_name,
             self.settings.file_locations.pre_training_directory,
         )
         if not os.path.exists(directory_path):
@@ -188,7 +188,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def prepared_dataset_directory(self) -> str:
 
         directory_path = os.path.join(
-            self.get_base_directory(),
+            self.get_experiments_directory(),
             self.settings.file_locations.prepared_dataset_directory,
         )
         if not os.path.exists(directory_path):
@@ -199,14 +199,14 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return os.path.join(
             self.prepared_dataset_directory(),
-            self.settings.prepared_dataset_filename,
+            self.prepared_dataset_filename(),
         )
 
     def training_directory(self) -> str:
 
         directory_path = os.path.join(
             self.get_experiments_directory(),
-            self.settings.experiment_name,
+            self.experiment_name(),
             self.settings.file_locations.training_directory,
         )
         if not os.path.exists(directory_path):
@@ -228,7 +228,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         directory_path = os.path.join(
             self.get_experiments_directory(),
-            self.settings.experiment_name,
+            self.experiment_name(),
             self.settings.file_locations.testing_directory,
         )
         if not os.path.exists(directory_path):
@@ -257,7 +257,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return os.path.join(
             self.prepared_dataset_directory(),
-            self.settings.file_locations.prepared_dataset_with_commands_filepath,
+            self.settings.file_locations.prepared_dataset_with_commands_filename,
         )
 
     def categorised_statements_filepath(self) -> str:
@@ -282,7 +282,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         directory_path = os.path.join(
             self.get_experiments_directory(),
-            self.settings.experiment_name,
+            self.experiment_name(),
             self.settings.file_locations.log_archive_directory,
         )
         if not os.path.exists(directory_path):
@@ -360,20 +360,20 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def experiment_name(self) -> str:
 
-        return self.settings.experiment_name
+        return self.settings.experiments.experiment_name
 
     def prepared_dataset_filename(self) -> str:
 
-        return self.settings.prepared_dataset_filename
+        return self.settings.file_locations.prepared_dataset_filename
 
-    def percentage_of_pretraining_samples(self) -> float:
+    def percentage_of_pre_training_samples(self) -> float:
 
-        return self.settings.percentage_of_pretraining_samples
+        return self.settings.experiments.percentage_of_pretraining_samples
 
     def maximum_number_of_words(self) -> int:
 
-        return self.settings.maximum_number_of_words
+        return self.settings.experiments.maximum_number_of_words
 
     def maximum_word_length(self) -> int:
 
-        return self.settings.maximum_word_length
+        return self.settings.experiments.maximum_word_length

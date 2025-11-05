@@ -17,7 +17,7 @@ class FileLocations(BaseModel):
     base_directory_mac: str
     base_directory_windows: str
     prompt_data_directory: str
-    prompt_inputs_jsonl_filename: "str"
+    prompt_inputs_jsonl_filename: str
     responses_data_directory: str
     responses_jsonl_filename: str
     base_prompt_filename: str
@@ -92,3 +92,4 @@ class Settings(BaseSettings):
     dataset: DatasetConfig
     ollama: OllamaConfig
     file_locations: FileLocations
+    experiments: Experiments
