@@ -271,7 +271,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return self.settings.file_locations.pretraining_validation_testing_filename
 
-    def pretraining_validation_testing_filepath(self) -> str:
+    def pre_training_validation_testing_filepath(self) -> str:
 
         return os.path.join(
             self.testing_directory(),
@@ -377,3 +377,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def maximum_word_length(self) -> int:
 
         return self.settings.experiments.maximum_word_length
+
+    def embedding_model(self):
+
+        return self.settings.ollama.embedding_model

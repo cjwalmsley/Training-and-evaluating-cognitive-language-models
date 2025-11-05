@@ -1,22 +1,26 @@
 import re
 from collections import Counter
 from unidecode import unidecode
-import warnings
+import logging
 import nltk
 from nltk.corpus import stopwords
 from datasets import load_dataset, load_from_disk
 from scipy.spatial.distance import cosine
 import ollama
 import pandas as pd
+from config.global_config import GlobalConfig
+
+logger = logging.getLogger(__name__)
+global_config = GlobalConfig()
 
 
 def load_squad_dataset(ds_filepath="squad_dataset"):
     # check if dataset is available on disk, if not load it
     try:
-        print("Loading dataset from: " + ds_filepath)
+        logger.info("Loading dataset from: " + ds_filepath)
         ds = load_from_disk(ds_filepath)
     except FileNotFoundError:
-        print(
+        logger.critical(
             "File not found, loading dataset from Huggingface and saving to: "
             + ds_filepath
         )
@@ -67,6 +71,17 @@ class AnnabellCommandGenerator:
         # remove any question marks from the string
         cleaned_string = a_string.replace("?", "").strip()
         return cleaned_string
+
+    @staticmethod
+    def phrases_and_answer_words(phrases, answer_words):
+        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
+        phrase_answer_words = {}
+        for phrase in phrases:
+            phrase_answer_words[phrase] = []
+            for word in answer_words:
+                if word in phrase:
+                    phrase_answer_words[phrase].append(word)
+        return phrase_answer_words
 
     def question_word_length(self):
         return len(self.question.split())
@@ -130,16 +145,6 @@ class AnnabellCommandGenerator:
             phrase = " ".join(phrase_words)
             phrases.append(phrase)
         return phrases
-
-    def phrases_and_answer_words(self, phrases, answer_words):
-        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
-        phrase_answer_words = {}
-        for phrase in phrases:
-            phrase_answer_words[phrase] = []
-            for word in answer_words:
-                if word in phrase:
-                    phrase_answer_words[phrase].append(word)
-        return phrase_answer_words
 
     def write_declarative_sentence(self):
 
@@ -290,25 +295,25 @@ def select_pretraining_data(the_df, percentage_of_pretraining_samples):
     # for each category, pick an equal number of samples
     question_categories = the_df["question_category"].unique()
     sentence_categories = the_df["sentence_category"].unique()
-    print(f"Question categories: {question_categories}")
-    print(f"Sentence categories: {sentence_categories}")
+    logger.info(f"Sentence categories: {sentence_categories}")
 
     the_df["is_pretraining"] = False
-    number_of_pretraining_samples = (
+    number_of_pretraining_samples = int(
         len(the_df) * percentage_of_pretraining_samples // 100
     )
-    print(f"Number of pretraining samples: {number_of_pretraining_samples}")
-    samples_per_category = number_of_pretraining_samples // (
-        len(question_categories) + len(sentence_categories)
+    logger.info(f"Number of pretraining samples: {number_of_pretraining_samples}")
+    samples_per_category = int(
+        number_of_pretraining_samples
+        // (len(question_categories) + len(sentence_categories))
     )
-    print(f"Samples per category: {samples_per_category}")
+    logger.info(f"Samples per category: {samples_per_category}")
     # sample from the question categories
     # sample from the question categories
     for category in question_categories:
         category_df = the_df[the_df["question_category"] == category]
         samples_to_take = samples_per_category
         if len(category_df) < samples_per_category:
-            print(
+            logger.warning(
                 f"Warning: Not enough samples in question category '{category}'. Taking all {len(category_df)} samples."
             )
             samples_to_take = len(category_df)
@@ -326,7 +331,7 @@ def select_pretraining_data(the_df, percentage_of_pretraining_samples):
             not_selected_df = category_df[category_df["is_pretraining"] == False]
             samples_to_take = remaining_samples
             if len(not_selected_df) < remaining_samples:
-                print(
+                logger.warning(
                     f"Warning: Not enough samples in sentence category '{category}'. Taking all {len(not_selected_df)} available samples."
                 )
                 samples_to_take = len(not_selected_df)
@@ -337,12 +342,16 @@ def select_pretraining_data(the_df, percentage_of_pretraining_samples):
                 the_df.loc[sampled_category_df.index, "is_pretraining"] = True
 
     # print the counts of samples in the question and sentence categories
-    print("Pretraining samples by question category:")
-    print(the_df[the_df["is_pretraining"] == True]["question_category"].value_counts())
-    print("Pretraining samples by sentence category:")
-    print(the_df[the_df["is_pretraining"] == True]["sentence_category"].value_counts())
+    logger.info("Pretraining samples by question category:")
+    logger.info(
+        the_df[the_df["is_pretraining"] == True]["question_category"].value_counts()
+    )
+    logger.info("Pretraining samples by sentence category:")
+    logger.info(
+        the_df[the_df["is_pretraining"] == True]["sentence_category"].value_counts()
+    )
     total_pretraining_count = the_df["is_pretraining"].sum()
-    print(
+    logger.info(
         f"Total number of samples selected for pretraining: {total_pretraining_count}"
     )
 
@@ -355,15 +364,13 @@ def write_pretraining_file(the_filepath, the_df):
             commands = row["created_commands"]
             for command in commands:
                 commands_file.write(command + "\n")
-    print(f"Wrote {the_filepath}")
+    logger.info(f"Wrote {the_filepath}")
 
     with open(the_filepath, "r") as commands_file:
         lines = commands_file.readlines()
     number_of_reward_lines = sum(1 for line in lines if line.startswith(".rw"))
-    print(f"Number of reward lines: {number_of_reward_lines}")
-    print(f"Number of commands: {len(lines)}")
-    for line in lines[:20]:
-        print(line.strip())
+    logger.info(f"Number of reward lines: {number_of_reward_lines}")
+    logger.info(f"Number of commands: {len(lines)}")
 
 
 def write_training_file(the_filepath, the_df):
@@ -380,14 +387,11 @@ def write_training_file(the_filepath, the_df):
             file.write(f"{tuple[-1]}\n")
             # write a blank line to signal to ANNABELL the end of the context
             file.write("\n")
-    print(f"file written: {the_filepath}")
+    logger.info(f"file written: {the_filepath}")
 
     with open(the_filepath, "r") as commands_file:
         lines = commands_file.readlines()
-        print(f"Number of commands: {len(lines)}")
-        print("First 20 lines:")
-        for line in lines[:20]:
-            print(line.strip())
+        logger.info(f"Number of commands: {len(lines)}")
 
 
 def write_testing_file(the_filepath, the_df):
@@ -405,14 +409,11 @@ def write_testing_file(the_filepath, the_df):
             test_file.write("#END OF TESTING SAMPLE\n")
             # write a blank line to signal to ANNABELL the end of the context
             test_file.write("\n")
-    print(f"file written: {the_filepath}")
+    logger.info(f"file written: {the_filepath}")
 
     with open(the_filepath, "r") as commands_file:
         lines = commands_file.readlines()
-        print(f"Number of commands: {len(lines)}")
-        print("First 20 lines:")
-        for line in lines[:20]:
-            print(line.strip())
+        logger.info(f"Number of commands: {len(lines)}")
 
 
 def convert_stopwords_to_lower_case(a_string):
@@ -461,7 +462,7 @@ def remove_quotes_from_file(filepath):
     cleaned_filepath = filepath.replace(".tsv", "_cleaned.tsv")
     with open(cleaned_filepath, "w") as cleaned_file:
         cleaned_file.writelines(train_data_cleaned)
-    print(f"Cleaned data saved to {cleaned_filepath}")
+    logger.info(f"Cleaned data saved to {cleaned_filepath}")
     return cleaned_filepath
 
 
@@ -505,11 +506,11 @@ def similarity_score(sentence_1, sentence_2):
     from scipy.spatial.distance import cosine, euclidean
 
     embedding_1 = ollama.embed(
-        model="embeddinggemma",
+        model=global_config.embedding_model,
         input=sentence_1,
     ).embeddings[0]
     embedding_2 = ollama.embed(
-        model="embeddinggemma",
+        model=global_config.embedding_model,
         input=sentence_2,
     ).embeddings[0]
 
@@ -628,13 +629,13 @@ def format_text(text, is_question=False):
 def dataset_summary(a_dataset):
     for split in a_dataset.keys():
         ds_split = a_dataset[split].to_pandas()
-        print("summary of " + split + " split")
-        print(ds_split.info())
+        logger.info("summary of " + split + " split")
+        logger.info(ds_split.info())
         titles = ds_split["title"]
-        print("number of titles: " + str(len(set(titles))))
-        print((set(titles)))
+        logger.info("number of titles: " + str(len(set(titles))))
+        logger.info((set(titles)))
         bag_of_titles = Counter(titles)
-        print(
+        logger.info(
             "titles with most numerous examples: "
             + str((bag_of_titles.most_common(20)))
             + "\n"
@@ -665,7 +666,7 @@ def ids_questions_answers_from_log_file(test_log_filepath):
 
 def embedding_for_sentence(a_string):
     embedding = ollama.embed(
-        model="embeddinggemma",
+        model=global_config.embedding_model,
         input=a_string,
     ).embeddings[0]
     return embedding

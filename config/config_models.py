@@ -37,7 +37,7 @@ class FileLocations(BaseModel):
     pretraining_validation_testing_filename: str
     categorised_questions_filename: str
     categorised_statements_filename: str
-    prepared_dataset_with_commands_filepath: str
+    prepared_dataset_with_commands_filename: str
 
 
 class OllamaOptions(BaseModel):
@@ -72,6 +72,7 @@ class OllamaConfig(BaseModel):
         "qwen3:4b",
     ]
     model: str
+    embedding_model: str
     stream: bool
     think: bool
 
