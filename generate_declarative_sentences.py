@@ -1,6 +1,6 @@
 import logging
 import ollama
-from dataset_processing import load_squad_dataset
+from dataset_processing import load_squad_dataset, titles_in_dataset_split
 import timeit
 from datetime import datetime
 import pandas as pd
@@ -14,8 +14,11 @@ global_config = GlobalConfig()
 
 
 class DeclarativeStatement(BaseModel):
-    example_id: str
     declarative_statement: str
+
+
+class DeclarativeStatementWithID(DeclarativeStatement):
+    example_id: str
 
 
 def generated_model_from_prompt(the_prompt, id_string):
@@ -32,7 +35,7 @@ def generated_model_from_prompt(the_prompt, id_string):
     response_data["example_id"] = id_string
 
     # Validate the complete data against the Pydantic model
-    return DeclarativeStatement.model_validate(response_data)
+    return DeclarativeStatementWithID.model_validate(response_data)
 
 
 def generate_response_with_prompt(the_prompt):
@@ -68,6 +71,10 @@ def items_with_title(the_dataset, the_title):
 
 
 def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=None):
+
+    if title != "all" and title not in titles_in_dataset_split(the_dataset_split):
+        logger.critical(f"Title '{title}' not found in dataset split.")
+        raise Exception(f"Title '{title}' not found in dataset split.")
 
     if the_id is not None:
         filtered_database_split = the_dataset_split.filter(lambda x: x["id"] == the_id)
@@ -197,7 +204,6 @@ def generate_declarative_sentences(
 
             try:
                 response_model = process_prompt(base_prompt, line_json, the_id)
-                logger.info("Response:\n" + str(response_model))
                 with open(output_filepath, "a") as response_file:
                     response_file.write(response_model.model_dump_json() + "\n")
 
@@ -242,21 +248,19 @@ def clean_line(a_string):
 
 if __name__ == "__main__":
 
-    print(f"🚀 Starting project: {global_config.project_name}")
-    print(f"   Using API key starting with: {global_config.wandb_api_key()[:4]}...")
-
+    logger.info(f"🚀 Starting project: {global_config.project_name}")
     model_strings = global_config.ollama_models()
     options = global_config.ollama_options_dict()
 
-    print("\n--- Model Config ---")
-    print(f"   options: {options}")
-    print(f"   available models: {model_strings}")
+    logger.info("\n--- Model Config ---")
+    logger.info(f"   options: {options}")
+    logger.info(f"   available models: {model_strings}")
 
     # You can even export the final, validated config
-    print("\n--- Final Settings (as JSON) ---")
-    print(global_config.settings.model_dump_json(indent=2))
+    logger.info("\n--- Final Settings (as JSON) ---")
+    logger.info(global_config.settings.model_dump_json(indent=2))
 
-    if len(sys.argv) == 5:
+    if len(sys.argv) == 4:
         model_string = sys.argv[1]
         title_arg = sys.argv[2]
         num_sentences_arg = sys.argv[3]
@@ -264,9 +268,13 @@ if __name__ == "__main__":
         # Convert num_sentences_arg to int if it's a digit, otherwise keep as string (for 'all')
         if num_sentences_arg.isdigit():
             num_sentences_arg = int(num_sentences_arg)
+        logger.info(
+            f"Arguments received - Model: {model_string}, Title: {title_arg}, Number of Sentences: {num_sentences_arg}"
+        )
+        logger.info(type(num_sentences_arg))
 
     else:
-        print(
+        logger.info(
             "Usage: python generate_declarative_sentences.py <model_string> <title> <number_of_sentences_or_all>"
         )
         # Default execution if no args or wrong number of args are provided

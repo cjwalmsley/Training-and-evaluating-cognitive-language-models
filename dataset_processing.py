@@ -642,6 +642,12 @@ def dataset_summary(a_dataset):
         )
 
 
+def titles_in_dataset_split(a_dataset_split):
+    ds_split = a_dataset_split.to_pandas()
+    titles = ds_split["title"]
+    return set(titles)
+
+
 def ids_questions_answers_from_log_file(test_log_filepath):
     with open(test_log_filepath, "r") as test_log_file:
         test_log_lines = test_log_file.readlines()
