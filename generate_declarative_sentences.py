@@ -14,6 +14,7 @@ global_config = GlobalConfig()
 
 
 class DeclarativeStatement(BaseModel):
+    example_id: str
     declarative_statement: str
 
 
@@ -23,7 +24,15 @@ def generated_model_from_prompt(the_prompt, id_string):
         the_prompt=the_prompt,
     )
     logger.debug("raw response: " + the_response)
-    return DeclarativeStatement.model_validate_json(the_response)
+
+    # Parse the JSON response from the model
+    response_data = json.loads(the_response)
+
+    # Add the example_id to the dictionary
+    response_data["example_id"] = id_string
+
+    # Validate the complete data against the Pydantic model
+    return DeclarativeStatement.model_validate(response_data)
 
 
 def generate_response_with_prompt(the_prompt):
@@ -49,8 +58,8 @@ def prompt_prefix_from_file():
 
 def process_prompt(the_base_prompt, the_line, the_id):
     the_prompt = the_base_prompt + "\n" + the_line
-    generated_json = generated_model_from_prompt(the_prompt, the_id)
-    return generated_json
+    generated_model = generated_model_from_prompt(the_prompt, the_id)
+    return generated_model
 
 
 def items_with_title(the_dataset, the_title):
@@ -66,14 +75,16 @@ def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=N
         filtered_database_split = the_dataset_split.filter(
             lambda x: x["title"] == title
         )
-        if number_of_sentences == "all":
-            pass
-        else:
-            filtered_database_split = filtered_database_split.select(
-                range(min(number_of_sentences, len(the_dataset_split)))
-            )
+
     else:
         filtered_database_split = the_dataset_split
+
+    if number_of_sentences == "all":
+        pass
+    else:
+        filtered_database_split = filtered_database_split.select(
+            range(min(number_of_sentences, len(the_dataset_split)))
+        )
     # Create the 'answer' column from the 'answers' dictionary
     # make a dataframe from the dataset split
     return filtered_database_split
