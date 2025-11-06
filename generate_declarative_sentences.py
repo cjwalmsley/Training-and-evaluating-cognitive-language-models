@@ -1,6 +1,6 @@
 import logging
 import ollama
-from dataset_processing import load_squad_dataset, titles_in_dataset_split
+from dataset_processing import load_squad_dataset, filter_dataset_split
 import timeit
 from datetime import datetime
 import pandas as pd
@@ -63,38 +63,6 @@ def process_prompt(the_base_prompt, the_line, the_id):
     the_prompt = the_base_prompt + "\n" + the_line
     generated_model = generated_model_from_prompt(the_prompt, the_id)
     return generated_model
-
-
-def items_with_title(the_dataset, the_title):
-    df = pd.DataFrame(the_dataset)
-    return df[df.apply(lambda x: x["title"] == the_title, axis=1)]
-
-
-def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=None):
-
-    if title != "all" and title not in titles_in_dataset_split(the_dataset_split):
-        logger.critical(f"Title '{title}' not found in dataset split.")
-        raise Exception(f"Title '{title}' not found in dataset split.")
-
-    if the_id is not None:
-        filtered_database_split = the_dataset_split.filter(lambda x: x["id"] == the_id)
-    elif title != "all":
-        filtered_database_split = the_dataset_split.filter(
-            lambda x: x["title"] == title
-        )
-
-    else:
-        filtered_database_split = the_dataset_split
-
-    if number_of_sentences == "all":
-        pass
-    else:
-        filtered_database_split = filtered_database_split.select(
-            range(min(number_of_sentences, len(the_dataset_split)))
-        )
-    # Create the 'answer' column from the 'answers' dictionary
-    # make a dataframe from the dataset split
-    return filtered_database_split
 
 
 def create_prompt_input_dataframe(the_dataset):
@@ -168,77 +136,80 @@ def timestamped_response_filepath(ds_split_name):
 
 
 def generate_declarative_sentences(
-    ds, number_of_sentences, the_model_string, splits, debug_id=None, title="all"
+    number_of_sentences,
+    the_model_string,
+    ds_split_name="train",
+    debug_id=None,
+    title="all",
 ):
 
-    for ds_split_name in splits:
-        prompt_json_l_filepath = global_config.prompt_inputs_jsonl_filepath()
-        base_prompt_filepath = global_config.base_prompt_filepath()
-        examples_generated = 0
-        # create output filepath using response_filepath with the model string and current datetime appended to the filename
+    logger.info(f"🚀 Starting project: {global_config.project_name}")
+    logger.info("\n--- Model Config ---")
+    logger.info(f"   options: {global_config.ollama_options_dict()}")
+    logger.info(f"   model: {the_model_string}")
+    logger.info("\n--- Final Settings (as JSON) ---")
+    logger.info(global_config.settings.model_dump_json(indent=2))
 
-        output_filepath = timestamped_response_filepath(ds_split_name)
+    prompt_json_l_filepath = global_config.prompt_inputs_jsonl_filepath()
+    base_prompt_filepath = global_config.base_prompt_filepath()
+    examples_generated = 0
 
-        dataset_split = ds[ds_split_name]
-        logger.info("Filtering dataset split: " + ds_split_name)
-        filtered_database_split = filter_dataset_split(
-            dataset_split, title, number_of_sentences, debug_id
-        )
+    output_filepath = timestamped_response_filepath(ds_split_name)
 
-        prepared_dataframe = create_prompt_input_dataframe(filtered_database_split)
-        create_prompt_input_jsonl(prepared_dataframe)
-        number_of_examples = len(prepared_dataframe)
+    dataset_split = load_squad_dataset(global_config.dataset_directory())[ds_split_name]
+    logger.info("Filtering dataset split: " + ds_split_name)
+    filtered_database_split = filter_dataset_split(
+        dataset_split, title, number_of_sentences, debug_id
+    )
 
-        logger.info(
-            "generating: " + str(number_of_examples) + " examples\t"
-            "database_split: " + ds_split_name + "\tusing  model: " + the_model_string
-        )
+    prepared_dataframe = create_prompt_input_dataframe(filtered_database_split)
+    create_prompt_input_jsonl(prepared_dataframe)
+    number_of_examples = len(prepared_dataframe)
 
-        with open(base_prompt_filepath, "r") as base_prompt_file:
-            base_prompt = base_prompt_file.read()
-        with open(prompt_json_l_filepath, "r") as prompt_json_l_file:
-            prompt_json_l = prompt_json_l_file.readlines()
-        start_time = timeit.default_timer()
-        for line in prompt_json_l:
-            the_id, line_json = prompt_tuple_from_json_line(line)
+    logger.info(
+        "generating: " + str(number_of_examples) + " examples\t"
+        "database_split: " + ds_split_name + "\tusing  model: " + the_model_string
+    )
 
-            try:
-                response_model = process_prompt(base_prompt, line_json, the_id)
-                with open(output_filepath, "a") as response_file:
-                    response_file.write(response_model.model_dump_json() + "\n")
+    with open(base_prompt_filepath, "r") as base_prompt_file:
+        base_prompt = base_prompt_file.read()
+    with open(prompt_json_l_filepath, "r") as prompt_json_l_file:
+        prompt_json_l = prompt_json_l_file.readlines()
+    start_time = timeit.default_timer()
+    for line in prompt_json_l:
+        the_id, line_json = prompt_tuple_from_json_line(line)
 
-            except ValidationError as error:
-                logger.critical(
-                    "Error processing example with id: "
-                    + str(the_id)
-                    + "\t"
-                    + str(error)
-                )
-            examples_generated = examples_generated + 1
-            logger.info(
-                "generated: "
-                + str(examples_generated)
-                + " of: "
-                + str(number_of_examples)
+        try:
+            response_model = process_prompt(base_prompt, line_json, the_id)
+            with open(output_filepath, "a") as response_file:
+                response_file.write(response_model.model_dump_json() + "\n")
+
+        except ValidationError as error:
+            logger.critical(
+                "Error processing example with id: " + str(the_id) + "\t" + str(error)
             )
-            if examples_generated == number_of_examples:
-                break
-        end_time = timeit.default_timer()
-        total_elapsed = end_time - start_time
-        completion_message = (
-            "generated: "
-            + str(examples_generated)
-            + " examples\t"
-            + "using  model: "
-            + model_string
-            + "\t"
-            + "total_execution_time_in_seconds: "
-            + str(total_elapsed)
-            + "\toutput_filepath:"
-            + output_filepath
-            + "\n"
+        examples_generated = examples_generated + 1
+        logger.info(
+            "generated: " + str(examples_generated) + " of: " + str(number_of_examples)
         )
-        logger.info(completion_message)
+        if examples_generated == number_of_examples:
+            break
+    end_time = timeit.default_timer()
+    total_elapsed = end_time - start_time
+    completion_message = (
+        "generated: "
+        + str(examples_generated)
+        + " examples\t"
+        + "using  model: "
+        + the_model_string
+        + "\t"
+        + "total_execution_time_in_seconds: "
+        + str(total_elapsed)
+        + "\toutput_filepath:"
+        + output_filepath
+        + "\n"
+    )
+    logger.info(completion_message)
 
 
 def clean_line(a_string):
@@ -248,49 +219,26 @@ def clean_line(a_string):
 
 if __name__ == "__main__":
 
-    logger.info(f"🚀 Starting project: {global_config.project_name}")
-    model_strings = global_config.ollama_models()
-    options = global_config.ollama_options_dict()
-
-    logger.info("\n--- Model Config ---")
-    logger.info(f"   options: {options}")
-    logger.info(f"   available models: {model_strings}")
-
-    # You can even export the final, validated config
-    logger.info("\n--- Final Settings (as JSON) ---")
-    logger.info(global_config.settings.model_dump_json(indent=2))
+    # for running from command line with args
 
     if len(sys.argv) == 4:
-        model_string = sys.argv[1]
+        model_string_arg = sys.argv[1]
         title_arg = sys.argv[2]
         num_sentences_arg = sys.argv[3]
-
         # Convert num_sentences_arg to int if it's a digit, otherwise keep as string (for 'all')
         if num_sentences_arg.isdigit():
             num_sentences_arg = int(num_sentences_arg)
         logger.info(
-            f"Arguments received - Model: {model_string}, Title: {title_arg}, Number of Sentences: {num_sentences_arg}"
+            f"Arguments received - Model: {model_string_arg}, Title: {title_arg}, Number of Sentences: {num_sentences_arg}"
         )
-        logger.info(type(num_sentences_arg))
 
     else:
-        logger.info(
-            "Usage: python generate_declarative_sentences.py <model_string> <title> <number_of_sentences_or_all>"
-        )
-        # Default execution if no args or wrong number of args are provided
-        model_string = model_strings[-1]
+        model_string_arg = global_config.ollama_models()[-1]
         title_arg = "New_York_City"
         num_sentences_arg = 5
 
-    splits = ["train"]
-
-    dataset = load_squad_dataset(global_config.dataset_directory())
-
     generate_declarative_sentences(
-        dataset,
         num_sentences_arg,
-        model_string,
-        splits,
-        debug_id=None,
+        model_string_arg,
         title=title_arg,
     )

@@ -29,6 +29,38 @@ def load_squad_dataset(ds_filepath="squad_dataset"):
     return ds
 
 
+def items_with_title(the_dataset, the_title):
+    df = pd.DataFrame(the_dataset)
+    return df[df.apply(lambda x: x["title"] == the_title, axis=1)]
+
+
+def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=None):
+
+    if title != "all" and title not in titles_in_dataset_split(the_dataset_split):
+        logger.critical(f"Title '{title}' not found in dataset split.")
+        raise Exception(f"Title '{title}' not found in dataset split.")
+
+    if the_id is not None:
+        filtered_database_split = the_dataset_split.filter(lambda x: x["id"] == the_id)
+    elif title != "all":
+        filtered_database_split = the_dataset_split.filter(
+            lambda x: x["title"] == title
+        )
+
+    else:
+        filtered_database_split = the_dataset_split
+
+    if number_of_sentences == "all":
+        pass
+    else:
+        filtered_database_split = filtered_database_split.select(
+            range(min(number_of_sentences, len(the_dataset_split)))
+        )
+    # Create the 'answer' column from the 'answers' dictionary
+    # make a dataframe from the dataset split
+    return filtered_database_split
+
+
 def save_squad_dataset(ds, save_filepath):
     ds.save_to_disk(save_filepath)
 
