@@ -38,6 +38,9 @@ experiments:
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
+  splits:
+    training: "train"
+    validation: "validation"
 
 ollama:
   options:

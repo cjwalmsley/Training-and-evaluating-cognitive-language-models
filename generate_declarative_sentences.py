@@ -8,6 +8,7 @@ import sys
 import json
 from pydantic import BaseModel, ValidationError
 from config.global_config import GlobalConfig
+from testing.test_annabell import experiment_number
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -51,12 +52,6 @@ def generate_response_with_prompt(the_prompt):
     logger.info("Generated response: " + str(generated_text.response).strip())
     logger.info("Total duration: " + str(generated_text.total_duration))
     return generated_text.response
-
-
-def prompt_prefix_from_file():
-    with open("prompts/prompt_prefix_for_squad", "r") as prefix_file:
-        prompt_prefix = prefix_file.read()
-    return prompt_prefix
 
 
 def process_prompt(the_base_prompt, the_line, the_id):
@@ -122,7 +117,7 @@ def prompt_tuple_from_json_line(the_json_line):
     return the_id, line_json
 
 
-def timestamped_response_filepath(ds_split_name):
+def response_filepath(ds_split_name):
     suffix = ".jsonl"
     filepath = (
         global_config.responses_jsonl_filepath().removesuffix(suffix)
@@ -141,6 +136,7 @@ def generate_declarative_sentences(
     ds_split_name="train",
     debug_id=None,
     title="all",
+    experiment_number=999,
 ):
 
     logger.info(f"🚀 Starting project: {global_config.project_name}")
@@ -154,7 +150,7 @@ def generate_declarative_sentences(
     base_prompt_filepath = global_config.base_prompt_filepath()
     examples_generated = 0
 
-    output_filepath = timestamped_response_filepath(ds_split_name)
+    output_filepath = response_filepath(ds_split_name, experiment_number)
 
     dataset_split = load_squad_dataset(global_config.dataset_directory())[ds_split_name]
     logger.info("Filtering dataset split: " + ds_split_name)
