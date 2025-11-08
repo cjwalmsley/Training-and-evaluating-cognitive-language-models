@@ -292,7 +292,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def prompt_data_directory(self) -> str:
 
         directory_path = os.path.join(
-            self.get_base_directory(),
+            self.get_experiments_directory(),
             self.settings.file_locations.prompt_data_directory,
         )
         # create the directory if it doesn't exist
@@ -302,7 +302,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def responses_data_directory(self) -> str:
 
         directory_path = os.path.join(
-            self.get_base_directory(),
+            self.get_experiments_directory(),
             self.settings.file_locations.responses_data_directory,
         )
         # create the directory if it doesn't exist
@@ -328,6 +328,53 @@ class GlobalConfig(metaclass=SingletonMeta):
         return os.path.join(
             self.prompt_data_directory(),
             self.settings.file_locations.prompt_inputs_jsonl_filename,
+        )
+
+    def classify_sentence_prompt_part_1_filepath(self) -> str:
+
+        return os.path.join(
+            self.prompt_data_directory(),
+            self.settings.file_locations.classify_sentence_prompt_part_1_filename,
+        )
+
+    def classify_sentence_prompt_part_2_filepath(self) -> str:
+
+        return os.path.join(
+            self.prompt_data_directory(),
+            self.settings.file_locations.classify_sentence_prompt_part_2_filename,
+        )
+
+    def sentence_patterns_filepath(self) -> str:
+
+        return os.path.join(
+            self.prompt_data_directory(),
+            self.settings.file_locations.sentence_patterns_filename,
+        )
+
+    def response_declarative_sentence_categories_filepath(self):
+        return os.path.join(
+            self.responses_data_directory(),
+            self.settings.file_locations.response_declarative_sentence_categories_filename,
+        )
+
+    def response_interrogative_sentence_categories_filepath(self):
+        return os.path.join(
+            self.responses_data_directory(),
+            self.settings.file_locations.response_interrogative_sentence_categories_filename,
+        )
+
+    def dataset_with_generated_sentences_filepath(self) -> str:
+
+        return os.path.join(
+            self.prepared_dataset_directory(),
+            self.settings.file_locations.dataset_with_generated_sentences_filename,
+        )
+
+    def dataset_with_sentence_categories_filepath(self) -> str:
+
+        return os.path.join(
+            self.prepared_dataset_directory(),
+            self.settings.file_locations.dataset_with_sentence_categories_filename,
         )
 
     def ollama_model(self) -> str:

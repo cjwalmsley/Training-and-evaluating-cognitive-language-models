@@ -6,11 +6,13 @@ file_locations:
   base_directory_windows: "G:\\My Drive\\Shared with Julia\\Education\\Kent University\\PhD\\work\\annabell"
   base_directory_linux: "/home/chris/gdrive/work/annabell"
   base_directory_mac: "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell"
-  prompt_data_directory: "experiments/data/prompts"
+  prompt_data_directory: "llm_data/prompts"
   prompt_inputs_jsonl_filename: "prompt_inputs.jsonl"
   base_prompt_filename: "base_prompt.txt"
-  responses_data_directory: "experiments/data/responses"
+  responses_data_directory: "llm_data/responses"
   responses_jsonl_filename: "responses.jsonl"
+  response_declarative_sentence_categories_filename: "responses_declarative_sentence_categories.jsonl"
+  response_interrogative_sentence_categories_filename: "responses_interrogative_sentence_categories.jsonl"
   docker_data_directory_mac: "/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
   docker_data_directory_linux: "/home/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
   docker_data_directory_windows: "C:\\PycharmProjects\\Training-and-evaluating-cognitive-language-models\\docker"
@@ -28,6 +30,13 @@ file_locations:
   categorised_questions_filename: "llm_question_categorisation_results.jsonl"
   categorised_statements_filename: "llm_sentence_categorisation_results.jsonl"
   prepared_dataset_with_commands_filename: "nyc_squad_with_pretraining_commands.jsonl"
+  classify_sentence_prompt_part_1_filename: "classify_sentence_prompt_part_1.txt"
+  classify_sentence_prompt_part_2_filename: "classify_sentence_prompt_part_2.txt"
+  sentence_patterns_filename: "sentence_patterns.jsonl"
+  dataset_with_generated_sentences_filename: "squad_dataset_with_generated_sentences.jsonl"
+  dataset_with_sentence_categories_filename: "squad_dataset_with_sentence_categories.jsonl"
+
+
 
 experiments:
   experiment_name: "15"

@@ -20,6 +20,8 @@ class FileLocations(BaseModel):
     prompt_inputs_jsonl_filename: str
     responses_data_directory: str
     responses_jsonl_filename: str
+    response_declarative_sentence_categories_filename: str
+    response_interrogative_sentence_categories_filename: str
     base_prompt_filename: str
     docker_data_directory_mac: str
     docker_data_directory_linux: str
@@ -38,6 +40,11 @@ class FileLocations(BaseModel):
     categorised_questions_filename: str
     categorised_statements_filename: str
     prepared_dataset_with_commands_filename: str
+    classify_sentence_prompt_part_1_filename: str
+    classify_sentence_prompt_part_2_filename: str
+    sentence_patterns_filename: str
+    dataset_with_generated_sentences_filename: str
+    dataset_with_sentence_categories_filename: str
 
 
 class OllamaOptions(BaseModel):

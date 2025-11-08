@@ -1,0 +1,17 @@
+FORMAT:
+
+For each provided sentence always answer in the following JSON format:
+
+{"category":"<INSERT SELECTED CATEGORY HERE>",}
+
+Only this JSON format is allowed as an answer. No explanation or other text is allowed.
+
+For example, for the following JSON input:
+
+{"sentence":"What city in the United States has the highest population?"}
+
+Your response would be:
+
+{"category":"Subject-Verb-Object"}
+
+Provide the specified response for the following JSON:

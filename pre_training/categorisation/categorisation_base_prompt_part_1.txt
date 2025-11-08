@@ -1,0 +1,5 @@
+ROLE:  You are a grammar expert.
+
+TASK: for the provided sentence, consider its grammatical structure and select the most appropriate category from the set of 7 categories below.
+
+CATEGORIES:

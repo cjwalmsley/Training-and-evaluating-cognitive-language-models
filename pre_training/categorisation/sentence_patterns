@@ -1,0 +1,29 @@
+S-V (Subject-Verb)
+
+Example: The system initialized.
+
+S-V-O (Subject-Verb-Object)
+
+Example: The model compiled the code.
+
+S-V-C (Subject-Verb-Complement)
+
+Example: The result seems correct.
+
+S-V-A (Subject-Verb-Adverbial)
+
+Example: The robot is [on the charging dock].
+
+(Note: This is different from S-V-C. "On the charging dock" describes where the robot is, not what it is.)
+
+S-V-O-A (Subject-Verb-Object-Adverbial)
+
+Example: She placed [the sensor] [on the robot].
+
+S-V-iO-dO (Subject-Verb-Indirect Object-Direct Object)
+
+Example: The API sent [the client] [a token].
+
+S-V-O-C (Subject-Verb-Object-Complement)
+
+Example: The developers deemed [the test] [a success].

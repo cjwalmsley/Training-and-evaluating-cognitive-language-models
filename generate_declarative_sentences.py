@@ -2,13 +2,11 @@ import logging
 import ollama
 from dataset_processing import load_squad_dataset, filter_dataset_split
 import timeit
-from datetime import datetime
 import pandas as pd
 import sys
 import json
 from pydantic import BaseModel, ValidationError
 from config.global_config import GlobalConfig
-from testing.test_annabell import experiment_number
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -22,11 +20,10 @@ class DeclarativeStatementWithID(DeclarativeStatement):
     example_id: str
 
 
-def generated_model_from_prompt(the_prompt, id_string):
+def generated_model_from_prompt(the_prompt, id_string, the_model_string):
     logger.info(f"Generating statement from prompt for id: {id_string}..")
-    the_response = generate_response_with_prompt(
-        the_prompt=the_prompt,
-    )
+    the_response = generate_response_with_prompt(the_model_string, the_prompt)
+
     logger.debug("raw response: " + the_response)
 
     # Parse the JSON response from the model
@@ -39,10 +36,10 @@ def generated_model_from_prompt(the_prompt, id_string):
     return DeclarativeStatementWithID.model_validate(response_data)
 
 
-def generate_response_with_prompt(the_prompt):
+def generate_response_with_prompt(the_model_string, the_prompt):
 
     generated_text = ollama.generate(
-        model=global_config.ollama_model(),
+        model=the_model_string,
         prompt=the_prompt,
         format=DeclarativeStatement.model_json_schema(),
         stream=global_config.ollama_stream(),
@@ -54,9 +51,9 @@ def generate_response_with_prompt(the_prompt):
     return generated_text.response
 
 
-def process_prompt(the_base_prompt, the_line, the_id):
+def process_prompt(the_base_prompt, the_line, the_id, the_model_string):
     the_prompt = the_base_prompt + "\n" + the_line
-    generated_model = generated_model_from_prompt(the_prompt, the_id)
+    generated_model = generated_model_from_prompt(the_prompt, the_id, the_model_string)
     return generated_model
 
 
@@ -123,20 +120,17 @@ def response_filepath(ds_split_name):
         global_config.responses_jsonl_filepath().removesuffix(suffix)
         + "_"
         + ds_split_name
-        + "_"
-        + datetime.now().strftime("%Y%m%d_%H%M%S")
         + suffix
     )
     return filepath
 
 
-def generate_declarative_sentences(
+def generate_declarative_statements(
     number_of_sentences,
     the_model_string,
     ds_split_name="train",
     debug_id=None,
     title="all",
-    experiment_number=999,
 ):
 
     logger.info(f"🚀 Starting project: {global_config.project_name}")
@@ -150,7 +144,7 @@ def generate_declarative_sentences(
     base_prompt_filepath = global_config.base_prompt_filepath()
     examples_generated = 0
 
-    output_filepath = response_filepath(ds_split_name, experiment_number)
+    output_filepath = response_filepath(ds_split_name)
 
     dataset_split = load_squad_dataset(global_config.dataset_directory())[ds_split_name]
     logger.info("Filtering dataset split: " + ds_split_name)
@@ -172,13 +166,15 @@ def generate_declarative_sentences(
     with open(prompt_json_l_filepath, "r") as prompt_json_l_file:
         prompt_json_l = prompt_json_l_file.readlines()
     start_time = timeit.default_timer()
+    responses = []
     for line in prompt_json_l:
         the_id, line_json = prompt_tuple_from_json_line(line)
 
         try:
-            response_model = process_prompt(base_prompt, line_json, the_id)
-            with open(output_filepath, "a") as response_file:
-                response_file.write(response_model.model_dump_json() + "\n")
+            response_model = process_prompt(
+                base_prompt, line_json, the_id, the_model_string
+            )
+            responses.append(response_model.model_dump_json())
 
         except ValidationError as error:
             logger.critical(
@@ -190,6 +186,11 @@ def generate_declarative_sentences(
         )
         if examples_generated == number_of_examples:
             break
+
+    with open(output_filepath, "w") as response_file:
+        for response in responses:
+            response_file.write(response + "\n")
+
     end_time = timeit.default_timer()
     total_elapsed = end_time - start_time
     completion_message = (
@@ -206,6 +207,38 @@ def generate_declarative_sentences(
         + "\n"
     )
     logger.info(completion_message)
+    return create_dataset_with_generated_sentences(
+        output_filepath, filtered_database_split
+    )
+
+
+def create_dataset_with_generated_sentences(
+    a_sentences_jsonl_filepath, filtered_database_split
+):
+    # Load the generated sentences from the JSONL file
+    generated_sentences_df = pd.read_json(a_sentences_jsonl_filepath, lines=True)
+    # create a new dataframe form the filtered database split
+    filtered_df = pd.DataFrame(filtered_database_split)
+    # add the sentences to the original dataframe based on the id
+    merged_df = filtered_df.merge(
+        generated_sentences_df,
+        left_on="id",
+        right_on="example_id",
+        how="left",
+    )
+    # Drop the now-redundant 'example_id' column
+    merged_df = merged_df.drop(columns=["example_id"])
+    # Save the merged dataframe to a new JSONL file
+    merged_df.to_json(
+        global_config.dataset_with_generated_sentences_filepath(),
+        orient="records",
+        lines=True,
+    )
+    logger.info(
+        "Dataset with generated sentences saved to: "
+        + global_config.dataset_with_generated_sentences_filepath()
+    )
+    return merged_df
 
 
 def clean_line(a_string):
@@ -233,7 +266,7 @@ if __name__ == "__main__":
         title_arg = "New_York_City"
         num_sentences_arg = 5
 
-    generate_declarative_sentences(
+    generate_declarative_statements(
         num_sentences_arg,
         model_string_arg,
         title=title_arg,
