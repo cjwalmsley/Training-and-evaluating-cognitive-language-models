@@ -114,12 +114,14 @@ def prompt_tuple_from_json_line(the_json_line):
     return the_id, line_json
 
 
-def response_filepath(ds_split_name):
+def response_filepath(ds_split_name, the_model_string):
     suffix = ".jsonl"
     filepath = (
         global_config.responses_jsonl_filepath().removesuffix(suffix)
         + "_"
         + ds_split_name
+        + "_"
+        + the_model_string.replace(":", "_")
         + suffix
     )
     return filepath
@@ -144,7 +146,7 @@ def generate_declarative_statements(
     base_prompt_filepath = global_config.base_prompt_filepath()
     examples_generated = 0
 
-    output_filepath = response_filepath(ds_split_name)
+    output_filepath = response_filepath(ds_split_name, the_model_string)
 
     dataset_split = load_squad_dataset(global_config.dataset_directory())[ds_split_name]
     logger.info("Filtering dataset split: " + ds_split_name)
