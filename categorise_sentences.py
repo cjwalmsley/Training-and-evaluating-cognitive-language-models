@@ -28,8 +28,12 @@ class AbstractCategoryAssigner:
     def sentence_category_name():
         raise NotImplementedError("Subclasses must implement this method.")
 
+    @staticmethod
+    def sentence_column_name():
+        raise NotImplementedError("Subclasses must implement this method.")
+
     def assign_category(self, row):
-        sentence = row["declarative_statement"]
+        sentence = row[self.sentence_column_name()]
         the_id = row["id"]
         base_prompt = self.get_base_prompt()
         line_json = json.dumps({"sentence": sentence})
@@ -188,12 +192,20 @@ class QuestionCategoryAssigner(AbstractCategoryAssigner):
     def sentence_category_name():
         return "question_category"
 
+    @staticmethod
+    def sentence_column_name():
+        return "question"
+
 
 class StatementCategoryAssigner(AbstractCategoryAssigner):
 
     @staticmethod
     def sentence_category_name():
         return "statement_category"
+
+    @staticmethod
+    def sentence_column_name():
+        return "declarative_statement"
 
 
 if __name__ == "__main__":
