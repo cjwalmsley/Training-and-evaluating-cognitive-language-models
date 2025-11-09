@@ -9,23 +9,39 @@ from scipy.spatial.distance import cosine
 import ollama
 import pandas as pd
 from config.global_config import GlobalConfig
+import shutil
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
 
 
-def load_squad_dataset(ds_filepath="squad_dataset"):
-    # check if dataset is available on disk, if not load it
+def load_squad_dataset(ds_filepath):
+    """
+    Loads the SQuAD dataset from a local file, or downloads it if it's not
+    found.
+    :param ds_filepath: The path to the dataset.
+    :return: The SQuAD dataset.
+    """
     try:
         logger.info("Loading dataset from: " + ds_filepath)
         ds = load_from_disk(ds_filepath)
     except FileNotFoundError:
-        logger.critical(
-            "File not found, loading dataset from Huggingface and saving to: "
-            + ds_filepath
+        logger.warning(
+            f"Dataset not found or invalid at {ds_filepath}. "
+            "Attempting to download from Hugging Face."
         )
-        ds = load_dataset("rajpurkar/squad")
-        save_squad_dataset(ds, ds_filepath)
+        try:
+            # Remove the potentially corrupted directory before downloading
+            shutil.rmtree(ds_filepath, ignore_errors=True)
+            ds = load_dataset("squad")
+            ds.save_to_disk(ds_filepath)
+        except Exception as e:
+            logger.error(f"Failed to download or save the dataset: {e}")
+            raise RuntimeError(
+                "Could not load or download the SQuAD dataset. "
+                "Please check your network connection and disk permissions."
+            ) from e
+
     return ds
 
 
@@ -242,7 +258,7 @@ class DatasetPreProcessor:
 
     def __init__(
         self,
-        dataset_filepath,
+        dataset,
         max_words_limit=25,
         max_word_length_limit=50,
         columns_to_process=None,
@@ -250,23 +266,102 @@ class DatasetPreProcessor:
 
         if columns_to_process is None:
             columns_to_process = [
-                "response_declarative_sentence_formatted",
-                "response_question_formatted",
-                "response_answer_formatted",
+                "declarative_statement",
+                "question",
+                "answer",
             ]
-        self.dataset_filepath = dataset_filepath
-        self.dataset = pd.read_json(dataset_filepath, lines=True)
+        self.dataset = dataset
         self.columns_to_process = columns_to_process
         self.max_words_limit = max_words_limit
         self.max_word_length_limit = max_word_length_limit
 
     def preprocess_data(self):
-        self.remove_whitespace()
+        self.convert_answers_to_answer()
+        self.format_columns()
         self.join_concurrent_capitalized_words()
         self.filter_dataset_by_limits()
         self.dataset.reset_index(drop=True, inplace=True)
 
-    def remove_whitespace(self):
+    def convert_answers_to_answer(self):
+        # Convert the 'answers' column from a dictionary to a single string in a new 'answer' column
+        if "answers" in self.dataset.columns:
+            self.dataset["answer"] = self.dataset["answers"].apply(
+                lambda x: x["text"][0] if x["text"] else ""
+            )
+            self.dataset.drop(columns=["answers"], inplace=True)
+
+    def format_columns(self):
+        for column in self.columns_to_process:
+            is_question = column == "question"
+            self.dataset[column + "_formatted"] = self.dataset[column].apply(
+                lambda x: self.format_text(x, is_question=is_question)
+            )
+
+    def format_text(self, text, is_question=False):
+        # apply the formatting rules to the text
+        text = self.remove_whitespace(text)
+        text = self.convert_first_character_to_lower_case_if_stopword(text)
+        text = self.remove_full_stop(text)
+        text = self.convert_decimal_point_to_word(text)
+        text = self.replace_percent(text)
+        text = self.replace_dont_apostrophe(text)
+        text = self.remove_accents(text)
+        if is_question:
+            text = self.move_question_mark_to_start(text)
+        text = self.remove_special_characters(text)
+        return text
+
+    @staticmethod
+    def convert_decimal_point_to_word(a_string):
+        # Replace "." with 'point' if it is part of a number.
+        # Regex to find numbers with a decimal point:
+        # \d+\.\d+  matches numbers like 1.23
+        # \d+\.     matches numbers like 1. (dot at the end after digits)
+        # \.\d+     matches numbers like .5 (dot at the beginning before digits)
+        # The order matters to match \d+\.\d+ before \d+\. or \.\d+ for overlapping cases.
+        pattern = r"\d+\.\d+|\d+\.|\.\d+"
+        return re.sub(pattern, replace_decimal_in_matched_string, a_string)
+
+    @staticmethod
+    def remove_full_stop(a_string):
+        # if the last character of a sentence is "." remove it
+        if a_string.strip().endswith("."):
+            return a_string[:-1]
+        else:
+            return a_string
+
+    @staticmethod
+    def replace_percent(a_string):
+        cleaned_text = re.sub(r"%", " percent", a_string)
+        return cleaned_text
+
+    @staticmethod
+    def replace_dont_apostrophe(a_string):
+        cleaned_text = re.sub(r"don't", "do not", a_string)
+        return cleaned_text
+
+    @staticmethod
+    def remove_accents(text):
+        # Convert accented characters to unaccented ones
+        text_unaccented = unidecode(text)
+        return text_unaccented
+
+    # remove all special characters except question marks and hyphen form the statements
+    @staticmethod
+    def remove_special_characters(text):
+        """
+        Removes special characters from a string, keeping alphanumeric characters and spaces.
+        """
+        # Keep only alphanumeric characters and spaces
+        cleaned_text = re.sub(r"[^A-Za-z0-9\s?-]+", "", text)
+        return cleaned_text
+
+    @staticmethod
+    def remove_whitespace(text):
+        # Strip whitespace from the text
+        return text.strip()
+
+    def remove_whitespace_from_dataframe(self):
         # Strip whitespace from all string columns
         for col in self.dataset.select_dtypes(include=["object"]):
             self.dataset[col] = self.dataset[col].str.strip()
@@ -279,6 +374,71 @@ class DatasetPreProcessor:
                 lambda m: "-".join(m.group(0).split()),
                 regex=True,
             )
+
+    @staticmethod
+    def convert_stopwords_to_lower_case(a_string):
+        try:
+            stopwords.words("english")
+        except LookupError:
+            nltk.download("stopwords")
+        stop_words = set(stopwords.words("english"))
+        words = a_string.split()
+        # Convert stopwords to lowercase
+        lower_case_stopwords = [word.lower() for word in stop_words]
+        # Replace stopwords in the string with their lowercase versions
+        cleaned_string = " ".join(
+            [
+                word if word.lower() not in lower_case_stopwords else word.lower()
+                for word in words
+            ]
+        )
+        return cleaned_string
+
+    @staticmethod
+    def convert_first_character_to_lower_case_if_stopword(a_string):
+        try:
+            stopwords.words("english")
+        except LookupError:
+            nltk.download("stopwords")
+        stop_words = set(stopwords.words("english"))
+        words = a_string.split()
+        if words and words[0].lower() in stop_words:
+            words[0] = words[0].lower()
+        cleaned_string = " ".join(words)
+        return cleaned_string
+
+    @staticmethod
+    def remove_quotes(text):
+        # remove " form the text
+        cleaned_text = text.replace('"', "")
+        return cleaned_text
+
+    def remove_quotes_from_file(self, filepath):
+        with open(filepath, "r") as file:
+            train_data = file.readlines()
+            train_data_cleaned = [self.remove_quotes(line) for line in train_data]
+
+        cleaned_filepath = filepath.replace(".tsv", "_cleaned.tsv")
+        with open(cleaned_filepath, "w") as cleaned_file:
+            cleaned_file.writelines(train_data_cleaned)
+        logger.info(f"Cleaned data saved to {cleaned_filepath}")
+        return cleaned_filepath
+
+    @staticmethod
+    def move_question_mark_to_start(question, add_if_missing=True):
+        # move the ? from the end of each question to the start
+        if question.strip().endswith("?"):
+            edited_question = "? " + question[:-1]
+        else:
+            if add_if_missing:
+                edited_question = "? " + question
+            else:
+                # raise an exception if the question does not end with a ?
+                raise ValueError(
+                    f"Question does not end with a question mark: {question}"
+                )
+
+        return edited_question
 
     def filter_dataset_by_limits(self):
         for column_name in self.columns_to_process:
@@ -414,9 +574,9 @@ def write_training_file(the_filepath, the_df):
     )
 
     with open(the_filepath, "w") as file:
-        for tuple in list_of_training_tuples:
-            file.write(f"#id: {tuple[0]}\n")
-            file.write(f"{tuple[-1]}\n")
+        for each_tuple in list_of_training_tuples:
+            file.write(f"#id: {each_tuple[0]}\n")
+            file.write(f"{each_tuple[-1]}\n")
             # write a blank line to signal to ANNABELL the end of the context
             file.write("\n")
     logger.info(f"file written: {the_filepath}")
@@ -435,9 +595,9 @@ def write_testing_file(the_filepath, the_df):
     )
 
     with open(the_filepath, "w") as test_file:
-        for tuple in list_of_testing_tuples:
-            test_file.write(f"#id: {tuple[0]}\n")
-            test_file.write(f"{tuple[-1]}\n.x\n")
+        for each_tuple in list_of_testing_tuples:
+            test_file.write(f"#id: {each_tuple[0]}\n")
+            test_file.write(f"{each_tuple[-1]}\n.x\n")
             test_file.write("#END OF TESTING SAMPLE\n")
             # write a blank line to signal to ANNABELL the end of the context
             test_file.write("\n")
@@ -446,70 +606,6 @@ def write_testing_file(the_filepath, the_df):
     with open(the_filepath, "r") as commands_file:
         lines = commands_file.readlines()
         logger.info(f"Number of commands: {len(lines)}")
-
-
-def convert_stopwords_to_lower_case(a_string):
-    try:
-        stopwords.words("english")
-    except LookupError:
-        nltk.download("stopwords")
-    stop_words = set(stopwords.words("english"))
-    words = a_string.split()
-    # Convert stopwords to lowercase
-    lower_case_stopwords = [word.lower() for word in stop_words]
-    # Replace stopwords in the string with their lowercase versions
-    cleaned_string = " ".join(
-        [
-            word if word.lower() not in lower_case_stopwords else word.lower()
-            for word in words
-        ]
-    )
-    return cleaned_string
-
-
-def convert_first_character_to_lower_case_if_stopword(a_string):
-    try:
-        stopwords.words("english")
-    except LookupError:
-        nltk.download("stopwords")
-    stop_words = set(stopwords.words("english"))
-    words = a_string.split()
-    if words and words[0].lower() in stop_words:
-        words[0] = words[0].lower()
-    cleaned_string = " ".join(words)
-    return cleaned_string
-
-
-def remove_quotes(text):
-    # remove " form the text
-    cleaned_text = text.replace('"', "")
-    return cleaned_text
-
-
-def remove_quotes_from_file(filepath):
-    with open(filepath, "r") as file:
-        train_data = file.readlines()
-        train_data_cleaned = [remove_quotes(line) for line in train_data]
-
-    cleaned_filepath = filepath.replace(".tsv", "_cleaned.tsv")
-    with open(cleaned_filepath, "w") as cleaned_file:
-        cleaned_file.writelines(train_data_cleaned)
-    logger.info(f"Cleaned data saved to {cleaned_filepath}")
-    return cleaned_filepath
-
-
-# move the ? from the end of each question to the start
-def move_question_mark_to_start(question, add_if_missing=True):
-    if question.strip().endswith("?"):
-        edited_question = "? " + question[:-1]
-    else:
-        if add_if_missing:
-            edited_question = "? " + question
-        else:
-            # raise an exception if the question does not end with a ?
-            raise ValueError(f"Question does not end with a question mark: {question}")
-
-    return edited_question
 
 
 def any_word_match(row):
@@ -570,53 +666,8 @@ def truncate_to_max_words(text, max_words=20):
         return text
 
 
-def convert_decimal_point_to_word(a_string):
-    # Replace "." with 'point' if it is part of a number.
-    # Regex to find numbers with a decimal point:
-    # \d+\.\d+  matches numbers like 1.23
-    # \d+\.     matches numbers like 1. (dot at the end after digits)
-    # \.\d+     matches numbers like .5 (dot at the beginning before digits)
-    # The order matters to match \d+\.\d+ before \d+\. or \.\d+ for overlapping cases.
-    pattern = r"\d+\.\d+|\d+\.|\.\d+"
-    return re.sub(pattern, replace_decimal_in_matched_string, a_string)
-
-
-def remove_full_stop(a_string):
-    # if the last character of a sentence is "." remove it
-    if a_string.strip().endswith("."):
-        return a_string[:-1]
-    else:
-        return a_string
-
-
-def replace_percent(a_string):
-    cleaned_text = re.sub(r"%", " percent", a_string)
-    return cleaned_text
-
-
-def replace_dont_apostrophe(a_string):
-    cleaned_text = re.sub(r"don't", "do not", a_string)
-    return cleaned_text
-
-
-def remove_accents(text):
-    # Convert accented characters to unaccented ones
-    text_unaccented = unidecode(text)
-    return text_unaccented
-
-
-# remove all special characters except question marks and hyphen form the statements
-def remove_special_characters(text):
-    """
-    Removes special characters from a string, keeping alphanumeric characters and spaces.
-    """
-    # Keep only alphanumeric characters and spaces
-    cleaned_text = re.sub(r"[^A-Za-z0-9\s?-]+", "", text)
-    return cleaned_text
-
-
 def filter_by_max_words(the_df, max_words=10):
-    # returnes a new dataframe filtered such that each question, answer and statement has less than 11 words
+    # returns a new dataframe filtered such that each question, answer and statement has less than 11 words
 
     filtered_df = the_df[
         the_df.apply(
@@ -627,34 +678,6 @@ def filter_by_max_words(the_df, max_words=10):
         )
     ]
     return filtered_df
-
-
-def clean_text(a_series, is_question):
-    # takes a dataframe series and applies reformatting
-    if is_question:
-        a_series = a_series.apply(move_question_mark_to_start)
-    for function_name in (
-        remove_full_stop,
-        convert_decimal_point_to_word,
-        remove_accents,
-        remove_special_characters,
-    ):
-        a_series = a_series.apply(function_name)
-    return a_series
-
-
-def format_text(text, is_question=False):
-    # apply the formatting rules to the text
-    text = convert_first_character_to_lower_case_if_stopword(text)
-    text = remove_full_stop(text)
-    text = convert_decimal_point_to_word(text)
-    text = replace_percent(text)
-    text = replace_dont_apostrophe(text)
-    text = remove_accents(text)
-    if is_question:
-        text = move_question_mark_to_start(text)
-    text = remove_special_characters(text)
-    return text
 
 
 # produce a summary of a dataset by splits

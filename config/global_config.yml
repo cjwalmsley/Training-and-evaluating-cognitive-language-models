@@ -39,7 +39,7 @@ file_locations:
 
 
 experiments:
-  experiment_name: "15"
+  experiment_name: "sandbox"
   percentage_of_pretraining_samples: 10
   maximum_number_of_words: 50
   maximum_word_length: 25
@@ -62,7 +62,7 @@ ollama:
     top_k: 1
     top_p: 0.1
     min_p: 0.0
-  model: "qwen3:4b"
+  model: "gemma3:1b-it-qat"
   embedding_model: "embeddinggemma"
   stream: false
   think: false

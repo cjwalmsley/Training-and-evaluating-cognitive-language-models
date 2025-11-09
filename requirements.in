@@ -1,0 +1,13 @@
+pyyaml
+pydantic-settings
+pydantic
+ollama
+datasets
+datetime
+pandas
+requests
+jupyter
+nltk
+unidecode
+scipy
+tabulate

@@ -292,7 +292,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
                 f.write(str(item).replace("'", '"') + "\n")
 
         self.preprocessor = DatasetPreProcessor(
-            dataset_filepath=self.dataset_filepath,
+            dataset=self.pd.read_json(self.dataset_filepath, lines=True),
             max_words_limit=5,
             max_word_length_limit=10,
             columns_to_process=self.columns_to_process,
