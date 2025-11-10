@@ -1,4 +1,3 @@
-import re
 from collections import Counter
 from unidecode import unidecode
 import logging
@@ -10,6 +9,9 @@ import ollama
 import pandas as pd
 from config.global_config import GlobalConfig
 import shutil
+import re
+import spacy
+from spacy.cli import download
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -278,7 +280,7 @@ class DatasetPreProcessor:
     def preprocess_data(self):
         self.convert_answers_to_answer()
         self.format_columns()
-        self.join_concurrent_capitalized_words()
+        self.join_entity_words()
         self.filter_dataset_by_limits()
         self.dataset.reset_index(drop=True, inplace=True)
 
@@ -372,6 +374,54 @@ class DatasetPreProcessor:
     @staticmethod
     def formatted_column_suffix():
         return "_formatted"
+
+    @staticmethod
+    def spacy_entities_md(text):
+        # Extract entities using spaCy medium model
+        model_name = "en_core_web_md"
+        try:
+            nlp = spacy.load(model_name)
+        except OSError:
+            print(f"Downloading spaCy model '{model_name}'...")
+            download(model_name)
+            nlp = spacy.load(model_name)
+
+        doc = nlp(text)
+        return [(ent.text, ent.label_) for ent in doc.ents]
+
+    def entity_names_in_text(self, text):
+        entities = self.spacy_entities_md(text)
+        entity_names = [entity_name for entity_name, entity_type in entities]
+        return entity_names
+
+    def sentences_in_row(self, a_row):
+        sentences = [a_row[column] for column in self.formatted_columns_to_process()]
+        return sentences
+
+    def entity_names_in_row(self, a_row):
+        sentences = self.sentences_in_row(a_row)
+        entity_names = [self.entity_names_in_text(sentence) for sentence in sentences]
+        # flatten the list of lists
+        flattened_entity_names = [item for sublist in entity_names for item in sublist]
+        entity_names_set = set(flattened_entity_names)
+        return entity_names_set
+
+    def join_entity_names_in_row(self, a_row):
+        entities_in_row = self.entity_names_in_row()
+        for column in self.formatted_columns_to_process():
+            a_row[column] = self.replace_entities(a_row[column], entities_in_row)
+
+    @staticmethod
+    def replace_entities(text, entities):
+        for entity_name in entities:
+            joined_entity = "_".join(entity_name.split())
+            text = text.replace(entity_name, joined_entity)
+        return text
+
+    def join_entity_words(self):
+        self.dataset[self.formatted_columns_to_process()].apply(
+            self.join_entity_names_in_row, axis=1
+        )
 
     def join_concurrent_capitalized_words(self):
         # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
@@ -717,6 +767,7 @@ def ids_questions_answers_from_log_file(test_log_filepath):
     # parse the line with hte id and extract the id number then parse the line with the question and extract the question then parse the line with the END OF TESTING SAMPLE and extract the content of the previous line
 
     ids_questions_answers = []
+    id_number, question, answer = None, None, None
     for index, line in enumerate(test_log_lines):
         if line.startswith("#id:"):
             id_number = line.strip().split(":")[-1].strip()
@@ -725,7 +776,9 @@ def ids_questions_answers_from_log_file(test_log_filepath):
         elif line.startswith("#END OF TESTING SAMPLE"):
             previous_line = test_log_lines[index - 1].strip()
             answer = previous_line
-            ids_questions_answers.append((id_number, question, answer))
+            if id_number and question:
+                ids_questions_answers.append((id_number, question, answer))
+            id_number, question, answer = None, None, None
         else:
             continue
 

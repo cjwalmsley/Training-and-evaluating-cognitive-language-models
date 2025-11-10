@@ -11,3 +11,5 @@ nltk
 unidecode
 scipy
 tabulate
+svgling
+spacy

@@ -316,7 +316,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
 
     def test_join_concurrent_capitalized_words(self):
         """Tests that consecutive capitalized words are joined with hyphens."""
-        self.preprocessor.join_concurrent_capitalized_words()
+        self.preprocessor.join_entity_words()
         expected_sentence = (
             "the English call -ed New_Amsterdam New_York after its capture"
         )
