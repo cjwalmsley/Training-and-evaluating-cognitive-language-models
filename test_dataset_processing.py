@@ -3,6 +3,7 @@ import unittest
 import tempfile
 import shutil
 import os
+import pandas as pd
 
 
 class TestAnnabellCommandGenerator(unittest.TestCase):
@@ -250,40 +251,40 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.dataset_filepath = os.path.join(self.temp_dir, "test_dataset.jsonl")
         self.columns_to_process = [
-            "response_declarative_sentence_formatted",
-            "response_question_formatted",
-            "response_answer_formatted",
+            "declarative_sentence",
+            "question",
+            "answer",
         ]
         data = [
             {
                 "id": 1,
-                "response_declarative_sentence_formatted": "  The quick brown fox.  ",
-                "response_question_formatted": "What does the fox say?",
-                "response_answer_formatted": "Ring ding ding",
+                "declarative_sentence": "  The quick brown fox.  ",
+                "question": "What does the fox say?",
+                "answer": "Ring ding ding",
             },
             {
                 "id": 2,
-                "response_declarative_sentence_formatted": "New York is a big city.",
-                "response_question_formatted": "Where is New York?",
-                "response_answer_formatted": "In the United States Of America",
+                "declarative_sentence": "New York is a big city.",
+                "question": "Where is New York?",
+                "answer": "In the United States Of America",
             },
             {
                 "id": 3,
-                "response_declarative_sentence_formatted": "This sentence has more than five words in it.",
-                "response_question_formatted": "Is this sentence long?",
-                "response_answer_formatted": "Yes",
+                "declarative_sentence": "This sentence has more than five words in it.",
+                "question": "Is this sentence long?",
+                "answer": "Yes",
             },
             {
                 "id": 4,
-                "response_declarative_sentence_formatted": "This sentence has a verylongwordinit.",
-                "response_question_formatted": "Does it have a long word?",
-                "response_answer_formatted": "Indeed",
+                "declarative_sentence": "This sentence has a verylongwordinit.",
+                "question": "Does it have a long word?",
+                "answer": "Indeed",
             },
             {
                 "id": 5,
-                "response_declarative_sentence_formatted": "the English call -ed New Amsterdam New York after its capture",
-                "response_question_formatted": "What did the English call New Amsterdam after its capture?",
-                "response_answer_formatted": "New York",
+                "declarative_sentence": "the English call -ed New Amsterdam New York after its capture",
+                "question": "What did the English call New Amsterdam after its capture?",
+                "answer": "New York",
             },
         ]
 
@@ -291,8 +292,12 @@ class TestDatasetPreProcessor(unittest.TestCase):
             for item in data:
                 f.write(str(item).replace("'", '"') + "\n")
 
+        dataset = pd.read_json(self.dataset_filepath, lines=True)
+        for col in self.columns_to_process:
+            dataset[f"{col}_formatted"] = dataset[col]
+
         self.preprocessor = DatasetPreProcessor(
-            dataset=self.pd.read_json(self.dataset_filepath, lines=True),
+            dataset=dataset,
             max_words_limit=5,
             max_word_length_limit=10,
             columns_to_process=self.columns_to_process,
@@ -302,28 +307,26 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Removes the temporary directory and its contents."""
         shutil.rmtree(self.temp_dir)
 
-    def test_remove_whitespace(self):
+    def test_remove_whitespace_from_dataframe(self):
         """Tests that leading/trailing whitespace is removed from string columns."""
-        self.preprocessor.remove_whitespace()
+        self.preprocessor.remove_whitespace_from_dataframe()
         expected = "The quick brown fox."
-        actual = self.preprocessor.dataset.loc[
-            0, "response_declarative_sentence_formatted"
-        ]
+        actual = self.preprocessor.dataset.loc[0, "declarative_sentence"]
         self.assertEqual(actual, expected)
 
     def test_join_concurrent_capitalized_words(self):
         """Tests that consecutive capitalized words are joined with hyphens."""
         self.preprocessor.join_concurrent_capitalized_words()
         expected_sentence = (
-            "the English call -ed New-Amsterdam New-York after its capture"
+            "the English call -ed New_Amsterdam New_York after its capture"
         )
         actual_sentence = self.preprocessor.dataset.loc[
-            4, "response_declarative_sentence_formatted"
+            4, "declarative_sentence_formatted"
         ]
         self.assertEqual(actual_sentence, expected_sentence)
 
-        expected_answer = "New-York"
-        actual_answer = self.preprocessor.dataset.loc[4, "response_answer_formatted"]
+        expected_answer = "New_York"
+        actual_answer = self.preprocessor.dataset.loc[4, "answer_formatted"]
         self.assertEqual(actual_answer, expected_answer)
 
     def test_filter_dataset_by_limits_word_count(self):
@@ -354,8 +357,8 @@ class TestDatasetPreProcessor(unittest.TestCase):
         # Check that whitespace has been handled
         processed_row = self.preprocessor.dataset.iloc[0]
         self.assertEqual(
-            processed_row["response_declarative_sentence_formatted"],
-            "The quick brown fox.",
+            processed_row["declarative_sentence_formatted"],
+            "the quick brown fox",
         )
 
 

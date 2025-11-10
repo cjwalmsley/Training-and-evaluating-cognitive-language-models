@@ -293,9 +293,9 @@ class DatasetPreProcessor:
     def format_columns(self):
         for column in self.columns_to_process:
             is_question = column == "question"
-            self.dataset[column + "_formatted"] = self.dataset[column].apply(
-                lambda x: self.format_text(x, is_question=is_question)
-            )
+            self.dataset[column + self.formatted_column_suffix()] = self.dataset[
+                column
+            ].apply(lambda x: self.format_text(x, is_question=is_question))
 
     def format_text(self, text, is_question=False):
         # apply the formatting rules to the text
@@ -366,12 +366,19 @@ class DatasetPreProcessor:
         for col in self.dataset.select_dtypes(include=["object"]):
             self.dataset[col] = self.dataset[col].str.strip()
 
+    def formatted_columns_to_process(self):
+        return [col + self.formatted_column_suffix() for col in self.columns_to_process]
+
+    @staticmethod
+    def formatted_column_suffix():
+        return "_formatted"
+
     def join_concurrent_capitalized_words(self):
         # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
-        for column in self.columns_to_process:
+        for column in self.formatted_columns_to_process():
             self.dataset[column] = self.dataset[column].str.replace(
                 r"(\b[A-Z][a-zA-Z]*(?:\s+[A-Z][a-zA-Z]*)+\b)",
-                lambda m: "-".join(m.group(0).split()),
+                lambda m: "_".join(m.group(0).split()),
                 regex=True,
             )
 
