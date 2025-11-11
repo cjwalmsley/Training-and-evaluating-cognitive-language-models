@@ -406,22 +406,30 @@ class DatasetPreProcessor:
         entity_names_set = set(flattened_entity_names)
         return entity_names_set
 
+    # python
     def join_entity_names_in_row(self, a_row):
-        entities_in_row = self.entity_names_in_row()
+        entities_in_row = self.entity_names_in_row(a_row)
         for column in self.formatted_columns_to_process():
             a_row[column] = self.replace_entities(a_row[column], entities_in_row)
+        return a_row
 
     @staticmethod
     def replace_entities(text, entities):
+        if not entities:
+            return text
         for entity_name in entities:
+            # replace only whole-entity occurrences to avoid partial matches
             joined_entity = "_".join(entity_name.split())
-            text = text.replace(entity_name, joined_entity)
+            pattern = r"\b" + re.escape(entity_name) + r"\b"
+            text = re.sub(pattern, joined_entity, text)
         return text
 
     def join_entity_words(self):
-        self.dataset[self.formatted_columns_to_process()].apply(
-            self.join_entity_names_in_row, axis=1
-        )
+        # apply to every row and assign back the formatted columns so changes persist
+        updated = self.dataset.apply(self.join_entity_names_in_row, axis=1)
+        self.dataset[self.formatted_columns_to_process()] = updated[
+            self.formatted_columns_to_process()
+        ]
 
     def join_concurrent_capitalized_words(self):
         # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
@@ -498,113 +506,149 @@ class DatasetPreProcessor:
         return edited_question
 
     def filter_dataset_by_limits(self):
-        for column_name in self.columns_to_process:
-            # Ensure the column is of string type, handling potential non-string data
-            self.dataset[column_name] = self.dataset[column_name].astype(str)
+        self.filter_dataset_by_word_count()
+        self.filter_dataset_by_word_length()
+
+    def filter_dataset_by_word_count(self):
+        for column_name in self.formatted_columns_to_process():
 
             # Filter out rows where the sentence exceeds the maximum number of words
             word_count_mask = (
-                self.dataset[column_name].str.split().str.len() <= self.max_words_limit
+                self.dataset[column_name].str.split().str.len() > self.max_words_limit
             )
-            self.dataset = self.dataset[word_count_mask]
+
+            indices_to_drop = self.dataset[word_count_mask].index
+            self.dataset.drop(indices_to_drop, inplace=True)
+
+    def filter_dataset_by_word_length(self):
+        for column_name in self.formatted_columns_to_process():
 
             # Filter out rows where any word exceeds the maximum length
             word_length_mask = self.dataset[column_name].apply(
                 lambda sentence: all(
-                    len(word) <= self.max_word_length_limit for word in sentence.split()
+                    len(word) > self.max_word_length_limit for word in sentence.split()
                 )
             )
-            self.dataset = self.dataset[word_length_mask]
 
+            indices_to_drop = self.dataset[word_length_mask].index
+            self.dataset.drop(indices_to_drop, inplace=True)
 
-def merge_categories(
-    the_df, categorised_questions_filepath, categorised_sentences_filepath
-):
-    # add categories to the questions and declarative sentences, creating 2 new columns - question category and sentence category
-    categorised_questions_df = pd.read_json(categorised_questions_filepath, lines=True)
-    categorised_questions_df = categorised_questions_df.rename(
-        columns={"category": "question_category"}
-    )
-    the_df = the_df.merge(
-        categorised_questions_df[["id", "question_category"]], on="id", how="left"
-    )
-    categorised_sentences_df = pd.read_json(categorised_sentences_filepath, lines=True)
-    categorised_sentences_df = categorised_sentences_df.rename(
-        columns={"category": "sentence_category"}
-    )
-    categorised_sentences_df["sentence_category"].value_counts()
-    the_df = the_df.merge(
-        categorised_sentences_df[["id", "sentence_category"]], on="id", how="left"
-    )
-    return the_df
+    @staticmethod
+    def statement_category_column_name():
+        return "statement_category"
 
+    @staticmethod
+    def question_category_column_name():
+        return "question_category"
 
-def select_pretraining_data(the_df, percentage_of_pretraining_samples):
-    # pick a random sample of pretraining rows or use a pre-selected, manually generated set
-    # for each category, pick an equal number of samples
-    question_categories = the_df["question_category"].unique()
-    sentence_categories = the_df["sentence_category"].unique()
-    logger.info(f"Sentence categories: {sentence_categories}")
+    def question_categories(self):
+        return self.dataset[self.question_category_column_name()].unique()
 
-    the_df["is_pretraining"] = False
-    number_of_pretraining_samples = int(
-        len(the_df) * percentage_of_pretraining_samples // 100
-    )
-    logger.info(f"Number of pretraining samples: {number_of_pretraining_samples}")
-    samples_per_category = int(
-        number_of_pretraining_samples
-        // (len(question_categories) + len(sentence_categories))
-    )
-    logger.info(f"Samples per category: {samples_per_category}")
-    # sample from the question categories
-    # sample from the question categories
-    for category in question_categories:
-        category_df = the_df[the_df["question_category"] == category]
-        samples_to_take = samples_per_category
-        if len(category_df) < samples_per_category:
-            logger.warning(
-                f"Warning: Not enough samples in question category '{category}'. Taking all {len(category_df)} samples."
-            )
-            samples_to_take = len(category_df)
-        if samples_to_take > 0:
-            sampled_category_df = category_df.sample(n=samples_to_take, random_state=42)
-            the_df.loc[sampled_category_df.index, "is_pretraining"] = True
+    def statement_categories(self):
+        return self.dataset[self.statement_category_column_name()].unique()
 
-    # sample from the sentence categories starting with those that are already selected for pretraining
-    for category in sentence_categories:
-        category_df = the_df[the_df["sentence_category"] == category]
-        already_selected_df = category_df[category_df["is_pretraining"] == True]
-        already_selected_count = len(already_selected_df)
-        remaining_samples = samples_per_category - already_selected_count
-        if remaining_samples > 0:
-            not_selected_df = category_df[category_df["is_pretraining"] == False]
-            samples_to_take = remaining_samples
-            if len(not_selected_df) < remaining_samples:
+    def select_pretraining_data(self, percentage_of_pretraining_samples):
+        # pick a random sample of pretraining rows or use a pre-selected, manually generated set
+        # for each category, pick an equal number of samples
+
+        self.dataset["is_pretraining"] = False
+        number_of_pretraining_samples = int(
+            len(self.dataset) * percentage_of_pretraining_samples // 100
+        )
+        logger.info(f"Number of pretraining samples: {number_of_pretraining_samples}")
+        samples_per_category = int(
+            number_of_pretraining_samples
+            // (len(self.question_categories()) + len(self.statement_categories()))
+        )
+        logger.info(f"Samples per category: {samples_per_category}")
+        # sample from the question categories
+        # sample from the question categories
+        for category in self.question_categories():
+            category_df = self.dataset[
+                self.dataset[self.question_category_column_name()] == category
+            ]
+            samples_to_take = samples_per_category
+            if len(category_df) < samples_per_category:
                 logger.warning(
-                    f"Warning: Not enough samples in sentence category '{category}'. Taking all {len(not_selected_df)} available samples."
+                    f"Warning: Not enough samples in question category '{category}'. Taking all {len(category_df)} samples."
                 )
-                samples_to_take = len(not_selected_df)
+                samples_to_take = len(category_df)
             if samples_to_take > 0:
-                sampled_category_df = not_selected_df.sample(
+                sampled_category_df = category_df.sample(
                     n=samples_to_take, random_state=42
                 )
-                the_df.loc[sampled_category_df.index, "is_pretraining"] = True
+                self.dataset.loc[sampled_category_df.index, "is_pretraining"] = True
 
-    # print the counts of samples in the question and sentence categories
-    logger.info("Pretraining samples by question category:")
-    logger.info(
-        the_df[the_df["is_pretraining"] == True]["question_category"].value_counts()
-    )
-    logger.info("Pretraining samples by sentence category:")
-    logger.info(
-        the_df[the_df["is_pretraining"] == True]["sentence_category"].value_counts()
-    )
-    total_pretraining_count = the_df["is_pretraining"].sum()
-    logger.info(
-        f"Total number of samples selected for pretraining: {total_pretraining_count}"
-    )
+        # sample from the sentence categories starting with those that are already selected for pretraining
+        for category in self.statement_categories():
+            category_df = self.dataset[
+                self.dataset[self.statement_category_column_name()] == category
+            ]
+            already_selected_df = category_df[category_df["is_pretraining"] == True]
+            already_selected_count = len(already_selected_df)
+            remaining_samples = samples_per_category - already_selected_count
+            if remaining_samples > 0:
+                not_selected_df = category_df[category_df["is_pretraining"] == False]
+                samples_to_take = remaining_samples
+                if len(not_selected_df) < remaining_samples:
+                    logger.warning(
+                        f"Warning: Not enough samples in sentence category '{category}'. Taking all {len(not_selected_df)} available samples."
+                    )
+                    samples_to_take = len(not_selected_df)
+                if samples_to_take > 0:
+                    sampled_category_df = not_selected_df.sample(
+                        n=samples_to_take, random_state=42
+                    )
+                    self.dataset.loc[sampled_category_df.index, "is_pretraining"] = True
 
-    return the_df
+        # print the counts of samples in the question and sentence categories
+        logger.info("Pretraining samples by question category:")
+        logger.info(
+            self.dataset[self.dataset["is_pretraining"] == True][
+                self.question_category_column_name()
+            ].value_counts()
+        )
+        logger.info("Pretraining samples by sentence category:")
+        logger.info(
+            self.dataset[self.dataset["is_pretraining"] == True][
+                self.statement_category_column_name()
+            ].value_counts()
+        )
+        total_pretraining_count = self.dataset["is_pretraining"].sum()
+        logger.info(
+            f"Total number of samples selected for pretraining: {total_pretraining_count}"
+        )
+
+        return self.dataset
+
+    def merge_categories(
+        self, categorised_questions_filepath, categorised_sentences_filepath
+    ):
+        # add categories to the questions and declarative sentences, creating 2 new columns - question category and sentence category
+        categorised_questions_df = pd.read_json(
+            categorised_questions_filepath, lines=True
+        )
+        categorised_questions_df = categorised_questions_df.rename(
+            columns={"category": self.question_category_column_name()}
+        )
+        self.dataset = self.dataset.merge(
+            categorised_questions_df[["id", self.question_category_column_name()]],
+            on="id",
+            how="left",
+        )
+        categorised_sentences_df = pd.read_json(
+            categorised_sentences_filepath, lines=True
+        )
+        categorised_sentences_df = categorised_sentences_df.rename(
+            columns={"category": self.statement_category_column_name()}
+        )
+        categorised_sentences_df[self.statement_category_column_name()].value_counts()
+        self.dataset = self.dataset.merge(
+            categorised_sentences_df[["id", self.statement_category_column_name()]],
+            on="id",
+            how="left",
+        )
+        return self.dataset
 
 
 def write_pretraining_file(the_filepath, the_df):
