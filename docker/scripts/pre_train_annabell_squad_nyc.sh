@@ -1,28 +1,19 @@
 #!/bin/bash
 
-#script to pretrain ANNABELL with language basics using the samples from the NYC subset of the SQuAD dataset
-# ./pre_train_annabell_squad_nyc.sh "shared_data/statements/crossvalidation/round1/logs/logfile_pretraining_nyc.txt" "training/pre_training_nyc" "shared_data/statements/crossvalidation/round1/links/links_pretraining_nyc_squad.dat"
-
-#the script assumes working directory has the following structure:
-#|---datasets
+#script to pretrain ANNABELL with language basics
 
 #assumes working directory has the following structure:
 # .
-# ├── training
-# │   └── pre_training_nyc.txt
-# └── crossvalidation
-#     └── round1
-#         └── logs
+# ├── shared_data
+# │   └── pre_training
+#          └── <pre_training_file>
 
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <logfile> <training_file> <pre-trained_weights>"
     exit 1
 fi
 
-LOGFILE_BASE=$1
-DATETIME=$(date +%Y-%m-%d_%H-%M-%S)
-# Insert datetime before the file extension
-LOGFILE="${LOGFILE_BASE%.*}_${DATETIME}.${LOGFILE_BASE##*.}"
+LOGFILE=$1
 TRAINING_FILE=$2
 PRETRAINED_WEIGHTS=$3
 

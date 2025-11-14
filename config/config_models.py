@@ -23,14 +23,20 @@ class FileLocations(BaseModel):
     response_declarative_sentence_categories_filename: str
     response_interrogative_sentence_categories_filename: str
     base_prompt_filename: str
-    docker_data_directory_mac: str
-    docker_data_directory_linux: str
-    docker_data_directory_windows: str
+    docker_directory_mac: str
+    docker_directory_linux: str
+    docker_directory_windows: str
+    docker_data_directory: str
+    docker_runtime_data_directory: str
     pre_training_directory: str
     training_directory: str
     testing_directory: str
     experiments_directory: str
     log_archive_directory: str
+    annabell_log_pre_training_filename: str
+    annabell_log_pretraining_validation_testing_filename: str
+    annabell_log_training_filename: str
+    annabell_log_testing_filename: str
     pre_training_filename: str
     training_filename: str
     testing_filename: str

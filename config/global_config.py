@@ -68,7 +68,7 @@ class AbstractPlatformConfig:
     def get_base_directory(self, settings) -> str:
         raise NotImplementedError("Subclasses must implement this method.")
 
-    def get_docker_data_directory(self, settings) -> str:
+    def get_docker_directory(self, settings) -> str:
         raise NotImplementedError("Subclasses must implement this method.")
 
 
@@ -86,7 +86,7 @@ class LinuxConfig(AbstractPlatformConfig):
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_linux
 
-    def get_docker_data_directory(self, settings) -> str:
+    def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_data_directory_linux
 
 
@@ -95,7 +95,7 @@ class WindowsConfig(AbstractPlatformConfig):
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_windows
 
-    def get_docker_data_directory(self, settings) -> str:
+    def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_data_directory_windows
 
 
@@ -138,29 +138,133 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.get_base_directory(), self.settings.dataset.dataset_directory
         )
 
-    def get_docker_data_directory(self) -> str:
+    def get_docker_directory(self) -> str:
 
-        return self.platform_config.get_docker_data_directory(self.settings)
+        return self.platform_config.get_docker_directory(self.settings)
+
+    def docker_data_directory(self):
+        return os.path.join(
+            self.get_docker_directory(),
+            self.settings.file_locations.docker_data_directory,
+        )
+
+    def docker_runtime_pre_training_directory(self) -> str:
+        return os.path.join(
+            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.pre_training_directory,
+        )
+
+    def docker_runtime_training_directory(self) -> str:
+        return os.path.join(
+            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.training_directory,
+        )
+
+    def docker_runtime_testing_directory(self) -> str:
+        return os.path.join(
+            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.testing_directory,
+        )
+
+    def docker_runtime_pre_training_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.pre_training_directory,
+            self.settings.file_locations.pre_training_filename,
+        )
+
+    def docker_runtime_training_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.training_directory,
+            self.settings.file_locations.training_filename,
+        )
+
+    def docker_runtime_testing_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.testing_directory,
+            self.settings.file_locations.testing_filename,
+        )
+
+    def docker_runtime_pre_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_runtime_pre_training_directory(),
+            self.settings.file_locations.docker_pre_training_filename,
+        )
+
+    def docker_runtime_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_runtime_training_directory(),
+            self.settings.file_locations.docker_training_filename,
+        )
+
+    def docker_runtime_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_runtime_testing_directory(),
+            self.settings.file_locations.docker_testing_filename,
+        )
+
+    def docker_runtime_pretraining_validation_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_runtime_testing_directory(),
+            self.settings.file_locations.docker_pretraining_validation_testing_filename,
+        )
 
     def docker_pre_training_directory(self) -> str:
 
         return os.path.join(
-            self.get_docker_data_directory(),
+            self.docker_data_directory(),
             self.settings.file_locations.pre_training_directory,
         )
 
     def docker_training_directory(self) -> str:
 
         return os.path.join(
-            self.get_docker_data_directory(),
+            self.docker_data_directory(),
             self.settings.file_locations.training_directory,
         )
 
     def docker_testing_directory(self) -> str:
 
         return os.path.join(
-            self.get_docker_data_directory(),
+            self.docker_data_directory(),
             self.settings.file_locations.testing_directory,
+        )
+
+    def docker_pre_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_pre_training_directory(),
+            self.settings.file_locations.docker_pre_training_filename,
+        )
+
+    def docker_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_training_directory(),
+            self.settings.file_locations.docker_training_filename,
+        )
+
+    def docker_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_testing_directory(),
+            self.settings.file_locations.docker_testing_filename,
+        )
+
+    def docker_pretraining_validation_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.docker_testing_directory(),
+            self.settings.file_locations.docker_pretraining_validation_testing_filename,
         )
 
     def pre_training_directory(self) -> str:
@@ -178,11 +282,52 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return self.settings.file_locations.pre_training_filename
 
+    def pre_training_weights_filename(self):
+        return self.pre_training_filename().replace(".txt", ".dat")
+
+    def docker_runtime_pre_training_weights_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.pre_training_directory,
+            self.pre_training_weights_filename(),
+        )
+
+    def docker_runtime_pre_training_validation_testing_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.testing_directory,
+            self.settings.file_locations.pretraining_validation_testing_filename,
+        )
+
+    def docker_runtime_training_weights_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.training_directory,
+            self.settings.file_locations.training_filename.replace(".txt", ".dat"),
+        )
+
+    def docker_pretraining_validation_testing_filepath(self):
+        return os.path.join(
+            self.docker_testing_directory(),
+            self.settings.file_locations.pretraining_validation_testing_filename,
+        )
+
     def pre_training_filepath(self) -> str:
 
         return os.path.join(
             self.pre_training_directory(),
             self.pre_training_filename(),
+        )
+
+    def annabell_log_pretraining_validation_testing_filepath(self) -> str:
+
+        return os.path.join(
+            self.log_archive_directory(),
+            self.settings.file_locations.testing_directory,
+            self.settings.file_locations.annabell_log_pretraining_validation_testing_filename,
         )
 
     def prepared_dataset_directory(self) -> str:
@@ -288,6 +433,37 @@ class GlobalConfig(metaclass=SingletonMeta):
         if not os.path.exists(directory_path):
             os.makedirs(directory_path, exist_ok=True)
         return directory_path
+
+    def pre_training_log_filename(self) -> str:
+        return self.settings.file_locations.annabell_log_pre_training_filename
+
+    def pre_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.log_archive_directory(),
+            self.pre_training_log_filename(),
+        )
+
+    def training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.log_archive_directory(),
+            self.settings.file_locations.annabell_log_training_filename,
+        )
+
+    def testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.log_archive_directory(),
+            self.settings.file_locations.annabell_log_testing_filename,
+        )
+
+    def pretraining_validation_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.log_archive_directory(),
+            self.settings.file_locations.annabell_log_pretraining_validation_testing_filename,
+        )
 
     def prompt_data_directory(self) -> str:
 

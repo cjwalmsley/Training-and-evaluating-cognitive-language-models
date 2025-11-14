@@ -86,11 +86,20 @@ def save_squad_dataset(ds, save_filepath):
 class AnnabellCommandGenerator:
 
     # creates the set of commands required to train annabell for a single training sample
-    def __init__(self, sample_id, declarative_sentence, question, answer, max_words=10):
+    def __init__(
+        self,
+        sample_id,
+        declarative_sentence,
+        question,
+        answer,
+        is_pre_training,
+        max_words=10,
+    ):
         self.sample_id = sample_id
         self.declarative_sentence = declarative_sentence
         self.question = question
         self.answer = answer
+        self.is_pre_training = is_pre_training
         self.max_words = max_words
         self.commands = []
 
@@ -240,19 +249,26 @@ class AnnabellCommandGenerator:
                     self.commands.append(f".wg {" ".join(answer_words[3:])}")
                     self.commands.append(".prw")
 
+    @staticmethod
+    def informational_non_pretraining_command():
+        return "# This is a non-pretraining sample. No commands to execute."
+
     def create_list_of_commands(self):
 
         self.commands = []
 
-        self.commands.append("#id: " + str(self.sample_id))
-        self.write_declarative_sentence()
-        # add a blank line to terminate the context
-        self.commands.append(self.blank_line())
-        self.write_question()
-        self.write_question_commands()
-        self.write_answer_commands()
-        # add a blank line to terminate the context
-        self.commands.append(self.blank_line())
+        if self.is_pre_training:
+            self.commands.append("#id: " + str(self.sample_id))
+            self.write_declarative_sentence()
+            # add a blank line to terminate the context
+            self.commands.append(self.blank_line())
+            self.write_question()
+            self.write_question_commands()
+            self.write_answer_commands()
+            # add a blank line to terminate the context
+            self.commands.append(self.blank_line())
+        else:
+            self.commands.append(self.informational_non_pretraining_command())
         return self.commands
 
 
@@ -276,6 +292,17 @@ class DatasetPreProcessor:
         self.columns_to_process = columns_to_process
         self.max_words_limit = max_words_limit
         self.max_word_length_limit = max_word_length_limit
+        self.nlp = self._load_spacy_model("en_core_web_md")
+
+    @staticmethod
+    def _load_spacy_model(model_name):
+        """Loads a spaCy model, downloading it if necessary."""
+        try:
+            return spacy.load(model_name)
+        except OSError:
+            logger.info(f"Downloading spaCy model '{model_name}'...")
+            download(model_name)
+            return spacy.load(model_name)
 
     def preprocess_data(self):
         self.convert_answers_to_answer()
@@ -311,7 +338,13 @@ class DatasetPreProcessor:
         if is_question:
             text = self.move_question_mark_to_start(text)
         text = self.remove_special_characters(text)
+        text = self.lemmatize_text(text)
         return text
+
+    def lemmatize_text(self, text):
+        doc = self.nlp(text)
+        lemmatized_sentence = " ".join([token.lemma_ for token in doc])
+        return lemmatized_sentence
 
     @staticmethod
     def convert_decimal_point_to_word(a_string):
@@ -375,18 +408,9 @@ class DatasetPreProcessor:
     def formatted_column_suffix():
         return "_formatted"
 
-    @staticmethod
-    def spacy_entities_md(text):
-        # Extract entities using spaCy medium model
-        model_name = "en_core_web_md"
-        try:
-            nlp = spacy.load(model_name)
-        except OSError:
-            print(f"Downloading spaCy model '{model_name}'...")
-            download(model_name)
-            nlp = spacy.load(model_name)
-
-        doc = nlp(text)
+    def spacy_entities_md(self, text):
+        # Extract entities using the pre-loaded spaCy medium model
+        doc = self.nlp(text)
         return [(ent.text, ent.label_) for ent in doc.ents]
 
     def entity_names_in_text(self, text):
@@ -650,63 +674,115 @@ class DatasetPreProcessor:
         )
         return self.dataset
 
+    @staticmethod
+    def is_pretraining_column_name():
+        return "is_pretraining"
 
-def write_pretraining_file(the_filepath, the_df):
-    with open(the_filepath, "w") as commands_file:
-        for index, row in the_df.iterrows():
-            commands = row["created_commands"]
-            for command in commands:
-                commands_file.write(command + "\n")
-    logger.info(f"Wrote {the_filepath}")
+    def pretraining_dataset(self):
+        return self.dataset[self.dataset[self.is_pretraining_column_name()] == True]
 
-    with open(the_filepath, "r") as commands_file:
-        lines = commands_file.readlines()
-    number_of_reward_lines = sum(1 for line in lines if line.startswith(".rw"))
-    logger.info(f"Number of reward lines: {number_of_reward_lines}")
-    logger.info(f"Number of commands: {len(lines)}")
+    def training_dataset(self):
+        return self.dataset[self.dataset[self.is_pretraining_column_name()] == False]
 
+    def testing_dataset(self):
+        return self.training_dataset()
 
-def write_training_file(the_filepath, the_df):
-    list_of_training_tuples = list(
-        zip(
-            the_df["id"],
-            the_df["response_declarative_sentence_formatted"],
+    def pre_training_validation_dataset(self):
+        return self.pretraining_dataset()
+
+    @staticmethod
+    def created_commands_column_name():
+        return "created_commands"
+
+    def create_commands_for_pretraining(self):
+        # if the pretraining column is true create the commands
+        # add a new column to the dataframe with the created list of commands
+        self.dataset[self.created_commands_column_name()] = self.dataset.apply(
+            lambda row: AnnabellCommandGenerator(
+                row[self.id_column_name()],
+                row[self.statement_category_column_name()],
+                row[self.question_category_column_name()],
+                row[self.answer_column_name()],
+                row[self.is_pretraining_column_name()],
+            ).create_list_of_commands(),
+            axis=1,
         )
-    )
 
-    with open(the_filepath, "w") as file:
-        for each_tuple in list_of_training_tuples:
-            file.write(f"#id: {each_tuple[0]}\n")
-            file.write(f"{each_tuple[-1]}\n")
-            # write a blank line to signal to ANNABELL the end of the context
-            file.write("\n")
-    logger.info(f"file written: {the_filepath}")
+    def write_pretraining_file(self, the_filepath):
+        with open(the_filepath, "w") as commands_file:
+            for index, row in self.pretraining_dataset().iterrows():
+                commands = row["created_commands"]
+                for command in commands:
+                    commands_file.write(command + "\n")
+        logger.info(f"Wrote {the_filepath}")
 
-    with open(the_filepath, "r") as commands_file:
-        lines = commands_file.readlines()
+        with open(the_filepath, "r") as commands_file:
+            lines = commands_file.readlines()
+        number_of_reward_lines = sum(1 for line in lines if line.startswith(".rw"))
+        logger.info(f"Number of reward lines: {number_of_reward_lines}")
         logger.info(f"Number of commands: {len(lines)}")
 
+    @staticmethod
+    def declarative_statement_column_name():
+        return "declarative_statement"
 
-def write_testing_file(the_filepath, the_df):
-    list_of_testing_tuples = list(
-        zip(
-            the_df["id"],
-            the_df["response_question_formatted"],
+    @staticmethod
+    def question_column_name():
+        return "question"
+
+    @staticmethod
+    def answer_column_name():
+        return "answer"
+
+    @staticmethod
+    def id_column_name():
+        return "id"
+
+    def write_training_file(self, the_filepath):
+        list_of_training_tuples = list(
+            zip(
+                self.training_dataset()["id"],
+                self.training_dataset()[
+                    self.declarative_statement_column_name()
+                    + self.formatted_column_suffix()
+                ],
+            )
         )
-    )
 
-    with open(the_filepath, "w") as test_file:
-        for each_tuple in list_of_testing_tuples:
-            test_file.write(f"#id: {each_tuple[0]}\n")
-            test_file.write(f"{each_tuple[-1]}\n.x\n")
-            test_file.write("#END OF TESTING SAMPLE\n")
-            # write a blank line to signal to ANNABELL the end of the context
-            test_file.write("\n")
-    logger.info(f"file written: {the_filepath}")
+        with open(the_filepath, "w") as file:
+            for each_tuple in list_of_training_tuples:
+                file.write(f"#id: {each_tuple[0]}\n")
+                file.write(f"{each_tuple[-1]}\n")
+                # write a blank line to signal to ANNABELL the end of the context
+                file.write("\n")
+        logger.info(f"file written: {the_filepath}")
 
-    with open(the_filepath, "r") as commands_file:
-        lines = commands_file.readlines()
-        logger.info(f"Number of commands: {len(lines)}")
+        with open(the_filepath, "r") as commands_file:
+            lines = commands_file.readlines()
+            logger.info(f"Number of commands: {len(lines)}")
+
+    def write_testing_file(self, the_filepath):
+        list_of_testing_tuples = list(
+            zip(
+                self.training_dataset()[self.id_column_name()],
+                self.training_dataset()[
+                    self.question_column_name() + self.formatted_column_suffix()
+                ],
+            )
+        )
+
+        with open(the_filepath, "w") as test_file:
+            for each_tuple in list_of_testing_tuples:
+                test_file.write(f"#id: {each_tuple[0]}\n")
+                test_file.write(f"{each_tuple[-1]}\n.x\n")
+                test_file.write("#END OF TESTING SAMPLE\n")
+                # write a blank line to signal to ANNABELL the end of the context
+                test_file.write("\n")
+        logger.info(f"file written: {the_filepath}")
+
+        with open(the_filepath, "r") as commands_file:
+            lines = commands_file.readlines()
+            logger.info(f"Number of commands: {len(lines)}")
 
 
 def any_word_match(row):
