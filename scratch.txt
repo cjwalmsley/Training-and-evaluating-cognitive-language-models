@@ -1,0 +1,3 @@
+in the_United_States_of_America
+
+[#id: 5733be284776f4190066117f, a copper statue of Christ is in front of the, Notre Dame Main Building, \n, What is in front of the Notre Dame Main Building?, .wg What, .wg front, .wg Notre, .wg Dame, .wg Main, .wg Building, .ph a copper statue of Christ is in front of the, .wg a copper statue, .prw, .wg of Christ, .prw, .ph Notre Dame Main Building, .wg a, .rw, \n]

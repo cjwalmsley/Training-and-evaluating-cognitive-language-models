@@ -1,6 +1,6 @@
 import subprocess
 import shlex
-from config.global_config import GlobalConfig
+from config.global_config import GlobalConfig, PROJECT_ROOT
 import logging
 import shutil
 import os
@@ -67,31 +67,55 @@ class AbstractAnnabellRunner:
     def run_processing(self):
         # Use shlex.split to handle arguments safely
         command_args = shlex.split(self.docker_command())
-        docker_directory = "docker"
+        docker_directory = os.path.join(PROJECT_ROOT, "docker")
+
+        # Verify docker directory exists
+        if not os.path.isdir(docker_directory):
+            raise FileNotFoundError(f"Docker directory not found: {docker_directory}")
+
+        # Find the full path to docker executable to avoid PyCharm debugger interference
+        docker_path = shutil.which("docker")
+        if not docker_path:
+            raise FileNotFoundError(
+                "'docker' command not found. Make sure Docker is installed and in your system's PATH."
+            )
+
+        # Replace 'docker' with full path in command_args
+        if command_args[0] == "docker":
+            command_args[0] = docker_path
+
+        logger.info(f"Running Docker command from directory: {docker_directory}")
+        logger.info(f"Command: {' '.join(command_args)}")
 
         try:
             # Execute the command
             # Using check=True will raise an exception if the command returns a non-zero exit code.
+            # shell=False ensures command_args is treated as a list, not a shell command
             result = subprocess.run(
                 command_args,
                 check=True,
                 text=True,
                 capture_output=True,
                 cwd=docker_directory,
+                shell=False,
             )
             logger.info("STDOUT: %s", result.stdout)
             logger.info("STDERR: %s", result.stderr)
             logger.info("\nDocker command executed successfully.")
         except subprocess.CalledProcessError as e:
             logger.critical(f"Docker command failed with exit code {e.returncode}")
-            print("STDOUT:", e.stdout)
-            print("STDERR:", e.stderr)
-        except FileNotFoundError:
+            logger.error("STDOUT: %s", e.stdout)
+            logger.error("STDERR: %s", e.stderr)
+            raise
+        except FileNotFoundError as e:
             logger.critical(
                 "Error: 'docker' command not found. Make sure Docker is installed and in your system's PATH."
             )
+            logger.critical(f"Details: {e}")
+            raise
         except Exception as e:
             logger.critical(f"An unexpected error occurred: {e}")
+            raise
 
 
 class AnnabellPreTrainingRunner(AbstractAnnabellRunner):

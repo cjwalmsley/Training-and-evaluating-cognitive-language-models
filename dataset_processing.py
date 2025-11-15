@@ -92,7 +92,7 @@ class AnnabellCommandGenerator:
         declarative_sentence,
         question,
         answer,
-        is_pre_training,
+        is_pre_training=True,
         max_words=10,
     ):
         self.sample_id = sample_id
@@ -694,15 +694,27 @@ class DatasetPreProcessor:
     def created_commands_column_name():
         return "created_commands"
 
+    @staticmethod
+    def declarative_statement_formatted_column_name():
+        return "declarative_statement_formatted"
+
+    @staticmethod
+    def question_formatted_column_name():
+        return "question_formatted"
+
+    @staticmethod
+    def answer_formatted_column_name():
+        return "answer_formatted"
+
     def create_commands_for_pretraining(self):
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
         self.dataset[self.created_commands_column_name()] = self.dataset.apply(
             lambda row: AnnabellCommandGenerator(
                 row[self.id_column_name()],
-                row[self.statement_category_column_name()],
-                row[self.question_category_column_name()],
-                row[self.answer_column_name()],
+                row[self.declarative_statement_formatted_column_name()],
+                row[self.question_formatted_column_name()],
+                row[self.answer_formatted_column_name()],
                 row[self.is_pretraining_column_name()],
             ).create_list_of_commands(),
             axis=1,

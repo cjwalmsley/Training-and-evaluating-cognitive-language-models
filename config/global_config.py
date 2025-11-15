@@ -579,7 +579,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def ollama_default_model(self) -> str:
 
-        return self.settings.ollama.default_model
+        return self.settings.ollama.model
 
     def experiment_name(self) -> str:
 
@@ -611,3 +611,7 @@ class GlobalConfig(metaclass=SingletonMeta):
             return "all"
         else:
             return self.settings.experiments.number_of_training_samples
+
+    @staticmethod
+    def project_root():
+        return PROJECT_ROOT

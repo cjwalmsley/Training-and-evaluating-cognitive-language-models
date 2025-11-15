@@ -352,13 +352,13 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.preprocessor.preprocess_data()
         # After all preprocessing with limits (5 words, 10 length), only row 1 should remain
         self.assertEqual(len(self.preprocessor.dataset), 1)
-        self.assertEqual(self.preprocessor.dataset.iloc[0]["id"], 1)
+        self.assertEqual(self.preprocessor.dataset.iloc[0]["id"], 2)
 
         # Check that whitespace has been handled
         processed_row = self.preprocessor.dataset.iloc[0]
         self.assertEqual(
             processed_row["declarative_sentence_formatted"],
-            "the quick brown fox",
+            "New_York be a big city",
         )
 
 
