@@ -12,8 +12,7 @@ global_config = GlobalConfig()
 
 class AbstractAnnabellRunner:
 
-    def __init__(self, annabell_commands_filename, dataset_processor):
-        self.commands_filename = annabell_commands_filename
+    def __init__(self, dataset_processor):
         self.dataset_processor = dataset_processor
 
     def run(
@@ -41,47 +40,47 @@ class AbstractAnnabellRunner:
         raise NotImplementedError("Subclasses should implement this method.")
 
     def docker_command(self):
+        raise NotImplementedError("Subclasses should implement this method.")
 
-        command = (
-            f"docker compose run --rm --entrypoint ./{self.run_script()} app "
-            f"{self.commands_filename} "
-            f"{global_config.docker_data_directory()}/{global_config.pre_training_filename()} "
-            f"{global_config.docker_data_directory()}/{global_config.pre_training_weights_filename()}"
-        )
-        return command
-
-    def copy_file(self, source_path, destination_path):
+    @staticmethod
+    def copy_file(source_path, destination_path):
 
         try:
             shutil.copy(source_path, destination_path)
             logger.info("copied: " + source_path + " to: " + destination_path)
-        except FileNotFoundError:
-            logger.critical(f"Error: Source file not found at {source_path}")
         except Exception as e:
+            logger.critical(f"Copy failed: {source_path} -> {destination_path}")
             logger.critical(f"An error occurred: {e}")
+            raise
 
-    def move_file(self, source_path, destination_path):
+    @staticmethod
+    def move_file(source_path, destination_path):
 
         try:
             shutil.move(source_path, destination_path)
             logger.info("moved: " + source_path + " to: " + destination_path)
-        except FileNotFoundError:
-            logger.critical(f"Error: Source file not found at {source_path}")
         except Exception as e:
+            logger.critical(f"Move failed: {source_path} -> {destination_path}")
             logger.critical(f"An error occurred: {e}")
+            raise
 
     def run_processing(self):
         # Use shlex.split to handle arguments safely
         command_args = shlex.split(self.docker_command())
+        docker_directory = "docker"
 
         try:
             # Execute the command
             # Using check=True will raise an exception if the command returns a non-zero exit code.
             result = subprocess.run(
-                command_args, check=True, text=True, capture_output=True
+                command_args,
+                check=True,
+                text=True,
+                capture_output=True,
+                cwd=docker_directory,
             )
-            logger.info("STDOUT:", result.stdout)
-            logger.info("STDERR:", result.stderr)
+            logger.info("STDOUT: %s", result.stdout)
+            logger.info("STDERR: %s", result.stderr)
             logger.info("\nDocker command executed successfully.")
         except subprocess.CalledProcessError as e:
             logger.critical(f"Docker command failed with exit code {e.returncode}")
@@ -99,6 +98,8 @@ class AnnabellPreTrainingRunner(AbstractAnnabellRunner):
 
     def setup(self):
         super().setup()
+        self.write_annabell_files_to_gdrive()
+        self.copy_files_to_docker_directory()
 
     def teardown(self):
         self.copy_annabell_weights_to_gdrive()

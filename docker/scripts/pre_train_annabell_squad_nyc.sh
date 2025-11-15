@@ -2,12 +2,6 @@
 
 #script to pretrain ANNABELL with language basics
 
-#assumes working directory has the following structure:
-# .
-# ├── shared_data
-# │   └── pre_training
-#          └── <pre_training_file>
-
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <logfile> <training_file> <pre-trained_weights>"
     exit 1

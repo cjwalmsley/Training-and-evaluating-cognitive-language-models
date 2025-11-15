@@ -46,10 +46,11 @@ file_locations:
 
 experiments:
   experiment_name: "sandbox"
-  percentage_of_pretraining_samples: 10
+  percentage_of_pretraining_samples: 40
   maximum_number_of_words: 50
   maximum_word_length: 25
-
+  number_of_training_samples: 5
+  use_all_available_samples: false
 
 dataset:
   dataset_directory: "datasets/squad_dataset"

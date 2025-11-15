@@ -70,6 +70,8 @@ class Experiments(BaseModel):
     percentage_of_pretraining_samples: float
     maximum_number_of_words: int
     maximum_word_length: int
+    number_of_training_samples: int
+    use_all_available_samples: bool
 
 
 # 2. A nested model for model hyperparameters

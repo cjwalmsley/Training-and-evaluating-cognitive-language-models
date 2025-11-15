@@ -77,8 +77,8 @@ class MacConfig(AbstractPlatformConfig):
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_mac
 
-    def get_docker_data_directory(self, settings) -> str:
-        return settings.file_locations.docker_data_directory_mac
+    def get_docker_directory(self, settings) -> str:
+        return settings.file_locations.docker_directory_mac
 
 
 class LinuxConfig(AbstractPlatformConfig):
@@ -87,7 +87,7 @@ class LinuxConfig(AbstractPlatformConfig):
         return settings.file_locations.base_directory_linux
 
     def get_docker_directory(self, settings) -> str:
-        return settings.file_locations.docker_data_directory_linux
+        return settings.file_locations.docker_directory_linux
 
 
 class WindowsConfig(AbstractPlatformConfig):
@@ -96,7 +96,7 @@ class WindowsConfig(AbstractPlatformConfig):
         return settings.file_locations.base_directory_windows
 
     def get_docker_directory(self, settings) -> str:
-        return settings.file_locations.docker_data_directory_windows
+        return settings.file_locations.docker_directory_windows
 
 
 class GlobalConfig(metaclass=SingletonMeta):
@@ -169,7 +169,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_pre_training_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.docker_runtime_data_directory,
             self.settings.file_locations.pre_training_directory,
             self.settings.file_locations.pre_training_filename,
         )
@@ -194,7 +194,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return os.path.join(
             self.docker_runtime_pre_training_directory(),
-            self.settings.file_locations.docker_pre_training_filename,
+            self.settings.file_locations.annabell_log_pre_training_filename,
         )
 
     def docker_runtime_training_log_filepath(self) -> str:
@@ -288,7 +288,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_pre_training_weights_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.docker_runtime_data_directory,
             self.settings.file_locations.pre_training_directory,
             self.pre_training_weights_filename(),
         )
@@ -296,7 +296,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_pre_training_validation_testing_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.docker_runtime_data_directory,
             self.settings.file_locations.testing_directory,
             self.settings.file_locations.pretraining_validation_testing_filename,
         )
@@ -304,7 +304,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_training_weights_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.docker_runtime_data_directory,
+            self.settings.file_locations.docker_runtime_data_directory,
             self.settings.file_locations.training_directory,
             self.settings.file_locations.training_filename.replace(".txt", ".dat"),
         )
@@ -604,3 +604,10 @@ class GlobalConfig(metaclass=SingletonMeta):
     def embedding_model(self):
 
         return self.settings.ollama.embedding_model
+
+    def number_of_training_samples(self):
+
+        if self.settings.experiments.use_all_available_samples:
+            return "all"
+        else:
+            return self.settings.experiments.number_of_training_samples

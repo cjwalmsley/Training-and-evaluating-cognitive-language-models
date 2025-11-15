@@ -135,7 +135,9 @@ def generate_declarative_statements(
     title="all",
 ):
 
-    logger.info(f"🚀 Starting project: {global_config.project_name}")
+    logger.info(
+        f"🚀 Starting sentence generation for experiment: {global_config.experiment_name()}"
+    )
     logger.info("\n--- Model Config ---")
     logger.info(f"   options: {global_config.ollama_options_dict()}")
     logger.info(f"   model: {the_model_string}")
