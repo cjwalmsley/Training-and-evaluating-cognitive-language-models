@@ -233,12 +233,13 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
-            ".ph blue with some patches of",
+            ".ph the sky is a brilliant",
+            ".sctx blue with some patches of",
             ".wg blue with some",
             ".prw",
             ".wg patches of",
             ".prw",
-            ".ph grey",
+            ".sctx grey",
             ".wg grey",
             ".rw",
         ]
@@ -261,30 +262,40 @@ class TestDatasetPreProcessor(unittest.TestCase):
                 "declarative_sentence": "  The quick brown fox.  ",
                 "question": "What does the fox say?",
                 "answer": "Ring ding ding",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
             },
             {
                 "id": 2,
                 "declarative_sentence": "New York is a big city.",
                 "question": "Where is New York?",
                 "answer": "In the United States Of America",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
             },
             {
                 "id": 3,
                 "declarative_sentence": "This sentence has more than five words in it.",
                 "question": "Is this sentence long?",
                 "answer": "Yes",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
             },
             {
                 "id": 4,
                 "declarative_sentence": "This sentence has a verylongwordinit.",
                 "question": "Does it have a long word?",
                 "answer": "Indeed",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
             },
             {
                 "id": 5,
                 "declarative_sentence": "the English call -ed New Amsterdam New York after its capture",
                 "question": "What did the English call New Amsterdam after its capture?",
                 "answer": "New York",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
             },
         ]
 
@@ -360,6 +371,29 @@ class TestDatasetPreProcessor(unittest.TestCase):
             processed_row["declarative_sentence_formatted"],
             "New_York be a big city",
         )
+
+    def test_select_pretraining_data(self):
+        """Tests selecting a subset of the dataset for pretraining."""
+        # Do not preprocess here to keep 5 rows and avoid reducing dataset to 1
+        percent = 50
+        original_len = len(self.preprocessor.dataset)
+        expected_selected = int(original_len * percent / 100)
+
+        self.preprocessor.select_pretraining_data(
+            percentage_of_pretraining_samples=percent
+        )
+
+        # Construct the selected subset and perform assertions
+        self.assertIn("is_pretraining", self.preprocessor.dataset.columns)
+        self.assertTrue(self.preprocessor.dataset["is_pretraining"].dtype == bool)
+
+        pretraining_data = self.preprocessor.dataset[
+            self.preprocessor.dataset["is_pretraining"] == True
+        ]
+        self.assertEqual(len(pretraining_data), expected_selected)
+        self.assertIn("declarative_sentence_formatted", pretraining_data.columns)
+        self.assertIn("question_formatted", pretraining_data.columns)
+        self.assertIn("answer_formatted", pretraining_data.columns)
 
 
 if __name__ == "__main__":

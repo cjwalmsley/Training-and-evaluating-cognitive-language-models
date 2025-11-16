@@ -1,0 +1,17 @@
+#id: 5733be284776f41900661180
+the Basilica of the Sacred_Heart at Notre_Dame
+be beside the Main_Building
+
+? the Basilica of the Sacred_Heart at Notre_Dame
+be beside to which structure
+.sctx ? the Basilica of the Sacred_Heart at Notre_Dame
+.wg Basilica
+.wg Sacred_Heart
+.wg Notre_Dame
+.sctx be beside to which structure
+.wg beside
+.wg structure
+.ph the Basilica of the Sacred_Heart at Notre_Dame
+.sctx be beside the Main_Building
+.wg Main_Building
+.rw

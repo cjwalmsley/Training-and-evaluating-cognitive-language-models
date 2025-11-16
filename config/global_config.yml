@@ -69,7 +69,7 @@ ollama:
     top_k: 1
     top_p: 0.1
     min_p: 0.0
-  model: "gemma3:4b-it-qat"
+  model: "qwen3:4b"
   embedding_model: "embeddinggemma"
   stream: false
   think: false

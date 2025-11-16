@@ -12,6 +12,7 @@ import shutil
 import re
 import spacy
 from spacy.cli import download
+import numpy as np
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -231,23 +232,40 @@ class AnnabellCommandGenerator:
             self.commands.append(f".wg {" ".join(answer_words[3:])}")
 
     def write_long_answer_commands(self):
+        # todo - instead of looking for the answer on the phrase via .ph instead look up the start of the conext with .ph then sctx to find the phrase in the context that has the answer words
         answer_words = self.answer.split()
         phrases = self.phrases_in_context(self.declarative_sentence)
         # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
         phrase_answer_words = self.phrases_and_answer_words(phrases, answer_words)
         # for each phrase in the declarative sentence, write the phrase command and the answer words
-        for phrase, answer_words in phrase_answer_words.items():
-            if len(answer_words) == 0:
+
+        for phrase_index, (phrase, answer_words) in enumerate(
+            phrase_answer_words.items()
+        ):
+            if len(answer_words) == 0 and phrase_index > 0:
                 continue
             else:
-                self.commands.append(f".ph {phrase}")
-                if len(answer_words) < 4:
+                self.commands.append(
+                    f"{self.answer_command_for_phrase_index(phrase_index)} {phrase}"
+                )
+                if len(answer_words) == 0:
+                    continue
+                elif len(answer_words) < 4:
                     self.commands.append(f".wg {" ".join(answer_words)}")
                 else:
                     self.commands.append(f".wg {" ".join(answer_words[:3])}")
                     self.commands.append(".prw")
                     self.commands.append(f".wg {" ".join(answer_words[3:])}")
                     self.commands.append(".prw")
+
+    @staticmethod
+    def answer_command_for_phrase_index(index):
+        if index == 0:
+            command = ".ph"
+        else:
+            command = ".sctx"
+
+        return command
 
     @staticmethod
     def informational_non_pretraining_command():
@@ -277,8 +295,8 @@ class DatasetPreProcessor:
     def __init__(
         self,
         dataset,
-        max_words_limit=25,
-        max_word_length_limit=50,
+        max_words_limit=global_config.maximum_word_length(),
+        max_word_length_limit=global_config.maximum_word_length(),
         columns_to_process=None,
     ):
 
@@ -409,7 +427,7 @@ class DatasetPreProcessor:
         return "_formatted"
 
     def spacy_entities_md(self, text):
-        # Extract entities using the pre-loaded spaCy medium model
+        # Extract entities using the preloaded spaCy medium model
         doc = self.nlp(text)
         return [(ent.text, ent.label_) for ent in doc.ents]
 
@@ -572,70 +590,154 @@ class DatasetPreProcessor:
         return self.dataset[self.statement_category_column_name()].unique()
 
     def select_pretraining_data(self, percentage_of_pretraining_samples):
-        # pick a random sample of pretraining rows or use a pre-selected, manually generated set
-        # for each category, pick an equal number of samples
-
         self.dataset["is_pretraining"] = False
-        number_of_pretraining_samples = int(
-            len(self.dataset) * percentage_of_pretraining_samples // 100
+        num_total_samples = len(self.dataset)
+        num_pretraining_samples = int(
+            num_total_samples * percentage_of_pretraining_samples / 100
         )
-        logger.info(f"Number of pretraining samples: {number_of_pretraining_samples}")
-        samples_per_category = int(
-            number_of_pretraining_samples
-            // (len(self.question_categories()) + len(self.statement_categories()))
+
+        if num_pretraining_samples == 0:
+            logger.warning("Requested 0 pre-training samples. Nothing to do.")
+            return None
+
+        if num_pretraining_samples > num_total_samples:
+            logger.warning(
+                f"Requested {num_pretraining_samples} samples, but dataset only has {num_total_samples}. Selecting all samples."
+            )
+            self.dataset["is_pretraining"] = True
+            return None
+
+        logger.info(
+            f"Attempting to select {num_pretraining_samples} pre-training samples."
         )
-        logger.info(f"Samples per category: {samples_per_category}")
-        # sample from the question categories
-        # sample from the question categories
-        for category in self.question_categories():
-            category_df = self.dataset[
-                self.dataset[self.question_category_column_name()] == category
-            ]
-            samples_to_take = samples_per_category
-            if len(category_df) < samples_per_category:
-                logger.warning(
-                    f"Warning: Not enough samples in question category '{category}'. Taking all {len(category_df)} samples."
-                )
-                samples_to_take = len(category_df)
-            if samples_to_take > 0:
-                sampled_category_df = category_df.sample(
-                    n=samples_to_take, random_state=42
-                )
-                self.dataset.loc[sampled_category_df.index, "is_pretraining"] = True
 
-        # sample from the sentence categories starting with those that are already selected for pretraining
-        for category in self.statement_categories():
-            category_df = self.dataset[
-                self.dataset[self.statement_category_column_name()] == category
-            ]
-            already_selected_df = category_df[category_df["is_pretraining"] == True]
-            already_selected_count = len(already_selected_df)
-            remaining_samples = samples_per_category - already_selected_count
-            if remaining_samples > 0:
-                not_selected_df = category_df[category_df["is_pretraining"] == False]
-                samples_to_take = remaining_samples
-                if len(not_selected_df) < remaining_samples:
-                    logger.warning(
-                        f"Warning: Not enough samples in sentence category '{category}'. Taking all {len(not_selected_df)} available samples."
-                    )
-                    samples_to_take = len(not_selected_df)
-                if samples_to_take > 0:
-                    sampled_category_df = not_selected_df.sample(
-                        n=samples_to_take, random_state=42
-                    )
-                    self.dataset.loc[sampled_category_df.index, "is_pretraining"] = True
+        # Consolidate all categories and their indices (handle missing columns and NaNs)
+        q_col = self.question_category_column_name()
+        s_col = self.statement_category_column_name()
+        q_exists = q_col in self.dataset.columns
+        s_exists = s_col in self.dataset.columns
 
-        # print the counts of samples in the question and sentence categories
+        q_cats = (
+            []
+            if not q_exists
+            else [c for c in self.dataset[q_col].dropna().unique().tolist()]
+        )
+        s_cats = (
+            []
+            if not s_exists
+            else [c for c in self.dataset[s_col].dropna().unique().tolist()]
+        )
+        all_categories = q_cats + s_cats
+
+        if len(all_categories) == 0:
+            logger.warning(
+                "No categories found for pre-training selection. Performing random sampling."
+            )
+            pretraining_indices = np.random.choice(
+                self.dataset.index, num_pretraining_samples, replace=False
+            )
+            self.dataset.loc[pretraining_indices, "is_pretraining"] = True
+            return None
+
+        category_info = {}
+        q_cat_col = q_col
+        s_cat_col = s_col
+
+        for category in q_cats:
+            indices = self.dataset[self.dataset[q_cat_col] == category].index
+            category_info[category] = {
+                "indices": indices,
+                "count": len(indices),
+                "to_select": 0,
+            }
+
+        for category in s_cats:
+            indices = self.dataset[self.dataset[s_cat_col] == category].index
+            # If a statement category is also a question category, merge them.
+            if category in category_info:
+                category_info[category]["indices"] = category_info[category][
+                    "indices"
+                ].union(indices)
+                category_info[category]["count"] = len(
+                    category_info[category]["indices"]
+                )
+            else:
+                category_info[category] = {
+                    "indices": indices,
+                    "count": len(indices),
+                    "to_select": 0,
+                }
+
+        unique_categories = list(category_info.keys())
+
+        # Initial distribution
+        base_samples_per_category = (
+            num_pretraining_samples // len(unique_categories)
+            if unique_categories
+            else 0
+        )
+
+        deficit = 0
+        for cat in unique_categories:
+            take = min(base_samples_per_category, category_info[cat]["count"])
+            category_info[cat]["to_select"] = take
+            deficit += base_samples_per_category - take
+
+        # Account for remainder from initial division
+        remainder = (
+            num_pretraining_samples % len(unique_categories) if unique_categories else 0
+        )
+        deficit += remainder
+
+        # Redistribute the deficit to categories with spare capacity
+        if deficit > 0:
+            # Sort by categories with the most remaining samples
+            sorted_cats = sorted(
+                unique_categories,
+                key=lambda c: category_info[c]["count"] - category_info[c]["to_select"],
+                reverse=True,
+            )
+
+            for cat in sorted_cats:
+                if deficit == 0:
+                    break
+                available_extra = (
+                    category_info[cat]["count"] - category_info[cat]["to_select"]
+                )
+                take_extra = min(deficit, available_extra)
+                category_info[cat]["to_select"] += take_extra
+                deficit -= take_extra
+
+        # Final sampling
+        pretraining_indices = []
+        for cat in unique_categories:
+            num_to_select = category_info[cat]["to_select"]
+            if num_to_select > 0:
+                selected = np.random.choice(
+                    category_info[cat]["indices"], num_to_select, replace=False
+                )
+                pretraining_indices.extend(selected)
+
+        self.dataset.loc[pretraining_indices, "is_pretraining"] = True
+
+        actual_pretraining_size = self.dataset["is_pretraining"].sum()
+        logger.info(f"Selected {actual_pretraining_size} samples for pre-training.")
+
+        if actual_pretraining_size != num_pretraining_samples:
+            logger.error(
+                f"CRITICAL: Sample selection failed. Requested: {num_pretraining_samples}, Got: {actual_pretraining_size}"
+            )
+
         logger.info("Pretraining samples by question category:")
         logger.info(
             self.dataset[self.dataset["is_pretraining"] == True][
-                self.question_category_column_name()
+                q_cat_col
             ].value_counts()
         )
         logger.info("Pretraining samples by sentence category:")
         logger.info(
             self.dataset[self.dataset["is_pretraining"] == True][
-                self.statement_category_column_name()
+                s_cat_col
             ].value_counts()
         )
         total_pretraining_count = self.dataset["is_pretraining"].sum()
