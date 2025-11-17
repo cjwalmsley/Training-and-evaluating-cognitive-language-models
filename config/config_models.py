@@ -40,6 +40,8 @@ class FileLocations(BaseModel):
     pre_training_filename: str
     training_filename: str
     testing_filename: str
+    results_directory: str
+    test_answer_summary_filename: str
     prepared_dataset_directory: str
     prepared_dataset_filename: str
     pretraining_validation_testing_filename: str

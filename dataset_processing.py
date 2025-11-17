@@ -139,7 +139,7 @@ class AnnabellCommandGenerator:
         for phrase in phrases:
             phrase_answer_words[phrase] = []
             for word in answer_words:
-                if word in phrase:
+                if word in phrase.split():
                     phrase_answer_words[phrase].append(word)
         return phrase_answer_words
 

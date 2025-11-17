@@ -23,6 +23,8 @@ TESTING_FILE=$3
     echo .f "$TESTING_FILE"
     #record the stats
     echo .stat
+    # output timing data
+    echo .t
     #turn off logging
     echo .logfile off
     #shut down ANNABELL

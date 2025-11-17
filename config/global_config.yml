@@ -24,6 +24,8 @@ file_locations:
   training_filename: "nyc_squad_training_commands.txt"
   testing_directory: "testing"
   testing_filename: "nyc_squad_testing_commands.txt"
+  results_directory: "results"
+  test_answer_summary_filename: "test_answer_summary_tsv"
   experiments_directory: "experiments"
   log_archive_directory: "logs"
   annabell_log_pre_training_filename: "annabell_pre_training_log.txt"

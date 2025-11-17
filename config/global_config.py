@@ -612,6 +612,23 @@ class GlobalConfig(metaclass=SingletonMeta):
         else:
             return self.settings.experiments.number_of_training_samples
 
+    def test_pre_training_validation_results_directory(self):
+        return os.path.join(
+            self.pre_training_directory(),
+            self.settings.file_locations.results_directory,
+        )
+
+    def test_training_results_directory(self):
+        return os.path.join(
+            self.training_directory(), self.settings.file_locations.results_directory
+        )
+
+    def test_pre_training_validation_results_filepath(self):
+        return os.path.join(
+            self.test_pre_training_validation_results_directory(),
+            self.settings.file_locations.test_answer_summary_filename,
+        )
+
     @staticmethod
     def project_root():
         return PROJECT_ROOT

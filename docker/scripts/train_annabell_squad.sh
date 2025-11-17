@@ -26,6 +26,8 @@ echo .f "$STATEMENTS_FILE"
 echo .save "$POSTTRAINED_WEIGHTS"
 #record the stats
 echo .stat
+# output timing data
+echo .t
 #turn off logging
 echo .logfile off
 #shut down ANNABELL

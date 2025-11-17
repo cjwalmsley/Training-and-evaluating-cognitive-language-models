@@ -23,6 +23,8 @@ echo .f "$TRAINING_FILE"
 echo .save "$PRETRAINED_WEIGHTS"
 #record the stats
 echo .stat
+# output timing data
+echo .t
 #turn off logging
 echo .logfile off
 #shut down ANNABELL

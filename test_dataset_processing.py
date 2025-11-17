@@ -245,6 +245,28 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(generator.commands, expected_commands)
 
+    def test_write_answer_commands_long_sentence_2(self):
+        """Test write_answer_commands with a long sentence where the answer is split across phrases."""
+        declarative_sentence = (
+            "the Grotto at Notre_Dame be a marian place of prayer and reflection"
+        )
+        answer = "a marian place of prayer and reflection"
+        generator = AnnabellCommandGenerator(
+            self.sample_id, declarative_sentence, self.question, answer, max_words=10
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph the Grotto at Notre_Dame be a marian place of prayer",
+            ".wg a marian place",
+            ".prw",
+            ".wg of prayer",
+            ".prw",
+            ".sctx and reflection",
+            ".wg and reflection",
+            ".rw",
+        ]
+        self.assertEqual(generator.commands, expected_commands)
+
 
 class TestDatasetPreProcessor(unittest.TestCase):
     def setUp(self):
