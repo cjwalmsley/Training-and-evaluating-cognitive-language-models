@@ -42,6 +42,8 @@ class FileLocations(BaseModel):
     testing_filename: str
     results_directory: str
     test_answer_summary_filename: str
+    test_detailed_results_filename: str
+    test_summary_results_filename: str
     prepared_dataset_directory: str
     prepared_dataset_filename: str
     pretraining_validation_testing_filename: str
@@ -74,6 +76,7 @@ class Experiments(BaseModel):
     maximum_word_length: int
     number_of_training_samples: int
     use_all_available_samples: bool
+    cosine_distance_threshold: float
 
 
 # 2. A nested model for model hyperparameters

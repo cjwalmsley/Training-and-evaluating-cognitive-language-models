@@ -14,8 +14,13 @@ global_config = GlobalConfig()
 
 class Pipeline:
 
-    def __init__(self, prepared_dataset_filepath=None):
-        self.prepared_dataset_filepath = prepared_dataset_filepath
+    def __init__(
+        self, use_prepared_dataset_if_available=False, prepared_dataset_filepath=None
+    ):
+        self.use_prepared_dataset_if_available = use_prepared_dataset_if_available
+        self.prepared_dataset_filepath = self.determine_prepared_dataset_filepath(
+            prepared_dataset_filepath
+        )
         self.declarative_sentences_dataset = None
         self.datasetPreProcessor = None
         self.question_assigner = None
@@ -24,6 +29,22 @@ class Pipeline:
         self.question_categoriser = None
         self.statement_categoriser = None
         self.pre_training_runner = None
+
+    def determine_prepared_dataset_filepath(self, filepath):
+        if filepath is not None:
+            dataset_filepath = filepath
+        elif self.use_prepared_dataset_if_available:
+            if global_config.prepared_dataset_filepath_exists():
+                dataset_filepath = global_config.prepared_dataset_filepath()
+            else:
+                logger.warning(
+                    "Prepared dataset file not found. Proceeding without it."
+                )
+                dataset_filepath = None
+        else:
+            dataset_filepath = None
+
+        return dataset_filepath
 
     def run(self):
 
@@ -140,10 +161,19 @@ def main():
         default=None,
         help="Path to a prepared dataset file (JSONL format). If provided, skips data generation and preprocessing steps.",
     )
+    parser.add_argument(
+        "--use_prepared_dataset_if_available",
+        type=bool,
+        default=False,
+        help="Use the default prepared dataset if available.",
+    )
 
     args = parser.parse_args()
 
-    pipeline = Pipeline(prepared_dataset_filepath=args.prepared_dataset_filepath)
+    pipeline = Pipeline(
+        use_prepared_dataset_if_available=args.use_prepared_dataset_if_available,
+        prepared_dataset_filepath=args.prepared_dataset_filepath,
+    )
     pipeline.run()
 
 

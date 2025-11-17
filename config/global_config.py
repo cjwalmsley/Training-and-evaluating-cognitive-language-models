@@ -334,6 +334,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         directory_path = os.path.join(
             self.get_experiments_directory(),
+            self.experiment_name(),
             self.settings.file_locations.prepared_dataset_directory,
         )
         if not os.path.exists(directory_path):
@@ -346,6 +347,9 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.prepared_dataset_directory(),
             self.prepared_dataset_filename(),
         )
+
+    def prepared_dataset_filepath_exists(self):
+        return os.path.exists(self.prepared_dataset_filepath())
 
     def training_directory(self) -> str:
 
@@ -623,11 +627,44 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.training_directory(), self.settings.file_locations.results_directory
         )
 
-    def test_pre_training_validation_results_filepath(self):
+    def test_pre_training_validation_answer_summary_filepath(self):
         return os.path.join(
             self.test_pre_training_validation_results_directory(),
             self.settings.file_locations.test_answer_summary_filename,
         )
+
+    def test_pre_training_validation_detailed_results_filepath(self):
+        return os.path.join(
+            self.test_pre_training_validation_results_directory(),
+            self.settings.file_locations.test_detailed_results_filename,
+        )
+
+    def test_pre_training_validation_summary_results_filepath(self):
+        return os.path.join(
+            self.test_pre_training_validation_results_directory(),
+            self.settings.file_locations.test_summary_results_filename,
+        )
+
+    def test_answer_summary_filepath(self):
+        return os.path.join(
+            self.test_training_results_directory(),
+            self.settings.file_locations.test_answer_summary_filename,
+        )
+
+    def test_detailed_results_filepath(self):
+        return os.path.join(
+            self.test_training_results_directory(),
+            self.settings.file_locations.test_detailed_results_filename,
+        )
+
+    def test_summary_results_filepath(self):
+        return os.path.join(
+            self.test_training_results_directory(),
+            self.settings.file_locations.test_summary_results_filename,
+        )
+
+    def cosine_distance_threshold(self) -> float:
+        return self.settings.experiments.cosine_distance_threshold
 
     @staticmethod
     def project_root():

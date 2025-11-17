@@ -783,6 +783,9 @@ class DatasetPreProcessor:
     def pretraining_dataset(self):
         return self.dataset[self.dataset[self.is_pretraining_column_name()] == True]
 
+    def total_pretraining_samples(self):
+        return self.dataset[self.is_pretraining_column_name()].sum()
+
     def training_dataset(self):
         return self.dataset[self.dataset[self.is_pretraining_column_name()] == False]
 
@@ -897,26 +900,6 @@ class DatasetPreProcessor:
         with open(the_filepath, "r") as commands_file:
             lines = commands_file.readlines()
             logger.info(f"Number of commands: {len(lines)}")
-
-
-def any_word_match(row):
-    # if the row contains a non-string value return False
-    if not isinstance(row["test_answer"], str) or not isinstance(
-        row["response_answer_formatted"], str
-    ):
-        return False
-    # return True if any word in test_answer is also in response_answer_formatted
-    try:
-        stopwords.words("english")
-    except LookupError:
-        nltk.download("stopwords")
-    stop_words = set(stopwords.words("english"))
-    test_words = set(row["test_answer"].split())
-    response_words = set(row["response_answer_formatted"].split())
-    intersecting_words = test_words.intersection(response_words)
-    open_class_intersecting_words = intersecting_words - stop_words
-
-    return open_class_intersecting_words != set()
 
 
 def similarity_score(sentence_1, sentence_2):

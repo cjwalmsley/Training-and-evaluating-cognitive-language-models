@@ -8,14 +8,14 @@
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="SDK_NAME" value="Python 3.12 (Training-and-evaluating-cognitive-language-models)" />
+    <option name="SDK_NAME" value="Python 3.12 (sandbox)" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pipeline.py" />
-    <option name="PARAMETERS" value="--prepared_dataset_filepath &quot;$USER_HOME$/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/data/nyc_squad_with_pretraining_commands.jsonl&quot;" />
+    <option name="PARAMETERS" value="--use_prepared_dataset True" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

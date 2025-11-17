@@ -26,14 +26,16 @@ file_locations:
   testing_filename: "nyc_squad_testing_commands.txt"
   results_directory: "results"
   test_answer_summary_filename: "test_answer_summary_tsv"
+  test_detailed_results_filename: "test_detailed_results_tsv"
+  test_summary_results_filename: "test_summary_results_txt"
   experiments_directory: "experiments"
   log_archive_directory: "logs"
   annabell_log_pre_training_filename: "annabell_pre_training_log.txt"
   annabell_log_pretraining_validation_testing_filename: "annabell_pretraining_validation_testing_log.txt"
   annabell_log_training_filename: "annabell_training_log.txt"
   annabell_log_testing_filename: "annabell_testing_log.txt"
-  prepared_dataset_directory: "data"
-  prepared_dataset_filename: "response_formatted_20250924_174653.jsonl"
+  prepared_dataset_directory: "data_sets"
+  prepared_dataset_filename: "prepared_dataframe.jsonl"
   pretraining_validation_testing_filename: "nyc_squad_pretraining_validation_testing_commands.txt"
   categorised_questions_filename: "llm_question_categorisation_results.jsonl"
   categorised_statements_filename: "llm_sentence_categorisation_results.jsonl"
@@ -53,6 +55,7 @@ experiments:
   maximum_word_length: 25
   number_of_training_samples: 5
   use_all_available_samples: false
+  cosine_distance_threshold: 0.1
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
