@@ -1,7 +1,7 @@
 from generate_declarative_sentences import generate_declarative_statements
 from categorise_sentences import QuestionCategoryAssigner, StatementCategoryAssigner
 from dataset_processing import DatasetPreProcessor
-from training import AnnabellPreTrainingRunner
+from training import AnnabellPreTrainingRunner, AnnabellPreTrainingTestingRunner
 from testing import AnnabellTestResultsEvaluator, AnnabellPreTrainingTestContext
 from config.global_config import GlobalConfig
 import logging
@@ -59,6 +59,7 @@ class Pipeline:
             self.load_prepared_dataset()
 
         self.run_pre_training()
+        self.run_pre_training_evaluation_testing()
         self.run_evaluate_pre_training_results()
         logger.info("Pipeline completed.")
 
@@ -67,6 +68,12 @@ class Pipeline:
         runner = AnnabellPreTrainingRunner(self.datasetPreProcessor)
         runner.run()
         logger.info("Pre-training completed.")
+
+    def run_pre_training_evaluation_testing(self):
+        logger.info("Starting pre-training testing...")
+        runner = AnnabellPreTrainingTestingRunner(self.datasetPreProcessor)
+        runner.run()
+        logger.info("Pre-training testing completed.")
 
     def run_evaluate_pre_training_results(self):
         logger.info("Starting evaluation of pre-training results...")

@@ -1,0 +1,17 @@
+#id: 5733be284776f4190066117e
+a golden statue of the_Virgin_Mary sit on top of the_Main_Building
+at Notre_Dame
+
+
+? what sit on top of the_Main_Building at Notre_Dame
+.wg the_Main_Building
+.ph a golden statue of the_Virgin_Mary sit on top of the_Main_Building
+.sctx at Notre_Dame
+.wg Notre_Dame
+.sctx a golden statue of the_Virgin_Mary sit on top of the_Main_Building
+.wg a golden statue
+.prw
+.wg of the_Virgin_Mary
+.rw
+
+#the key thing here is that the .wg searches form the quesiton must also match the inout phrase

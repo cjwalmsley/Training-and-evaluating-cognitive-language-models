@@ -19,7 +19,7 @@ class AnnabellTestResultsEvaluator:
     def __init__(self, testing_context):
         self.testing_context = testing_context
         self.ids_questions_answers = None
-        self.prepared_dataframe = self.testing_context.prepared_dataframe()
+        self.prepared_dataframe = self.testing_context.prepared_dataframe().copy()
 
     def run(
         self,
@@ -119,7 +119,7 @@ class AnnabellTestResultsEvaluator:
 
         self.prepared_dataframe["test_answer_correct"] = (
             self.prepared_dataframe["test_answer"]
-            == self.prepared_dataframe["response_answer_formatted"]
+            == self.prepared_dataframe["answer_formatted"]
         )
         number_correct = self.prepared_dataframe["test_answer_correct"].sum()
         return number_correct
@@ -213,23 +213,25 @@ class AnnabellTestResultsEvaluator:
 
         # count the number of results where the test answer is > 20 words
         logger.info(
-            f"number of test answers longer than 20 words: {self.count_of_long_test_answers()}"
+            f"number of test answers longer than 20 words: {str(self.count_of_long_test_answers())}"
         )
         logger.info(
-            f"number correct = {self.number_of_correct_answers()} out of {len(self.prepared_dataframe)}"
+            f"number correct = {str(self.number_of_correct_answers())} out of {str(len(self.prepared_dataframe))}"
         )
-        logger.info(f"percentage correct = {self.percentage_of_correct_answers()} %")
+        logger.info(
+            f"percentage correct = {str(self.percentage_of_correct_answers())} %"
+        )
 
         self.add_any_answer_word_match_column()
         logger.info(
-            f"number any word matches = {self.count_of_answers_with_any_word_match()} out of {len(self.prepared_dataframe)}"
+            f"number any word matches = {str(self.count_of_answers_with_any_word_match())} out of {str(len(self.prepared_dataframe))}"
         )
         logger.info(
-            f"percentage any word matches = {self.percentage_of_answers_with_any_word_match()} %"
+            f"percentage any word matches = {str(self.percentage_of_answers_with_any_word_match())} %"
         )
 
         logger.info(
-            f"number of rows with cosine distance less than {global_config.cosine_distance_threshold()}: {len(self.count_of_answers_below_cosine_distance_threshold())}"
+            f"number of rows with cosine distance less than {str(global_config.cosine_distance_threshold())}: {str(self.count_of_answers_below_cosine_distance_threshold())}"
         )
         logger.info(
             "percentage of total: "
@@ -238,7 +240,7 @@ class AnnabellTestResultsEvaluator:
         )
 
         logger.info(
-            f"number of rows with cosine distance less than {global_config.cosine_distance_threshold()} and any matching answer correct: {self.count_of_answers_with_any_word_match_below_cosine_distance_threshold()}"
+            f"number of rows with cosine distance less than {str(global_config.cosine_distance_threshold())} and any matching answer correct: {str(self.count_of_answers_with_any_word_match_below_cosine_distance_threshold())}"
         )
         print(
             "percentage of total: "
@@ -262,52 +264,52 @@ class AnnabellTestResultsEvaluator:
         with open(results_summary_filepath, "w") as results_file:
             # write the number of samples tested
             results_file.write(
-                f"total number of samples\t{self.total_number_of_test_samples()}\n"
+                f"total number of samples\t{str(self.total_number_of_test_samples())}\n"
             )
             results_file.write(
-                f"number_of_test_answers\t{len(self.prepared_dataframe)}\n"
+                f"number_of_test_answers\t{str(len(self.prepared_dataframe))}\n"
             )
             results_file.write(
-                f"total_number_of_pretraining_samples\t{self.testing_context.total_number_of_pretraining_samples}\n"
+                f"total_number_of_pretraining_samples\t{str(self.testing_context.total_number_of_pretraining_samples)}\n"
             )
             results_file.write(
-                f"percentage_correct\t{self.percentage_of_correct_answers()}\n"
+                f"percentage_correct\t{str(self.percentage_of_correct_answers())}\n"
             )
             results_file.write(
                 f"percentage_any_word_matches\t{self.percentage_of_answers_with_any_word_match()}\n"
             )
             results_file.write(
-                f"percentage_close_cosine_distance\t{self.percentage_of_answers_below_cosine_distance_threshold()}\n"
+                f"percentage_close_cosine_distance\t{str(self.percentage_of_answers_below_cosine_distance_threshold())}\n"
             )
             results_file.write(
-                f"percentage_close_cosine_distance_and_any_word_match\t{self.percentage_of_answers_with_any_word_match_below_cosine_distance_threshold()}\n"
+                f"percentage_close_cosine_distance_and_any_word_match\t{str(self.percentage_of_answers_with_any_word_match_below_cosine_distance_threshold())}\n"
             )
             results_file.write(
-                f"number of test answers longer than 20 words (removed)\t{self.count_of_long_test_answers()}\n"
+                f"number of test answers longer than 20 words (removed)\t{str(self.count_of_long_test_answers())}\n"
             )
             # write the rows that had exact word matches to the file
             results_file.write("\nRows with exact matches:\n")
             results_file.write(
                 self.correct_matches()[
-                    ["response_question", "response_answer", "test_answer"]
+                    ["question", "answer", "test_answer"]
                 ].to_markdown(index=False)
             )
             # write the rows in any_matches to the file
             results_file.write("\nRows with any word matches:\n")
             results_file.write(
-                self.any_matches()[
-                    ["response_question", "response_answer", "test_answer"]
-                ].to_markdown(index=False)
+                self.any_matches()[["question", "answer", "test_answer"]].to_markdown(
+                    index=False
+                )
             )
             # write the rows that had a close cosine distance to the file
             results_file.write(
-                f"\nRows with cosine distance less than {global_config.cosine_distance_threshold()}:\n"
+                f"\nRows with cosine distance less than {str(global_config.cosine_distance_threshold())}:\n"
             )
             results_file.write(
                 self.close_cosine_distance_df()[
                     [
-                        "response_question",
-                        "response_answer",
+                        "question",
+                        "answer",
                         "test_answer",
                         "test_answer_cosine_distance",
                     ]
@@ -315,13 +317,13 @@ class AnnabellTestResultsEvaluator:
             )
             # write the rows that had a close cosine distance and any word match to the file
             results_file.write(
-                f"\nRows with cosine distance less than {global_config.cosine_distance_threshold()} and any word match:\n"
+                f"\nRows with cosine distance less than {str(global_config.cosine_distance_threshold())} and any word match:\n"
             )
             results_file.write(
                 self.any_matches_below_cosine_distance_threshold()[
                     [
-                        "response_question",
-                        "response_answer",
+                        "question",
+                        "answer",
                         "test_answer",
                         "test_answer_cosine_distance",
                     ]
@@ -329,13 +331,13 @@ class AnnabellTestResultsEvaluator:
             )
             # write the rows that had any matches and with a close cosine distance to the file
             results_file.write(
-                f"\nRows with cosine distance less than {global_config.cosine_distance_threshold()} and exact match:\n"
+                f"\nRows with cosine distance less than {str(global_config.cosine_distance_threshold())} and exact match:\n"
             )
             results_file.write(
                 self.correct_matches()[
                     [
-                        "response_question",
-                        "response_answer",
+                        "question",
+                        "answer",
                         "test_answer",
                         "test_answer_cosine_distance",
                     ]
@@ -346,39 +348,37 @@ class AnnabellTestResultsEvaluator:
         )
 
     def generate_embeddings(self):
-        # generate embeddings for the test answer and the response_answer_formatted columns and compare them using cosine distance
+        # generate embeddings for the test answer and the answer_formatted columns and compare them using cosine distance
         tqdm.pandas(desc="Generating test answer embeddings")
         self.prepared_dataframe["test_answer_embedding"] = self.prepared_dataframe[
             "test_answer"
         ].progress_apply(lambda x: embedding_for_sentence(x) if pd.notnull(x) else None)
         tqdm.pandas(desc="Generating response answer embeddings")
-        self.prepared_dataframe["response_answer_formatted_embedding"] = (
-            self.prepared_dataframe["response_answer_formatted"].progress_apply(
-                lambda x: embedding_for_sentence(x) if pd.notnull(x) else None
-            )
-        )
+        self.prepared_dataframe["answer_formatted_embedding"] = self.prepared_dataframe[
+            "answer_formatted"
+        ].progress_apply(lambda x: embedding_for_sentence(x) if pd.notnull(x) else None)
 
     @staticmethod
     def cosine_distance(a_row):
         return cosine(
-            a_row["test_answer_embedding"], a_row["response_answer_formatted_embedding"]
+            a_row["test_answer_embedding"], a_row["answer_formatted_embedding"]
         )
 
     @staticmethod
     def answers_with_any_word_match_to_ground_truth(row):
         # if the row contains a non-string value return False
         if not isinstance(row["test_answer"], str) or not isinstance(
-            row["response_answer_formatted"], str
+            row["answer_formatted"], str
         ):
             return False
-        # return True if any word in test_answer is also in response_answer_formatted
+        # return True if any word in test_answer is also in answer_formatted
         try:
             stopwords.words("english")
         except LookupError:
             nltk.download("stopwords")
         stop_words = set(stopwords.words("english"))
         test_words = set(row["test_answer"].split())
-        response_words = set(row["response_answer_formatted"].split())
+        response_words = set(row["answer_formatted"].split())
         intersecting_words = test_words.intersection(response_words)
         open_class_intersecting_words = intersecting_words - stop_words
 
@@ -426,7 +426,7 @@ class AnnabellPreTrainingTestContext(AnnabellTestContext):
         return global_config.pre_training_filepath()
 
     def prepared_dataframe(self):
-        self.dataset_processor.pretraining_dataset()
+        return self.dataset_processor.pretraining_dataset()
 
     def test_answer_summary_filepath(self):
         return global_config.test_pre_training_validation_answer_summary_filepath()

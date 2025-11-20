@@ -139,6 +139,48 @@ class TestAnnabellCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(generator.commands, expected_commands)
 
+    def test_question_commands_wg_not_in_phrase(self):
+        """consider the following inout phrase:
+        a golden statue of the_Virgin_Mary sit on top of the_Main_Building
+        at Notre_Dame
+        and this question and commands:
+
+        ? what sit on top of the_Main_Building at Notre_Dame
+        .wg sit
+        .wg top
+        .wg the_Main_Building
+        .wg Notre_Dame
+
+        the following phrase retrieval fails because Notre_Dame is not in the phrase
+        .ph a golden statue of the_Virgin_Mary sit on top of the_Main_Building
+
+        the solution is to ensure that .wg commands are only created for words present in the lookup phrase.
+        then for any remaining words in the question context that are not in the phrase, move to the subsequent phrases in the context and apply the same logic
+        """
+
+        """Test the write_question_commands_for_context method."""
+
+        question = "? what sit on top of the_Main_Building at Notre_Dame"
+
+        generator = AnnabellCommandGenerator(
+            self.sample_id,
+            "a golden statue of the_Virgin_Mary sit on top of the_Main_Building at Notre_Dame",
+            question,
+            "a golden statue of the_Virgin_Mary",
+            max_words=10,
+        )
+        generator.write_question_commands_for_context(question)
+
+        expected_commands = [
+            ".wg sit",
+            ".wg top",
+            ".wg the_Main_Building",
+            ".sctx at Notre_Dame",
+            ".wg Notre_Dame",
+        ]
+
+        self.assertEqual(generator.commands, expected_commands)
+
     def test_write_question_commands_short_question(self):
         """Test the write_question_commands method with a short question."""
         generator = AnnabellCommandGenerator(

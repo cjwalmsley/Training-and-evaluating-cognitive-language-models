@@ -211,11 +211,11 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.docker_testing_filename,
         )
 
-    def docker_runtime_pretraining_validation_testing_log_filepath(self) -> str:
+    def docker_runtime_pre_training_validation_testing_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_runtime_testing_directory(),
-            self.settings.file_locations.docker_pretraining_validation_testing_filename,
+            self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
         )
 
     def docker_pre_training_directory(self) -> str:
@@ -243,28 +243,28 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return os.path.join(
             self.docker_pre_training_directory(),
-            self.settings.file_locations.docker_pre_training_filename,
+            self.settings.file_locations.annabell_log_pre_training_filename,
         )
 
     def docker_training_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_training_directory(),
-            self.settings.file_locations.docker_training_filename,
+            self.settings.file_locations.annabell_log_training_filename,
         )
 
     def docker_testing_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_testing_directory(),
-            self.settings.file_locations.docker_testing_filename,
+            self.settings.file_locations.annabell_log_testing_filename,
         )
 
     def docker_pretraining_validation_testing_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_testing_directory(),
-            self.settings.file_locations.docker_pretraining_validation_testing_filename,
+            self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
         )
 
     def pre_training_directory(self) -> str:
@@ -285,6 +285,29 @@ class GlobalConfig(metaclass=SingletonMeta):
     def pre_training_weights_filename(self):
         return self.pre_training_filename().replace(".txt", ".dat")
 
+    def pre_training_weights_filepath(self) -> str:
+
+        return os.path.join(
+            self.pre_training_directory(),
+            self.pre_training_weights_filename(),
+        )
+
+    def training_weights_filename(self):
+        return self.training_filename().replace(".txt", ".dat")
+
+    def training_weights_filepath(self) -> str:
+
+        return os.path.join(
+            self.training_directory(),
+            self.training_weights_filename(),
+        )
+
+    def docker_pre_training_weights_filepath(self) -> str:
+        return os.path.join(
+            self.docker_pre_training_directory(),
+            self.pre_training_weights_filename(),
+        )
+
     def docker_runtime_pre_training_weights_filepath(self) -> str:
 
         return os.path.join(
@@ -298,7 +321,7 @@ class GlobalConfig(metaclass=SingletonMeta):
         return os.path.join(
             self.settings.file_locations.docker_runtime_data_directory,
             self.settings.file_locations.testing_directory,
-            self.settings.file_locations.pretraining_validation_testing_filename,
+            self.settings.file_locations.pre_training_validation_testing_filename,
         )
 
     def docker_runtime_training_weights_filepath(self) -> str:
@@ -309,10 +332,10 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.training_filename.replace(".txt", ".dat"),
         )
 
-    def docker_pretraining_validation_testing_filepath(self):
+    def docker_pre_training_validation_testing_filepath(self):
         return os.path.join(
             self.docker_testing_directory(),
-            self.settings.file_locations.pretraining_validation_testing_filename,
+            self.settings.file_locations.pre_training_validation_testing_filename,
         )
 
     def pre_training_filepath(self) -> str:
@@ -418,13 +441,19 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def pre_training_validation_testing_filename(self) -> str:
 
-        return self.settings.file_locations.pretraining_validation_testing_filename
+        return self.settings.file_locations.pre_training_validation_testing_filename
 
     def pre_training_validation_testing_filepath(self) -> str:
 
         return os.path.join(
             self.testing_directory(),
             self.pre_training_validation_testing_filename(),
+        )
+
+    def pre_training_validation_testing_log_filepath(self) -> str:
+        return os.path.join(
+            self.log_archive_directory(),
+            self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
         )
 
     def log_archive_directory(self) -> str:
@@ -466,7 +495,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return os.path.join(
             self.log_archive_directory(),
-            self.settings.file_locations.annabell_log_pretraining_validation_testing_filename,
+            self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
         )
 
     def prompt_data_directory(self) -> str:
@@ -617,10 +646,15 @@ class GlobalConfig(metaclass=SingletonMeta):
             return self.settings.experiments.number_of_training_samples
 
     def test_pre_training_validation_results_directory(self):
-        return os.path.join(
+        directory_name = os.path.join(
             self.pre_training_directory(),
             self.settings.file_locations.results_directory,
         )
+
+        if not os.path.exists(directory_name):
+            os.makedirs(directory_name, exist_ok=True)
+
+        return directory_name
 
     def test_training_results_directory(self):
         return os.path.join(

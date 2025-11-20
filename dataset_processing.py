@@ -878,11 +878,17 @@ class DatasetPreProcessor:
             lines = commands_file.readlines()
             logger.info(f"Number of commands: {len(lines)}")
 
+    def write_pretraining_testing_file(self, the_filepath):
+        self.write_testing_file_with_dataset(the_filepath, self.pretraining_dataset())
+
     def write_testing_file(self, the_filepath):
+        self.write_testing_file_with_dataset(the_filepath, self.training_dataset())
+
+    def write_testing_file_with_dataset(self, the_filepath, the_dataset):
         list_of_testing_tuples = list(
             zip(
-                self.training_dataset()[self.id_column_name()],
-                self.training_dataset()[
+                the_dataset[self.id_column_name()],
+                the_dataset[
                     self.question_column_name() + self.formatted_column_suffix()
                 ],
             )
@@ -1004,7 +1010,7 @@ def ids_questions_answers_from_log_file(test_log_filepath):
 
 def embedding_for_sentence(a_string):
     embedding = ollama.embed(
-        model=global_config.embedding_model,
+        model=global_config.embedding_model(),
         input=a_string,
     ).embeddings[0]
     return embedding

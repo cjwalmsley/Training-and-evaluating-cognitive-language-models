@@ -34,7 +34,7 @@ class FileLocations(BaseModel):
     experiments_directory: str
     log_archive_directory: str
     annabell_log_pre_training_filename: str
-    annabell_log_pretraining_validation_testing_filename: str
+    annabell_log_pre_training_validation_testing_filename: str
     annabell_log_training_filename: str
     annabell_log_testing_filename: str
     pre_training_filename: str
@@ -46,7 +46,7 @@ class FileLocations(BaseModel):
     test_summary_results_filename: str
     prepared_dataset_directory: str
     prepared_dataset_filename: str
-    pretraining_validation_testing_filename: str
+    pre_training_validation_testing_filename: str
     categorised_questions_filename: str
     categorised_statements_filename: str
     prepared_dataset_with_commands_filename: str
