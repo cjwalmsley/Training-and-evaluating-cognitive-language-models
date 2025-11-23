@@ -2,8 +2,9 @@
 a golden statue of the_Virgin_Mary sit on top of the_Main_Building
 at Notre_Dame
 
-
 ? what sit on top of the_Main_Building at Notre_Dame
+.wg sit
+.wg top
 .wg the_Main_Building
 .ph a golden statue of the_Virgin_Mary sit on top of the_Main_Building
 .sctx at Notre_Dame
