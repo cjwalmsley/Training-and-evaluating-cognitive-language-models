@@ -198,11 +198,20 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
     def docker_command(self):
         command = (
             f"docker compose run --rm --entrypoint ./{self.run_script()} app "
-            f"{self.log_filepath()} "
-            f"{self.commands_filepath} "
+            f"{self.docker_runtime_log_filepath()} "
+            f"{self.docker_runtime_commands_filepath} "
             f"{self.docker_runtime_weights_filepath()}"
         )
         return command
+
+    def docker_runtime_weights_filepath(self):
+        return global_config.docker_runtime_training_weights_filepath()
+
+    def docker_runtime_commands_filepath(self):
+        return global_config.docker_runtime_testing_filepath()
+
+    def docker_runtime_log_filepath(self):
+        return global_config.docker_runtime_testing_log_filepath()
 
     def copy_files_to_docker_directory(self):
         self.copy_file(

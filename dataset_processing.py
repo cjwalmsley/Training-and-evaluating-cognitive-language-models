@@ -13,6 +13,7 @@ import re
 import spacy
 from spacy.cli import download
 import numpy as np
+from commands import AnnabellBaseCommandGenerator
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -609,7 +610,7 @@ class DatasetPreProcessor:
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
         self.dataset[self.created_commands_column_name()] = self.dataset.apply(
-            lambda row: AnnabellCommandGenerator(
+            lambda row: AnnabellBaseCommandGenerator(
                 row[self.id_column_name()],
                 row[self.declarative_statement_formatted_column_name()],
                 row[self.question_formatted_column_name()],

@@ -1,5 +1,10 @@
 from dataset_processing import DatasetPreProcessor
-from commands import AnnabellQuestionCommandGenerator, AnnabellBaseCommandGenerator
+from commands import (
+    AnnabellQuestionCommandGenerator,
+    AnnabellBaseCommandGenerator,
+    AnnabellTestingCommandGenerator,
+    AnnabellTrainingCommandGenerator,
+)
 import unittest
 import tempfile
 import shutil
@@ -471,6 +476,52 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.assertIn("declarative_sentence_formatted", pretraining_data.columns)
         self.assertIn("question_formatted", pretraining_data.columns)
         self.assertIn("answer_formatted", pretraining_data.columns)
+
+
+class TestAnnabellTestCommandGenerator(unittest.TestCase):
+    def setUp(self):
+        """Set up a common instance for testing."""
+        self.sample_id = "5733be284776f41900661180"
+        self.question = "? the Basilica of the sacred heart at Notre_Dame be beside to which structure"
+        self.command_generator = AnnabellTestingCommandGenerator(
+            self.sample_id, self.question
+        )
+
+    def test_write_testing_command(self):
+
+        expected_commands = [
+            "#id: 5733be284776f41900661180",
+            "? the Basilica of the sacred heart at Notre_Dame",
+            "be beside to which structure",
+            ".x",
+            "#END OF TESTING SAMPLE",
+            "\n",
+        ]
+        self.command_generator.create_list_of_commands()
+        self.assertEqual(self.command_generator.commands, expected_commands)
+
+
+class TestAnnabellTrainingCommandGenerator(unittest.TestCase):
+    def setUp(self):
+        """Set up a common instance for testing."""
+        self.sample_id = "5733be284776f41900661180"
+        self.declarative_sentence = (
+            "the Basilica of the Sacred Heart at Notre_Dame be beside the_Main_Building"
+        )
+        self.command_generator = AnnabellTrainingCommandGenerator(
+            self.sample_id, self.declarative_sentence
+        )
+
+    def test_write_training_command(self):
+
+        expected_commands = [
+            "#id: 5733be284776f41900661180",
+            "the Basilica of the Sacred Heart at Notre_Dame be",
+            "beside the_Main_Building",
+            "\n",
+        ]
+        self.command_generator.create_list_of_commands()
+        self.assertEqual(self.command_generator.commands, expected_commands)
 
 
 if __name__ == "__main__":

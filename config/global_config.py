@@ -338,6 +338,12 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.pre_training_validation_testing_filename,
         )
 
+    def docker_testing_filepath(self):
+        return os.path.join(
+            self.docker_testing_directory(),
+            self.settings.file_locations.testing_filename,
+        )
+
     def pre_training_filepath(self) -> str:
 
         return os.path.join(
@@ -633,6 +639,10 @@ class GlobalConfig(metaclass=SingletonMeta):
     def maximum_word_length(self) -> int:
 
         return self.settings.experiments.maximum_word_length
+
+    def maximum_phrase_length(self) -> int:
+
+        return self.settings.experiments.maximum_phrase_length
 
     def embedding_model(self):
 

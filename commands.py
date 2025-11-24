@@ -9,7 +9,7 @@ global_config = GlobalConfig()
 
 class AbstractAnnabellCommandGenerator:
 
-    def __init__(self, declarative_sentence, max_words=10):
+    def __init__(self, declarative_sentence, max_words):
         self.declarative_sentence = declarative_sentence
         self.max_words = max_words
         self.commands = []
@@ -42,7 +42,7 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
         question,
         answer,
         is_pre_training=True,
-        max_words=10,
+        max_words=global_config.maximum_phrase_length(),
     ):
         super().__init__(declarative_sentence, max_words)
 
@@ -86,12 +86,15 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
         self.answer_command_generator.write_answer_commands()
         self.commands.extend(self.answer_command_generator.commands)
 
+    def write_sample_id(self):
+        self.commands.append("#id: " + str(self.sample_id))
+
     def create_list_of_commands(self):
 
         self.commands = []
 
         if self.is_pre_training:
-            self.commands.append("#id: " + str(self.sample_id))
+            self.write_sample_id()
             self.write_declarative_sentence()
             # add a blank line to terminate the context
             self.commands.append(self.blank_line())
@@ -102,6 +105,76 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
         else:
             self.commands.append(self.informational_non_pretraining_command())
         return self.commands
+
+
+class AnnabellTestingCommandGenerator(AnnabellBaseCommandGenerator):
+    # creates the commands required to test annabell for a single testing sample
+    def __init__(
+        self,
+        sample_id,
+        question,
+    ):
+        super().__init__(
+            sample_id, declarative_sentence=None, question=question, answer=None
+        )
+
+    """"#id: 5733be284776f41900661180
+    ? the Basilica of the sacred heart at Notre_Dame be beside to which structure
+    .x
+    #END OF TESTING SAMPLE"""
+
+    def answer_command_generator(self):
+        return None
+
+    def create_list_of_commands(self):
+
+        self.commands = []
+        self.write_sample_id()
+        self.write_question_commands()
+        # add a blank line to terminate the context
+        self.commands.append(".x")
+        self.commands.append("#END OF TESTING SAMPLE")
+        self.commands.append(self.blank_line())
+
+        return self.commands
+
+    def write_question_commands(self):
+        self.question_command_generator.write_question()
+        self.commands.extend(self.question_command_generator.commands)
+
+
+class AnnabellTrainingCommandGenerator(AnnabellBaseCommandGenerator):
+    # creates the commands required to test annabell for a single testing sample
+    def __init__(
+        self,
+        sample_id,
+        declarative_sentence,
+    ):
+        super().__init__(sample_id, declarative_sentence, question=None, answer=None)
+
+        """"#id: 5733be284776f41900661180",
+        "the Basilica of the Sacred Heart at Notre_Dame be",
+        " beside the_Main_Building",
+        "\n","""
+
+    def answer_command_generator(self):
+        return None
+
+    def question_command_generator(self):
+        return None
+
+    def create_list_of_commands(self):
+
+        self.commands = []
+        self.write_sample_id()
+        self.write_training_commands()
+        # add a blank line to terminate the context
+        self.commands.append(self.blank_line())
+
+        return self.commands
+
+    def write_training_commands(self):
+        self.write_declarative_sentence()
 
 
 class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
@@ -206,7 +279,9 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.question_type = self.get_question_type()
 
     def get_declarative_sentence_type(self):
-        if len(self.declarative_sentence.split()) > self.max_words:
+        if self.declarative_sentence is None:
+            return None
+        elif len(self.declarative_sentence.split()) > self.max_words:
             return LongDeclarativeSentenceType()
         else:
             return ShortDeclarativeSentenceType()

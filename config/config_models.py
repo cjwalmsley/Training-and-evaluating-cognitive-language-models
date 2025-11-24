@@ -74,6 +74,7 @@ class Experiments(BaseModel):
     percentage_of_pretraining_samples: float
     maximum_number_of_words: int
     maximum_word_length: int
+    maximum_phrase_length: int
     number_of_training_samples: int
     use_all_available_samples: bool
     cosine_distance_threshold: float

@@ -352,7 +352,11 @@ class AnnabellTestResultsEvaluator:
         tqdm.pandas(desc="Generating test answer embeddings")
         self.prepared_dataframe["test_answer_embedding"] = self.prepared_dataframe[
             "test_answer"
-        ].progress_apply(lambda x: embedding_for_sentence(x) if pd.notnull(x) else None)
+        ].progress_apply(
+            lambda x: (
+                embedding_for_sentence(x) if pd.notnull(x) and (len(x) > 0) else None
+            )
+        )
         tqdm.pandas(desc="Generating response answer embeddings")
         self.prepared_dataframe["answer_formatted_embedding"] = self.prepared_dataframe[
             "answer_formatted"
