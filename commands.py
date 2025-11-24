@@ -118,11 +118,6 @@ class AnnabellTestingCommandGenerator(AnnabellBaseCommandGenerator):
             sample_id, declarative_sentence=None, question=question, answer=None
         )
 
-    """"#id: 5733be284776f41900661180
-    ? the Basilica of the sacred heart at Notre_Dame be beside to which structure
-    .x
-    #END OF TESTING SAMPLE"""
-
     def answer_command_generator(self):
         return None
 

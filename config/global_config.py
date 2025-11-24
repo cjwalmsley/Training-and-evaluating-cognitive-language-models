@@ -177,16 +177,14 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_training_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.docker_runtime_data_directory,
-            self.settings.file_locations.training_directory,
+            self.docker_runtime_training_directory(),
             self.settings.file_locations.training_filename,
         )
 
     def docker_runtime_testing_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.docker_runtime_data_directory,
-            self.settings.file_locations.testing_directory,
+            self.docker_runtime_testing_directory(),
             self.settings.file_locations.testing_filename,
         )
 
@@ -201,14 +199,14 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return os.path.join(
             self.docker_runtime_training_directory(),
-            self.settings.file_locations.docker_training_filename,
+            self.settings.file_locations.annabell_log_training_filename,
         )
 
     def docker_runtime_testing_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_runtime_testing_directory(),
-            self.settings.file_locations.docker_testing_filename,
+            self.settings.file_locations.annabell_log_testing_filename,
         )
 
     def docker_runtime_pre_training_validation_testing_log_filepath(self) -> str:
@@ -377,8 +375,18 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.prepared_dataset_filename(),
         )
 
+    def prepared_dataset_with_commands_filepath(self) -> str:
+
+        return os.path.join(
+            self.prepared_dataset_directory(),
+            self.prepared_dataset_with_commands_filename(),
+        )
+
     def prepared_dataset_filepath_exists(self):
         return os.path.exists(self.prepared_dataset_filepath())
+
+    def prepared_dataset_with_commands_filepath_exists(self):
+        return os.path.exists(self.prepared_dataset_with_commands_filepath())
 
     def training_directory(self) -> str:
 
@@ -628,6 +636,9 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return self.settings.file_locations.prepared_dataset_filename
 
+    def prepared_dataset_with_commands_filename(self):
+        return self.settings.file_locations.prepared_dataset_with_commands_filename
+
     def percentage_of_pre_training_samples(self) -> float:
 
         return self.settings.experiments.percentage_of_pretraining_samples
@@ -713,3 +724,10 @@ class GlobalConfig(metaclass=SingletonMeta):
     @staticmethod
     def project_root():
         return PROJECT_ROOT
+
+    def docker_training_weights_filepath(self):
+        return os.path.join(
+            self.docker_training_directory(),
+            self.training_weights_filename(),
+        )
+        pass

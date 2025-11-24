@@ -13,7 +13,11 @@ import re
 import spacy
 from spacy.cli import download
 import numpy as np
-from commands import AnnabellBaseCommandGenerator
+from commands import (
+    AnnabellBaseCommandGenerator,
+    AnnabellTestingCommandGenerator,
+    AnnabellTrainingCommandGenerator,
+)
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -663,15 +667,15 @@ class DatasetPreProcessor:
 
         with open(the_filepath, "w") as file:
             for each_tuple in list_of_training_tuples:
-                file.write(f"#id: {each_tuple[0]}\n")
-                file.write(f"{each_tuple[-1]}\n")
-                # write a blank line to signal to ANNABELL the end of the context
-                file.write("\n")
+                sample_id = each_tuple[0]
+                declarative_statement = each_tuple[-1]
+                command_generator = AnnabellTrainingCommandGenerator(
+                    sample_id, declarative_statement
+                )
+                command_generator.create_list_of_commands()
+                for command in command_generator.commands:
+                    file.write(f"{command}\n")
         logger.info(f"file written: {the_filepath}")
-
-        with open(the_filepath, "r") as commands_file:
-            lines = commands_file.readlines()
-            logger.info(f"Number of commands: {len(lines)}")
 
     def write_pretraining_testing_file(self, the_filepath):
         self.write_testing_file_with_dataset(the_filepath, self.pretraining_dataset())
@@ -680,6 +684,7 @@ class DatasetPreProcessor:
         self.write_testing_file_with_dataset(the_filepath, self.training_dataset())
 
     def write_testing_file_with_dataset(self, the_filepath, the_dataset):
+
         list_of_testing_tuples = list(
             zip(
                 the_dataset[self.id_column_name()],
@@ -691,16 +696,14 @@ class DatasetPreProcessor:
 
         with open(the_filepath, "w") as test_file:
             for each_tuple in list_of_testing_tuples:
-                test_file.write(f"#id: {each_tuple[0]}\n")
-                test_file.write(f"{each_tuple[-1]}\n.x\n")
-                test_file.write("#END OF TESTING SAMPLE\n")
-                # write a blank line to signal to ANNABELL the end of the context
-                test_file.write("\n")
-        logger.info(f"file written: {the_filepath}")
+                sample_id = each_tuple[0]
+                question = each_tuple[-1]
+                command_generator = AnnabellTestingCommandGenerator(sample_id, question)
+                command_generator.create_list_of_commands()
+                for command in command_generator.commands:
+                    test_file.write(f"{command}\n")
 
-        with open(the_filepath, "r") as commands_file:
-            lines = commands_file.readlines()
-            logger.info(f"Number of commands: {len(lines)}")
+        logger.info(f"file written: {the_filepath}")
 
 
 def similarity_score(sentence_1, sentence_2):

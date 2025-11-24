@@ -1,7 +1,12 @@
 from generate_declarative_sentences import generate_declarative_statements
 from categorise_sentences import QuestionCategoryAssigner, StatementCategoryAssigner
 from dataset_processing import DatasetPreProcessor
-from training import AnnabellPreTrainingRunner, AnnabellPreTrainingTestingRunner
+from training import (
+    AnnabellPreTrainingRunner,
+    AnnabellPreTrainingTestingRunner,
+    AnnabellTrainingRunner,
+    AnnabellTestingRunner,
+)
 from testing import AnnabellTestResultsEvaluator, AnnabellPreTrainingTestContext
 from config.global_config import GlobalConfig
 import logging
@@ -34,8 +39,10 @@ class Pipeline:
         if filepath is not None:
             dataset_filepath = filepath
         elif self.use_prepared_dataset_if_available:
-            if global_config.prepared_dataset_filepath_exists():
-                dataset_filepath = global_config.prepared_dataset_filepath()
+            if global_config.prepared_dataset_with_commands_filepath_exists():
+                dataset_filepath = (
+                    global_config.prepared_dataset_with_commands_filepath()
+                )
             else:
                 logger.warning(
                     "Prepared dataset file not found. Proceeding without it."
@@ -61,7 +68,21 @@ class Pipeline:
         self.run_pre_training()
         self.run_pre_training_evaluation_testing()
         self.run_evaluate_pre_training_results()
+        self.run_training()
+        self.run_testing()
         logger.info("Pipeline completed.")
+
+    def run_training(self):
+        logger.info("Starting training...")
+        runner = AnnabellTrainingRunner(self.datasetPreProcessor)
+        runner.run()
+        logger.info("Training completed.")
+
+    def run_testing(self):
+        logger.info("Starting testing...")
+        runner = AnnabellTestingRunner(self.datasetPreProcessor)
+        runner.run()
+        logger.info("Testing completed.")
 
     def run_pre_training(self):
         logger.info("Starting pre-training...")

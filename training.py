@@ -121,16 +121,68 @@ class AbstractAnnabellRunner:
         raise NotImplementedError("Subclasses should implement this method.")
 
 
-class AnnabellPreTrainingRunner(AbstractAnnabellRunner):
+class AnnabellTrainingRunner(AbstractAnnabellRunner):
 
     def setup(self):
         super().setup()
-        self.write_annabell_files_to_gdrive()
-        self.copy_files_to_docker_directory()
 
     def teardown(self):
         self.copy_annabell_weights_to_gdrive()
         self.move_annabell_logfile_to_gdrive()
+        super().teardown()
+
+    def run_script(self):
+        return "train_annabell_squad.sh"
+
+    def write_annabell_files_to_gdrive(self):
+
+        self.dataset_processor.write_training_file(global_config.training_filepath())
+
+    def copy_files_to_docker_directory(self):
+        self.copy_file(
+            global_config.training_filepath(),
+            global_config.docker_training_directory(),
+        )
+
+    def docker_command(self):
+
+        # <logfile> <pre-training_weights> <post-training_weights> <statements_file>
+
+        command = (
+            f"docker compose run --rm --remove-orphans --entrypoint ./{self.run_script()} app "
+            f"{global_config.docker_runtime_training_log_filepath()} "
+            f"{global_config.docker_runtime_pre_training_weights_filepath()} "
+            f"{global_config.docker_runtime_training_weights_filepath()} "
+            f"{global_config.docker_runtime_training_filepath()}"
+        )
+        return command
+
+    def copy_annabell_weights_to_gdrive(self):
+        # copy the pre-trained weights to the pre-training directory
+        source_path = os.path.join(global_config.docker_training_weights_filepath())
+        destination_path = os.path.join(
+            global_config.training_directory(),
+            global_config.training_weights_filename(),
+        )
+
+        self.copy_file(source_path, destination_path)
+
+    def move_annabell_logfile_to_gdrive(self):
+        source_path = os.path.join(
+            global_config.docker_training_log_filepath(),
+        )
+        destination_path = global_config.training_log_filepath()
+
+        self.move_file(source_path, destination_path)
+
+
+class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
+
+    def setup(self):
+        super().setup()
+
+    def teardown(self):
+
         super().teardown()
 
     def run_script(self):
@@ -188,8 +240,6 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
 
     def setup(self):
         super().setup()
-        self.write_annabell_files_to_gdrive()
-        self.copy_files_to_docker_directory()
 
     def teardown(self):
         self.move_annabell_logfile_to_gdrive()
@@ -219,6 +269,10 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
             global_config.docker_testing_filepath(),
         )
 
+    def write_annabell_files_to_gdrive(self):
+
+        self.dataset_processor.write_testing_file(global_config.testing_filepath())
+
     def move_annabell_logfile_to_gdrive(self):
         source_path = os.path.join(
             global_config.docker_testing_log_filepath(),
@@ -229,6 +283,12 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
 
 
 class AnnabellPreTrainingTestingRunner(AnnabellTestingRunner):
+
+    def setup(self):
+        super().setup()
+
+    def teardown(self):
+        super().teardown()
 
     def docker_command(self):
         command = (
@@ -270,12 +330,3 @@ class AnnabellPreTrainingTestingRunner(AnnabellTestingRunner):
         destination_path = global_config.pre_training_validation_testing_log_filepath()
 
         self.move_file(source_path, destination_path)
-
-
-class AnnabellTrainingRunner(AbstractAnnabellRunner):
-
-    def run_script(self):
-        return "train_annabell_squad_nyc.sh"
-
-    def run_processing(self):
-        pass

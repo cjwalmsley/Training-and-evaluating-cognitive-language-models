@@ -9,6 +9,7 @@ import nltk
 from nltk.corpus import stopwords
 from config.global_config import GlobalConfig
 import logging
+import numpy as np
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -81,9 +82,11 @@ class AnnabellTestResultsEvaluator:
         )
 
     def remove_samples_with_no_answers(self):
+        # replace empty strings with NaN in the 'test_answer' column so they can be dropped
+        self.prepared_dataframe.replace({"test_answer": {"": np.nan}}, inplace=True)
         # drop any rows that do not have a test answer
         self.prepared_dataframe.dropna(subset=["test_answer"], inplace=True)
-        self.prepared_dataframe.reset_index(inplace=True)
+        self.prepared_dataframe.reset_index(inplace=True, drop=True)
 
     def add_cosine_distance(self):
 
