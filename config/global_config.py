@@ -678,9 +678,15 @@ class GlobalConfig(metaclass=SingletonMeta):
         return directory_name
 
     def test_training_results_directory(self):
-        return os.path.join(
+
+        directory_name = os.path.join(
             self.training_directory(), self.settings.file_locations.results_directory
         )
+
+        if not os.path.exists(directory_name):
+            os.makedirs(directory_name, exist_ok=True)
+
+        return directory_name
 
     def test_pre_training_validation_answer_summary_filepath(self):
         return os.path.join(

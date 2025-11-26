@@ -152,9 +152,9 @@ class DatasetPreProcessor:
         text = self.replace_percent(text)
         text = self.replace_dont_apostrophe(text)
         text = self.remove_accents(text)
-        if is_question:
-            text = self.move_question_mark_to_start(text)
         text = self.remove_special_characters(text)
+        if is_question:
+            text = self.add_question_mark_to_start(text)
         text = self.lemmatize_text(text)
         return text
 
@@ -205,8 +205,8 @@ class DatasetPreProcessor:
         Removes special characters from a string, keeping alphanumeric characters and spaces.
         """
         # Keep only alphanumeric characters and spaces
-        cleaned_text = re.sub(r"[^A-Za-z0-9\s?-]+", "", text)
-        return cleaned_text
+        cleaned_text = re.sub(r"[^A-Za-z0-9\s-]+", "", text)
+        return cleaned_text.strip()
 
     @staticmethod
     def remove_whitespace(text):
@@ -255,14 +255,34 @@ class DatasetPreProcessor:
         return a_row
 
     @staticmethod
-    def replace_entities(text, entities):
+    def remove_the_from_start_of_text(the_text):
+        words = the_text.split("_")
+        if words[0] == "the":
+            return "the " + "_".join(words[1:])
+        else:
+            return the_text
+
+    def replace_entities(self, text, entities):
         if not entities:
             return text
-        for entity_name in entities:
-            # replace only whole-entity occurrences to avoid partial matches
-            joined_entity = "_".join(entity_name.split())
+
+        # Sort entities by length (longest first) to handle nested entities correctly.
+        # For example, replace "New York City" before "New York".
+        sorted_entities = sorted(entities, key=len, reverse=True)
+
+        for entity_name in sorted_entities:
+            words = entity_name.split()
+            replacement = ""
+            # Check if the entity starts with "the" and has more than one word.
+            if len(words) > 1 and words[0].lower() == "the":
+                replacement = "the " + "_".join(words[1:])
+            else:
+                replacement = "_".join(words)
+
+            # Use word boundaries (\b) to ensure only whole words are replaced.
             pattern = r"\b" + re.escape(entity_name) + r"\b"
-            text = re.sub(pattern, joined_entity, text)
+            text = re.sub(pattern, replacement, text)
+
         return text
 
     def join_entity_words(self):
@@ -331,20 +351,8 @@ class DatasetPreProcessor:
         return cleaned_filepath
 
     @staticmethod
-    def move_question_mark_to_start(question, add_if_missing=True):
-        # move the ? from the end of each question to the start
-        if question.strip().endswith("?"):
-            edited_question = "? " + question[:-1]
-        else:
-            if add_if_missing:
-                edited_question = "? " + question
-            else:
-                # raise an exception if the question does not end with a ?
-                raise ValueError(
-                    f"Question does not end with a question mark: {question}"
-                )
-
-        return edited_question
+    def add_question_mark_to_start(question):
+        return "? " + question
 
     def filter_dataset_by_limits(self):
         self.filter_dataset_by_word_count()
@@ -366,7 +374,7 @@ class DatasetPreProcessor:
 
             # Filter out rows where any word exceeds the maximum length
             word_length_mask = self.dataset[column_name].apply(
-                lambda sentence: all(
+                lambda sentence: any(
                     len(word) > self.max_word_length_limit for word in sentence.split()
                 )
             )

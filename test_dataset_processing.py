@@ -379,6 +379,22 @@ class TestDatasetPreProcessor(unittest.TestCase):
                 "question_category": "Subject-Verb-Object",
                 "statement_category": "Subject-Verb-Object",
             },
+            {
+                "id": 6,
+                "declarative_sentence": "a copper statue of Christ be in front of the Notre Dame Main Building",
+                "question": "? what be in front of the Notre Dame Main Building",
+                "answer": "a copper statue of Christ",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
+            },
+            {
+                "id": 7,
+                "declarative_sentence": "a dog is a mammal",
+                "question": "? tell me a mammal",
+                "answer": "dog",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
+            },
         ]
 
         with open(self.dataset_filepath, "w") as f:
@@ -400,6 +416,18 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Removes the temporary directory and its contents."""
         shutil.rmtree(self.temp_dir)
 
+    def test_remove_specialCharacters(self):
+        text_to_process = "what be in front of the Notre Dame Main Building ?"
+        expected_result = "what be in front of the Notre Dame Main Building"
+        actual_result = self.preprocessor.remove_special_characters(text_to_process)
+        self.assertEqual(actual_result, expected_result)
+
+    def test_add_question_mark(self):
+        text_to_process = "what be in front of the Notre Dame Main Building"
+        expected_result = "? what be in front of the Notre Dame Main Building"
+        actual_result = self.preprocessor.add_question_mark_to_start(text_to_process)
+        self.assertEqual(actual_result, expected_result)
+
     def test_remove_whitespace_from_dataframe(self):
         """Tests that leading/trailing whitespace is removed from string columns."""
         self.preprocessor.remove_whitespace_from_dataframe()
@@ -420,6 +448,21 @@ class TestDatasetPreProcessor(unittest.TestCase):
 
         expected_answer = "New_York"
         actual_answer = self.preprocessor.dataset.loc[4, "answer_formatted"]
+        self.assertEqual(actual_answer, expected_answer)
+
+    def test_join_concurrent_capitalized_words_without_the(self):
+        """Tests that consecutive capitalized words are joined with hyphens."""
+        self.preprocessor.join_entity_words()
+        expected_sentence = (
+            "a copper statue of Christ be in front of the Notre_Dame Main Building"
+        )
+        actual_sentence = self.preprocessor.dataset.loc[
+            5, "declarative_sentence_formatted"
+        ]
+        self.assertEqual(actual_sentence, expected_sentence)
+
+        expected_answer = "a copper statue of Christ"
+        actual_answer = self.preprocessor.dataset.loc[5, "answer_formatted"]
         self.assertEqual(actual_answer, expected_answer)
 
     def test_filter_dataset_by_limits_word_count(self):
@@ -445,13 +488,13 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.preprocessor.preprocess_data()
         # After all preprocessing with limits (5 words, 10 length), only row 1 should remain
         self.assertEqual(len(self.preprocessor.dataset), 1)
-        self.assertEqual(self.preprocessor.dataset.iloc[0]["id"], 2)
+        self.assertEqual(self.preprocessor.dataset.iloc[0]["id"], 7)
 
         # Check that whitespace has been handled
         processed_row = self.preprocessor.dataset.iloc[0]
         self.assertEqual(
             processed_row["declarative_sentence_formatted"],
-            "New_York be a big city",
+            "a dog be a mammal",
         )
 
     def test_select_pretraining_data(self):

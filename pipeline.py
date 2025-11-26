@@ -7,7 +7,11 @@ from training import (
     AnnabellTrainingRunner,
     AnnabellTestingRunner,
 )
-from testing import AnnabellTestResultsEvaluator, AnnabellPreTrainingTestContext
+from testing import (
+    AnnabellTestResultsEvaluator,
+    AnnabellPreTrainingTestContext,
+    AnnabellTrainingTestContext,
+)
 from config.global_config import GlobalConfig
 import logging
 import pandas as pd
@@ -70,6 +74,7 @@ class Pipeline:
         self.run_evaluate_pre_training_results()
         self.run_training()
         self.run_testing()
+        self.run_evaluate_training_results()
         logger.info("Pipeline completed.")
 
     def run_training(self):
@@ -102,6 +107,13 @@ class Pipeline:
         evaluator = AnnabellTestResultsEvaluator(testing_context)
         evaluator.run()
         logger.info("Evaluation of pre-training results completed.")
+
+    def run_evaluate_training_results(self):
+        logger.info("Starting evaluation of training results...")
+        testing_context = AnnabellTrainingTestContext(self.datasetPreProcessor)
+        evaluator = AnnabellTestResultsEvaluator(testing_context)
+        evaluator.run()
+        logger.info("Evaluation of training results completed.")
 
     def load_prepared_dataset(self):
         logger.info(

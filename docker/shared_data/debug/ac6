@@ -1,17 +1,33 @@
-#id: 5733be284776f41900661180
-the Basilica of the Sacred_Heart at Notre_Dame
-be beside the Main_Building
+#id: 5733be284776f4190066117f
+a copper statue of Christ be in front of
+the Notre_Dame Main Building
 
-? the Basilica of the Sacred_Heart at Notre_Dame
-be beside to which structure
-.sctx ? the Basilica of the Sacred_Heart at Notre_Dame
-.wg Basilica
-.wg Sacred_Heart
+.f monitor.txt
+? what be in front of the Notre_Dame Main
+Building
+.sctx ? what be in front of the Notre_Dame Main
+.wg front
+#.ph a copper statue of Christ be in front of
+.sctx the Notre_Dame Main Building
 .wg Notre_Dame
-.sctx be beside to which structure
-.wg beside
-.wg structure
-.ph the Basilica of the Sacred_Heart at Notre_Dame
-.sctx be beside the Main_Building
-.wg Main_Building
+#.ph a copper statue of Christ be in front of
+#.sctx the Notre_Dame Main Building
+.wg Main
+.sctx Building
+#.ph a copper statue of Christ be in front of
+#.sctx the Notre_Dame Main Building
+#.f monitor.txt
+.wg Building
+# front, Notre_Dame, Main, Building
+#.ph a copper statue of Christ be in front of
+#.ph a copper statue of Christ be in front of
+.wg a copper statue
+.prw
+.wg of Christ
+#.prw
 .rw
+
+? what be in front of the Notre_Dame Main
+Building
+
+.x

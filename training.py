@@ -246,11 +246,12 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
         super().teardown()
 
     def docker_command(self):
+        # <logfile> <pre-training_weights> <testing_file>
         command = (
             f"docker compose run --rm --entrypoint ./{self.run_script()} app "
             f"{self.docker_runtime_log_filepath()} "
-            f"{self.docker_runtime_commands_filepath} "
-            f"{self.docker_runtime_weights_filepath()}"
+            f"{self.docker_runtime_weights_filepath()} "
+            f"{self.docker_runtime_commands_filepath()}"
         )
         return command
 

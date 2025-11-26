@@ -1,16 +1,17 @@
-#id: 56ce3569aab44d1400b885ae
-Henry-Hudson call -ed the river that is now know -n
-as the Hudson-River the North-River
-
-? what did Henry-Hudson call the river that is now
-call -ed the Hudson-River
-.sctx ? what did Henry-Hudson call the river that is now
-.wg Henry-Hudson
-.wg call
-.wg river
-.sctx call -ed the Hudson-River
-.wg call
-.wg Hudson-River
-.ph as the Hudson-River the North-River
-.wg North-River
+#id: 5733be284776f4190066117f
+a copper statue of Christ be in front of
+the Notre_Dame Main Building
+? what be in front of the Notre_Dame Main
+Building
+.sctx ? what be in front of the Notre_Dame Main
+.wg front
+.wg Notre_Dame
+.wg Main
+.sctx Building
+.wg Building
+.ph a copper statue of Christ be in front of
+.wg a copper statue
+.prw
+.wg of Christ
+.prw
 .rw
