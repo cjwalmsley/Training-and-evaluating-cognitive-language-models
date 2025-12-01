@@ -1,4 +1,4 @@
-.f monitor.txt
+#.f monitor.txt
 .logfile ac7_log.txt
 
 #id: 5733be284776f4190066117e
@@ -7,15 +7,25 @@ of the Main_Building at Notre_Dame
 
 ? what sit on top of the Main_Building at
 Notre_Dame
+#find the start of the context.
 .sctx ? what sit on top of the Main_Building at
+#put the key word group into the goal stack (for later) that relates to the declarative statement phrase with the answer.
 .pg sit on top
+#put the key word group into the goal stack for doing the lookup of the second declarative statement phrase
 .pg Main_Building
-sctx Notre_Dame
+#move to the second question phrase and extract the other key word group that relates to the second declarative statement phrase
+.sctx Notre_Dame
 .wg Notre_Dame
+#retrieve the second declarative statement phrase
 .ph of the Main_Building at Notre_Dame
+#drop the goal at the top of the stack (Main_Building, ? what sit on top of the Main_Building at)
 .drop_goal
-.sctx a golden statue of the Virgin_Mary sit on top
+#retrieve the second declarative statement phrase from the context using the new goal (sit on top, ? what sit on top of the Main_Building at)
+#.sctx a golden statue of the Virgin_Mary sit on top
+.ph a golden statue of the Virgin_Mary sit on top
+#drop the goal (sit on top, ? what sit on top of the Main_Building at)
 .drop_goal
+#lookup the answer words from the declarative statement phrase with the answer (if there are more answers then keep iterating through th edec statement phrases until all answer words are found)
 .wg a golden statue of
 .prw
 .wg the Virgin_Mary

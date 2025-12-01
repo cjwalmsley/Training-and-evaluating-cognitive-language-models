@@ -1,0 +1,2 @@
+what happens if the same phrase is used in different contexts.  The system needs to consider the entire context to retrieve the correct phrase.
+What happens if the same phrase is stored twice and a new set of actions are used to derive an answer.
