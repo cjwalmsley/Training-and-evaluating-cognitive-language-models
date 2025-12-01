@@ -1,6 +1,3 @@
-.f monitor.txt
-.logfile ac7_log.txt
-
 #id: 5733be284776f4190066117e
 a golden statue of the Virgin_Mary sit on top
 of the Main_Building at Notre_Dame
@@ -8,19 +5,19 @@ of the Main_Building at Notre_Dame
 ? what sit on top of the Main_Building at
 Notre_Dame
 .sctx ? what sit on top of the Main_Building at
-.pg sit on top
+.wg sit
+.pg top
+.ph a golden statue of the Virgin_Mary sit on top
+.drop_goal
+.wg a golden statue
+.prw
+.wg of the Virgin_Mary
+.prw
+.rip
+.sctx ? what sit on top of the Main_Building at
 .pg Main_Building
-sctx Notre_Dame
+.sctx Notre_Dame
 .wg Notre_Dame
 .ph of the Main_Building at Notre_Dame
 .drop_goal
-.sctx a golden statue of the Virgin_Mary sit on top
-.drop_goal
-.wg a golden statue of
-.prw
-.wg the Virgin_Mary
 .rw
-
-? what sit on top of the Main_Building at
-Notre_Dame
-.x

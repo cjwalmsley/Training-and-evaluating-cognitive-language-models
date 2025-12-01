@@ -4,8 +4,8 @@
 .monitor display WGB always on
 .monitor display AcqAct always on
 .monitor display ElAct always on
-#.monitor display GoalPh always on
-#.monitor display GoalWG always on
+.monitor display GoalPh always on
+.monitor display GoalWG always on
 .monitor display CurrStartPh always on
 .monitor display StartPh always on
 .monitor console on

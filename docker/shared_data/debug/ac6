@@ -1,33 +1,17 @@
-#id: 5733be284776f4190066117f
-a copper statue of Christ be in front of
-the Notre_Dame Main Building
+#id: 5733bf84d058e614000b61be
+the Scholastic_Magazine of Notre_Dame begin publish in September_1876
+#words in question and sentence phrase Scholastic_Magazine, begin publish
 
-.f monitor.txt
-? what be in front of the Notre_Dame Main
-Building
-.sctx ? what be in front of the Notre_Dame Main
-.wg front
-#.ph a copper statue of Christ be in front of
-.sctx the Notre_Dame Main Building
-.wg Notre_Dame
-#.ph a copper statue of Christ be in front of
-#.sctx the Notre_Dame Main Building
-.wg Main
-.sctx Building
-#.ph a copper statue of Christ be in front of
-#.sctx the Notre_Dame Main Building
-#.f monitor.txt
-.wg Building
-# front, Notre_Dame, Main, Building
-#.ph a copper statue of Christ be in front of
-#.ph a copper statue of Christ be in front of
-.wg a copper statue
-.prw
-.wg of Christ
-#.prw
+? when do the Scholastic_Magazine of Notre dame begin
+publish
+.sctx ? when do the Scholastic_Magazine of Notre dame begin
+.wg Scholastic_Magazine
+.pg begin
+.ph the Scholastic_Magazine of Notre_Dame begin publish in September_1876
+.wg September_1876
 .rw
 
-? what be in front of the Notre_Dame Main
-Building
+? when do the Scholastic_Magazine of Notre dame begin
+publish
 
 .x
