@@ -19,7 +19,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         """Set up a common instance for testing."""
         self.sample_id = "test_01"
         self.declarative_sentence = "the sky is blue with patches of grey"
-        self.question = "what color is the sky?"
+        self.question = "? what color is the sky"
 
         self.short_answer = "blue"
         self.long_answer = "blue with patches of grey"
@@ -80,7 +80,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "#id: test_01",
             "the sky is blue with patches of grey",
             "\n",
-            "what color is the sky?",
+            "? what color is the sky",
             ".wg sky",
             ".ph the sky is blue with patches of grey",
             ".wg blue",
@@ -101,7 +101,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "#id: test_01",
             "the sky is blue with patches of grey",
             "\n",
-            "what color is the sky?",
+            "? what color is the sky",
             ".wg sky",
             ".ph the sky is blue with patches of grey",
             ".wg blue with patches",
@@ -120,9 +120,10 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         )
         generator.write_commands()
         expected_commands = [
-            "what color is the sky?",
-            ".sctx what color is the sky?",
-            ".ph the sky is blue with",
+            "? what color is the",
+            "sky",
+            ".sctx ? what color is the",
+            ".sctx sky",
             ".wg sky",
         ]
         self.assertEqual(expected_commands, generator.commands)
@@ -134,46 +135,24 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             self.long_question,
             max_words=5,
         )
+
         generator.write_commands()
         expected_commands = [
             "? what was the trade",
             "-ing post that precede -d",
             "New-York-City call -ed",
             ".sctx ? what was the trade",
-            ".wg trade",
+            ".pg trade",
             ".sctx -ing post that precede -d",
-            ".wg post",
-            ".ph the trade -ing post that",
-            ".sctx precede -d New-York-City was call",
-            ".wg precede",
+            ".pg post",
+            ".pg precede",
             ".sctx New-York-City call -ed",
-            ".ph the trade -ing post that",
-            ".sctx precede -d New-York-City was call",
-            ".wg New-York-City",
-            ".ph the trade -ing post that",
-            ".sctx precede -d New-York-City was call",
+            ".pg New-York-City",
             ".wg call",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
     def test_question_commands_wg_not_in_phrase(self):
-        """consider the following inout phrase:
-        a golden statue of the_Virgin_Mary sit on top of the_Main_Building
-        at Notre_Dame
-        and this question and commands:
-
-        ? what sit on top of the_Main_Building at Notre_Dame
-        .wg sit
-        .wg top
-        .wg the_Main_Building
-        .wg Notre_Dame
-
-        the following phrase retrieval fails because Notre_Dame is not in the phrase
-        .ph a golden statue of the_Virgin_Mary sit on top of the_Main_Building
-
-        the solution is to ensure that .wg commands are only created for words present in the lookup phrase.
-        then for any remaining words in the question context that are not in the phrase, move to the subsequent phrases in the context and apply the same logic
-        """
 
         question = "? what sit on top of the_Main_Building at Notre_Dame"
         declarative_sentence = "a golden statue of the_Virgin_Mary sit on top of the_Main_Building at Notre_Dame"
@@ -186,12 +165,8 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         generator.write_question_commands()
 
         expected_commands = [
-            ".sctx ? what sit on top of the_Main_Building at Notre_Dame",
-            ".wg sit",
-            ".wg top",
-            ".wg the_Main_Building",
-            ".ph a golden statue of the_Virgin_Mary sit on top of the_Main_Building",
-            ".sctx at Notre_Dame",
+            ".pg sit on top",
+            ".pg the_Main_Building",
             ".wg Notre_Dame",
         ]
 
@@ -203,11 +178,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             self.declarative_sentence, self.question, max_words=5
         )
         generator.write_question_commands()
-        expected_commands = [
-            ".sctx what color is the sky?",
-            ".ph the sky is blue with",
-            ".wg sky",
-        ]
+        expected_commands = [".sctx ? what color is the", ".sctx sky", ".wg sky"]
         self.assertEqual(expected_commands, generator.commands)
 
     def test_write_question_commands_long_declarative_sentence(self):
@@ -220,32 +191,47 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             self.long_question,
             max_words=5,
         )
+
+        # ("? what was the trade"
+        # " -ing post that precede -d"
+        # " New-York-City call -ed")
+
+        # "the trade -ing post that"
+        # " precede -d New-York-City was call"
+        # " -ed New-Amsterdam"
+
         generator.write_question_commands()
         expected_commands = [
             ".sctx ? what was the trade",
-            ".wg trade",
+            ".pg trade",
             ".sctx -ing post that precede -d",
-            ".wg post",
-            ".ph the trade -ing post that",
-            ".sctx precede -d New-York-City was call",
-            ".wg precede",
+            ".pg post",
+            ".pg precede",
             ".sctx New-York-City call -ed",
-            ".ph the trade -ing post that",
-            ".sctx precede -d New-York-City was call",
-            ".wg New-York-City",
-            ".ph the trade -ing post that",
-            ".sctx precede -d New-York-City was call",
+            ".pg New-York-City",
             ".wg call",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    def test_write_question_short_question(self):
+    def test_write_question(self):
         """Test the write_question method with a short question."""
         generator = AnnabellQuestionCommandGenerator(
             self.declarative_sentence, self.question, max_words=5
         )
+
+        expected_commands = ["? what color is the", "sky"]
+
         generator.write_question()
-        self.assertEqual(generator.commands, [self.question])
+        self.assertEqual(generator.commands, expected_commands)
+
+        generator = AnnabellQuestionCommandGenerator(
+            self.declarative_sentence, self.question, max_words=6
+        )
+
+        expected_commands = ["? what color is the sky"]
+
+        generator.write_question()
+        self.assertEqual(generator.commands, expected_commands)
 
     def test_write_question_long_question(self):
         """Test the write_question method with a long question."""
@@ -402,11 +388,22 @@ class TestAnnabellQuestionContext(unittest.TestCase):
         question_context = AnnabellQuestionContext(
             "? what sit on top of the Main_Building at", max_words_per_phrase=9
         )
-        word_group_chunks = (
-            question_context.word_group_chunks_matching_declarative_sentence(
-                declarative_sentence_context
-            )
+        word_group_chunks = question_context.word_group_chunks_matching_sentence(
+            declarative_sentence_context
         )
+        assert_equal(word_group_chunks, expected_chunks)
+
+    def test_word_group_chunks_matching_sentence_non_consecutive_keywords(self):
+        expected_chunks = [["New-York-City"], ["call"]]
+        declarative_sentence_context = AnnabellDeclarativeContext(
+            "precede -d New-York-City was call", max_words_per_phrase=9
+        )
+        question_context = AnnabellQuestionContext(
+            "New-York-City call -ed", max_words_per_phrase=9
+        )
+        word_group_chunks = question_context.phrases[
+            0
+        ].word_group_chunks_matching_sentence(declarative_sentence_context.phrases[0])
         assert_equal(word_group_chunks, expected_chunks)
 
 

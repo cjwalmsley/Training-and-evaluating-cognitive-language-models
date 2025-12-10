@@ -297,10 +297,8 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
 
     def write_commands_single_phrase_question_single_phrase_statement(self):
 
-        word_group_chunks = (
-            self.question.word_group_chunks_matching_declarative_sentence(
-                self.declarative_sentence
-            )
+        word_group_chunks = self.question.word_group_chunks_matching_sentence(
+            self.declarative_sentence
         )
 
         if len(word_group_chunks) == 1:
@@ -310,19 +308,68 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             self.commands.append(f".wg {' '.join(word_group_chunks[-1])}")
 
     def write_commands_single_phrase_question_multi_phrase_statement(self):
-        raise NotImplementedError(
-            "Single phrase question with multi-phrase statement not supported"
+        phrases_and_word_group_chunks_for_question = (
+            self.declarative_sentence.phrases_and_word_group_chunks_for_question(
+                self.question
+            )
         )
+
+        word_group_texts = []
+        for word_group_chunks in phrases_and_word_group_chunks_for_question.values():
+            for word_group_chunk in word_group_chunks:
+                word_group_text = " ".join(word_group_chunk)
+                word_group_texts.append(word_group_text)
+
+        last_text_index = len(word_group_texts) - 1
+        for index, word_group_text in enumerate(word_group_texts):
+            if index < last_text_index:
+                self.commands.append(f".pg {word_group_text}")
+            else:
+                self.commands.append(f".wg {word_group_text}")
 
     def write_commands_multi_phrase_question_single_phrase_statement(self):
-        raise NotImplementedError(
-            "Multi phrase question with single-phrase statement not supported"
+        for question_phrase in self.question.phrases[:-1]:
+            self.commands.append(f".sctx {question_phrase.text}")
+            word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
+                self.declarative_sentence
+            )
+            for word_group_chunk in word_group_chunks:
+                word_group_text = " ".join(word_group_chunk)
+                self.commands.append(f".pg {word_group_text}")
+
+        final_question_phrase = self.question.phrases[-1]
+        self.commands.append(f".sctx {final_question_phrase.text}")
+        word_group_chunks = final_question_phrase.word_group_chunks_matching_sentence(
+            self.declarative_sentence
         )
+        if len(word_group_chunks) == 1:
+            self.commands.append(f".wg {' '.join(word_group_chunks[0])}")
+        elif len(word_group_chunks) > 1:
+            self.commands.append(f".pg {' '.join(word_group_chunks[0])}")
+            self.commands.append(f".wg {' '.join(word_group_chunks[-1])}")
 
     def write_commands_multi_phrase_question_multi_phrase_statement(self):
-        raise NotImplementedError(
-            "Multi phrase question with multi-phrase statement not supported"
-        )
+        last_phrase_index = len(self.question.phrases) - 1
+        for phrase_index, question_phrase in enumerate(self.question.phrases):
+            self.commands.append(f".sctx {question_phrase.text}")
+            declarative_context_word_group_chunks = []
+            for declarative_phrase in self.declarative_sentence.phrases:
+                word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
+                    declarative_phrase
+                )
+                declarative_context_word_group_chunks.extend(word_group_chunks)
+            for chunk_index, declarative_context_word_group_chunk in enumerate(
+                declarative_context_word_group_chunks
+            ):
+                word_group_text = " ".join(declarative_context_word_group_chunk)
+
+                if (
+                    phrase_index == last_phrase_index
+                    and chunk_index == len(declarative_context_word_group_chunks) - 1
+                ):
+                    self.commands.append(f".wg {word_group_text}")
+                else:
+                    self.commands.append(f".pg {word_group_text}")
 
     def write_question_commands_for_phrase(self, phrase, declarative_context):
 
@@ -473,6 +520,55 @@ class AnnabellAbstractWordCollection:
     def words(self):
         return self.text.split()
 
+    def word_group_chunks_matching_sentence(self, sentence):
+        word_group_chunks = []
+        # find any consecutive word groups in chunks of 4 that are in the first phrase of the question context
+        key_words_in_question_phrase = self.key_words().split()
+        # remove any key words that are not in the declarative sentence
+        key_words_in_question_phrase = [
+            word
+            for word in key_words_in_question_phrase
+            if word in sentence.key_words()
+        ]
+        word_group = []
+
+        for index, word in enumerate(self.words()):
+            if word in key_words_in_question_phrase and len(word_group) == 0:
+                word_group.append(word)
+                key_words_in_question_phrase.remove(word)
+            elif 0 < len(word_group) < 4:
+                words_remaining_in_phrase_chunk = self.words()[
+                    index : index + (4 - len(word_group))
+                ]
+                any_key_words_in_phrase_chunk = any(
+                    w in key_words_in_question_phrase
+                    for w in words_remaining_in_phrase_chunk
+                )
+                proposed_word_group = word_group + [word]
+                if any_key_words_in_phrase_chunk and sentence.contains_word_group(
+                    proposed_word_group
+                ):
+                    word_group.append(word)
+                    if word in key_words_in_question_phrase:
+                        key_words_in_question_phrase.remove(word)
+                else:
+                    word_group_chunks.append(word_group)
+                    word_group = []
+                    if word in key_words_in_question_phrase:
+                        word_group.append(word)
+                        key_words_in_question_phrase.remove(word)
+        if len(word_group) > 0:
+            word_group_chunks.append(word_group)
+
+        return word_group_chunks
+
+    def contains_word_group(self, word_group):
+        word_group_text = " ".join(word_group)
+        if word_group_text in self.text:
+            return True
+        else:
+            return False
+
 
 class AnnabellAbstractPhrase(AnnabellAbstractWordCollection):
     def __init__(self, text, context):
@@ -523,6 +619,14 @@ class AnnabellAbstractContext(AnnabellAbstractWordCollection):
             phrases.append(phrase)
         return phrases
 
+    def word_group_chunks_matching_sentence(self, sentence):
+        word_group_chunks = []
+        for phrase in self.phrases:
+            word_group_chunks.extend(
+                phrase.word_group_chunks_matching_sentence(sentence)
+            )
+        return word_group_chunks
+
 
 class AnnabellQuestionContext(AnnabellAbstractContext):
 
@@ -534,44 +638,6 @@ class AnnabellQuestionContext(AnnabellAbstractContext):
 
     def phrase_class(self):
         return AnnabellQuestionPhrase
-
-    def word_group_chunks_matching_declarative_sentence(
-        self, declarative_sentence_context
-    ):
-        word_group_chunks = []
-        # find any consecutive word groups in chunks of 4 that are in the first phrase of the question context
-        key_words_in_question_phrase = self.key_words().split()
-        # remove any key words that are not in the declarative sentence
-        key_words_in_question_phrase = [
-            word
-            for word in key_words_in_question_phrase
-            if word in declarative_sentence_context.key_words()
-        ]
-        word_group = []
-
-        for index, word in enumerate(self.words()):
-            if word in key_words_in_question_phrase and len(word_group) == 0:
-                word_group.append(word)
-                key_words_in_question_phrase.remove(word)
-            elif 0 < len(word_group) < 4:
-                words_remaining_in_phrase_chunk = self.words()[
-                    index : index + (4 - len(word_group))
-                ]
-                any_key_words_in_phrase_chunk = any(
-                    w in key_words_in_question_phrase
-                    for w in words_remaining_in_phrase_chunk
-                )
-                if any_key_words_in_phrase_chunk:
-                    word_group.append(word)
-                    if word in key_words_in_question_phrase:
-                        key_words_in_question_phrase.remove(word)
-                else:
-                    word_group_chunks.append(word_group)
-                    word_group = []
-        if len(word_group) > 0:
-            word_group_chunks.append(word_group)
-
-        return word_group_chunks
 
 
 class AnnabellDeclarativeContext(AnnabellAbstractContext):
@@ -594,6 +660,15 @@ class AnnabellDeclarativeContext(AnnabellAbstractContext):
 
     def phrase_class(self):
         return AnnabellDeclarativePhrase
+
+    def phrases_and_word_group_chunks_for_question(self, question_phrase):
+        phrases_and_word_group_chunks = {}
+        for phrase in self.phrases:
+            word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
+                phrase
+            )
+            phrases_and_word_group_chunks[phrase] = word_group_chunks
+        return phrases_and_word_group_chunks
 
 
 class AnnabellAnswerContext(AnnabellAbstractContext):
