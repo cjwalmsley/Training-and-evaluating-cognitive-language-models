@@ -10,6 +10,7 @@ from commands import (
     AnnabellQuestionContext,
     AnnabellDeclarativeContext,
     AnnabellAnswerContext,
+    AnnabellAnswerCommandGenerator,
 )
 
 
@@ -530,6 +531,100 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             ".pg Main_Building",
             ".sctx Notre_Dame",
             ".wg Notre_Dame",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+
+class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
+
+    def setUp(self):
+        self.declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
+        self.answer = "a golden statue of the Virgin_Mary"
+        self.generator = AnnabellAnswerContext(self.answer, max_words_per_phrase=9)
+
+    def test_split_long_answer_into_phrases(self):
+        answer = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
+        context = AnnabellAnswerContext(answer, max_words_per_phrase=9)
+        expected_phrases = [
+            "a golden statue of the Virgin_Mary sit on top",
+            "of the Main_Building at Notre_Dame",
+        ]
+        context_phrases = [phrase.text for phrase in context.phrases]
+        self.assertEqual(context_phrases, expected_phrases)
+        self.assertEqual(context.text, answer)
+
+    def test_write_commands_single_phrase_answer_single_phrase_statement(self):
+        question = "? what sit on top of the Main_Building"
+        declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
+        answer = "a golden statue"
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, max_words=9
+        )
+        generator.write_commands_single_phrase_answer_single_phrase_statement()
+        expected_commands = [
+            ".ph a golden statue of the Virgin_Mary sit on top",
+            ".wg a golden statue",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_multi_phrase_answer_multi_phrase_statement(self):
+        declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
+        # breaks down to:
+        # "a golden statue of the Virgin_Mary sit on top"
+        # "of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin_Mary sit on top"
+        # breaks down to:
+        # "a golden statue of"
+        # the Virgin_Mary sit on"
+        # "top"
+        generator = AnnabellAnswerCommandGenerator("test_02", declarative_sentence)
+        generator.write_answer_commands_multi_phrase_answer_multi_phrase_statement(
+            answer, max_words=9
+        )
+        expected_commands = [
+            ".ph of the Main_Building at Notre_Dame",
+            ".drop_goal",
+            ".sctx a golden statue of the Virgin_Mary sit on top",
+            ".wg a golden statue of",
+            ".prw",
+            " .wg the Virgin_Mary sit on" ".prw",
+            ".wg top",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_multi_phrase_answer_single_phrase_statement(self):
+        question = "? what sit on top of the Main_Building"
+        declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
+        answer = "a golden statue of the Virgin_Mary sit on top of the Main_Building"
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, max_words=9
+        )
+        generator.write_commands_multi_phrase_answer_single_phrase_statement()
+        expected_commands = [
+            ".ph a golden statue of the Virgin_Mary sit on top",
+            ".wg a golden statue of",
+            ".prw",
+            ".wg the Virgin_Mary sit on",
+            ".prw",
+            ".wg top",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_single_phrase_answer_multi_phrase_statement(self):
+        declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin_Mary"
+        generator = AnnabellTrainingCommandGenerator("test_05", declarative_sentence)
+        generator.write_answer_commands_single_phrase_answer_multi_phrase_statement(
+            answer, max_words=9
+        )
+        expected_commands = [
+            ".ph a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame",
+            ".sctx a golden statue of the Virgin_Mary",
+            ".wg a golden statue of the Virgin_Mary",
+            ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
