@@ -429,7 +429,7 @@ class TestAnnabellAnswerContext(unittest.TestCase):
     def test_create_answer_context(self):
         answer = "a golden statue of the Virgin_Mary"
         expected_phrases = ["a golden statue of the Virgin_Mary"]
-        context = AnnabellAnswerContext(answer, max_words_per_phrase=9)
+        context = AnnabellAnswerContext(answer)
         context_phrases = [phrase.text for phrase in context.phrases]
         self.assertEqual(context_phrases, expected_phrases)
         self.assertEqual(context.text, answer)
@@ -540,27 +540,47 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
     def setUp(self):
         self.declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         self.answer = "a golden statue of the Virgin_Mary"
-        self.generator = AnnabellAnswerContext(self.answer, max_words_per_phrase=9)
+        self.question = "? what sit on top of the Main_Building at Notre_Dame"
+        self.question_generator = AnnabellQuestionCommandGenerator(
+            self.declarative_sentence, self.question, max_words=9
+        )
+        self.question_generator.write_commands()
+        self.answer_context = AnnabellAnswerContext(self.answer)
+
+    def test_create_answer_generator(self):
+        answer_generator = AnnabellAnswerCommandGenerator(
+            self.declarative_sentence,
+            self.answer,
+            self.question_generator,
+            max_words=9,
+        )
+        self.assertEqual(
+            answer_generator.declarative_sentence.text, self.declarative_sentence
+        )
+        self.assertEqual(answer_generator.answer.text, self.answer)
+        self.assertEqual(answer_generator.question_generator, self.question_generator)
 
     def test_split_long_answer_into_phrases(self):
         answer = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
-        context = AnnabellAnswerContext(answer, max_words_per_phrase=9)
+        context = AnnabellAnswerContext(answer)
         expected_phrases = [
-            "a golden statue of the Virgin_Mary sit on top",
-            "of the Main_Building at Notre_Dame",
+            "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame",
         ]
         context_phrases = [phrase.text for phrase in context.phrases]
         self.assertEqual(context_phrases, expected_phrases)
         self.assertEqual(context.text, answer)
 
-    def test_write_commands_single_phrase_answer_single_phrase_statement(self):
+    def test_write_commands_short_answer_single_phrase_statement(self):
         question = "? what sit on top of the Main_Building"
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
         answer = "a golden statue"
-        generator = AnnabellAnswerCommandGenerator(
-            declarative_sentence, answer, max_words=9
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, max_words=9
         )
-        generator.write_commands_single_phrase_answer_single_phrase_statement()
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_commands_short_answer_single_phrase_statement()
         expected_commands = [
             ".ph a golden statue of the Virgin_Mary sit on top",
             ".wg a golden statue",
@@ -568,40 +588,17 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    def test_write_commands_multi_phrase_answer_multi_phrase_statement(self):
-        declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
-        # breaks down to:
-        # "a golden statue of the Virgin_Mary sit on top"
-        # "of the Main_Building at Notre_Dame"
-        answer = "a golden statue of the Virgin_Mary sit on top"
-        # breaks down to:
-        # "a golden statue of"
-        # the Virgin_Mary sit on"
-        # "top"
-        generator = AnnabellAnswerCommandGenerator("test_02", declarative_sentence)
-        generator.write_answer_commands_multi_phrase_answer_multi_phrase_statement(
-            answer, max_words=9
-        )
-        expected_commands = [
-            ".ph of the Main_Building at Notre_Dame",
-            ".drop_goal",
-            ".sctx a golden statue of the Virgin_Mary sit on top",
-            ".wg a golden statue of",
-            ".prw",
-            " .wg the Virgin_Mary sit on" ".prw",
-            ".wg top",
-            ".rw",
-        ]
-        self.assertEqual(expected_commands, generator.commands)
-
-    def test_write_commands_multi_phrase_answer_single_phrase_statement(self):
+    def test_write_commands_long_answer_single_phrase_statement(self):
         question = "? what sit on top of the Main_Building"
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
         answer = "a golden statue of the Virgin_Mary sit on top of the Main_Building"
-        generator = AnnabellAnswerCommandGenerator(
-            declarative_sentence, answer, max_words=9
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, max_words=9
         )
-        generator.write_commands_multi_phrase_answer_single_phrase_statement()
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_commands_long_answer_single_phrase_statement()
         expected_commands = [
             ".ph a golden statue of the Virgin_Mary sit on top",
             ".wg a golden statue of",
@@ -613,17 +610,40 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    def test_write_commands_single_phrase_answer_multi_phrase_statement(self):
-        declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
-        answer = "a golden statue of the Virgin_Mary"
-        generator = AnnabellTrainingCommandGenerator("test_05", declarative_sentence)
-        generator.write_answer_commands_single_phrase_answer_multi_phrase_statement(
-            answer, max_words=9
+    def test_write_commands_long_answer_multi_phrase_statement(self):
+
+        generator = AnnabellAnswerCommandGenerator(
+            self.declarative_sentence, self.answer, self.question_generator, max_words=9
         )
+        generator.write_commands_long_answer_multi_phrase_statement()
         expected_commands = [
-            ".ph a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame",
-            ".sctx a golden statue of the Virgin_Mary",
-            ".wg a golden statue of the Virgin_Mary",
+            ".ph of the Main_Building at Notre_Dame",
+            ".drop_goal"
+            # todo test alternative commands - .ph instead of .sctx which results in the best generalisation?
+            # ".ph a golden statue of the Virgin_Mary sit on top",
+            ".sctx a golden statue of the Virgin_Mary sit on top",
+            ".drop_goal",
+            ".wg a golden statue of",
+            ".prw",
+            ".wg the Virgin_Mary",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_short_answer_multi_phrase_statement(self):
+        answer = "the Virgin_Mary"
+        generator = AnnabellAnswerCommandGenerator(
+            self.declarative_sentence, answer, self.question_generator, max_words=9
+        )
+        generator.write_commands_short_answer_multi_phrase_statement()
+        expected_commands = [
+            ".ph of the Main_Building at Notre_Dame",
+            ".drop_goal"
+            # todo test alternative commands - .ph instead of .sctx which results in the best generalisation?
+            # ".ph a golden statue of the Virgin_Mary sit on top",
+            ".sctx a golden statue of the Virgin_Mary sit on top",
+            ".drop_goal",
+            ".wg the Virgin_Mary",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)

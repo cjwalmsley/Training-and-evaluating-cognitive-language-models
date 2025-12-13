@@ -70,7 +70,10 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
 
     def answer_command_generator(self):
         generator = AnnabellAnswerCommandGenerator(
-            self.declarative_sentence.text, self.answer, self.max_words
+            self.declarative_sentence.text,
+            self.answer,
+            self.question_command_generator,
+            self.max_words,
         )
         return generator
 
@@ -182,16 +185,12 @@ class AnnabellTrainingCommandGenerator(AnnabellBaseCommandGenerator):
 
 
 class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
-    def __init__(
-        self,
-        declarative_sentence,
-        answer,
-        max_words,
-    ):
+    def __init__(self, declarative_sentence, answer, question_generator, max_words):
         super().__init__(declarative_sentence, max_words)
 
-        self.answer = AnnabellAnswerContext(answer, max_words)
+        self.answer = AnnabellAnswerContext(answer)
         self.answer_type = self.answer.get_answer_type()
+        self.question_generator = question_generator
 
     @staticmethod
     def answer_command_for_phrase_index(index):
@@ -205,7 +204,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
     def write_answer_commands(self):
         self.answer_type.write_answer_commands(self)
 
-    def write_commands_single_phrase_answer_single_phrase_statement(self):
+    def write_commands_short_answer_single_phrase_statement(self):
         self.commands.append(f".ph {self.declarative_sentence.text}")
         answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
             self.declarative_sentence
@@ -218,7 +217,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
             else:
                 self.commands.append(".rw")
 
-    def write_commands_multi_phrase_answer_single_phrase_statement(self):
+    def write_commands_long_answer_single_phrase_statement(self):
         self.commands.append(f".ph {self.declarative_sentence.text}")
         answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
             self.declarative_sentence
@@ -231,12 +230,12 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
             else:
                 self.commands.append(".rw")
 
-    def write_commands_single_phrase_answer_multi_phrase_statement(self):
+    def write_commands_short_answer_multi_phrase_statement(self):
         raise NotImplementedError(
             "Long declarative sentence with short answer not supported"
         )
 
-    def write_commands_multi_phrase_answer_multi_phrase_statement(self):
+    def write_commands_long_answer_multi_phrase_statement(self):
         raise NotImplementedError(
             "Long declarative sentence with long answer not supported"
         )
@@ -442,11 +441,11 @@ class ShortDeclarativeSentenceType:
 
     @staticmethod
     def write_answer_commands_for_long_answer(command_generator):
-        command_generator.write_commands_multi_phrase_answer_multi_phrase_statement()
+        command_generator.write_commands_long_answer_multi_phrase_statement()
 
     @staticmethod
     def write_answer_commands_for_short_answer(command_generator):
-        command_generator.write_commands_single_phrase_answer_multi_phrase_statement()
+        command_generator.write_commands_short_answer_multi_phrase_statement()
 
 
 class LongDeclarativeSentenceType:
@@ -461,7 +460,7 @@ class LongDeclarativeSentenceType:
 
     @staticmethod
     def write_answer_commands_for_long_answer(command_generator):
-        command_generator.write_commands_multi_phrase_answer_multi_phrase_statement()
+        command_generator.write_commands_long_answer_multi_phrase_statement()
 
     @staticmethod
     def write_answer_commands_for_short_answer(command_generator):
@@ -517,6 +516,10 @@ class LongAnswerType:
 class AnnabellAbstractWordCollection:
     def __init__(self, text):
         self.text = text
+
+    @staticmethod
+    def max_words_per_word_group():
+        return 4
 
     @staticmethod
     def remove_stopwords(a_string):
@@ -604,6 +607,9 @@ class AnnabellAbstractWordCollection:
             return True
         else:
             return False
+
+    def key_words_for_phrase(self, phrase):
+        return phrase.key_words_in_context(self)
 
 
 class AnnabellAbstractPhrase(AnnabellAbstractWordCollection):
@@ -722,14 +728,19 @@ class AnnabellDeclarativeContext(AnnabellAbstractContext):
             phrases_and_word_group_chunks[phrase] = word_group_chunks
         return phrases_and_word_group_chunks
 
-    def key_words_for_phrase(self, phrase):
-        return phrase.key_words_in_context(self)
+    # def key_words_for_phrase(self, phrase):
+    #    return phrase.key_words_in_context(self)
 
 
 class AnnabellAnswerContext(AnnabellAbstractContext):
+    def __init__(
+        self,
+        text,
+    ):
+        super().__init__(text, max_words_per_phrase=None)
 
     def get_answer_type(self):
-        if len(self.text.split()) > self.max_words_per_phrase:
+        if len(self.text.split()) > self.max_words_per_word_group():
             return LongAnswerType()
         else:
             return ShortAnswerType()
