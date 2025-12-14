@@ -11,6 +11,7 @@ from commands import (
     AnnabellDeclarativeContext,
     AnnabellAnswerContext,
     AnnabellAnswerCommandGenerator,
+    LIFOQueue,
 )
 
 
@@ -303,7 +304,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "the Grotto at Notre_Dame be a marian place of prayer and reflection"
         )
         answer = "a marian place of prayer and reflection"
-        generator = AnnabellBaseCommandGenerator(
+        generator = AnnabellAnswerCommandGenerator(
             self.sample_id, declarative_sentence, self.question, answer, max_words=10
         )
         generator.write_answer_commands()
@@ -435,6 +436,19 @@ class TestAnnabellAnswerContext(unittest.TestCase):
         self.assertEqual(context.text, answer)
 
 
+class TestLIFOQueue(unittest.TestCase):
+    def test_lifo_queue_operations(self):
+        queue = LIFOQueue()
+        queue.enqueue("first")
+        queue.enqueue("second")
+        queue.enqueue("third")
+
+        self.assertEqual(queue.dequeue(), "third")
+        self.assertEqual(queue.dequeue(), "second")
+        self.assertEqual(queue.dequeue(), "first")
+        self.assertTrue(queue.is_empty())
+
+
 class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
     def setUp(self):
@@ -443,6 +457,18 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         self.generator = AnnabellQuestionCommandGenerator(
             self.declarative_sentence, self.question, max_words=9
         )
+
+    def test_goal_stack_is_correct(self):
+        self.assertTrue(self.generator.goal_stack.is_empty())
+        self.generator.write_commands()
+        expected_goal_stack_items = [".pg sit on top", ".pg Main_Building"]
+        self.assertEqual(expected_goal_stack_items, self.generator.goal_stack.items())
+
+    def test_word_group_is_set_correctly(self):
+        self.assertTrue(self.generator.current_word_group is None)
+        self.generator.write_commands()
+        expected_word_group = ".wg Notre_Dame"
+        self.assertEqual(expected_word_group, self.generator.current_word_group)
 
     def test_write_long_question_long_declaration_commands(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"

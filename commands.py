@@ -2,9 +2,31 @@ import logging
 import nltk
 from nltk.corpus import stopwords
 from config.global_config import GlobalConfig
+from collections import deque
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
+
+
+class LIFOQueue:
+    def __init__(self):
+        self._items = deque()
+
+    def enqueue(self, item):
+        self._items.append(item)
+
+    def dequeue(self):
+        return self._items.pop()
+
+    def is_empty(self):
+        return len(self._items) == 0
+
+    def items(self):
+        return list(self._items)
+
+
+class AnnabellGoalStack(LIFOQueue):
+    pass
 
 
 class AbstractAnnabellCommandGenerator:
@@ -304,6 +326,8 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         super().__init__(declarative_sentence, max_words)
         self.question = AnnabellQuestionContext(question, max_words)
         self.question_type = self.question.get_question_type()
+        self.current_word_group = None
+        self.goal_stack = AnnabellGoalStack()
 
     def write_commands(self):
         self.commands = []
@@ -325,6 +349,14 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         for phrase in self.question.phrases_in_context():
             self.commands.append(phrase.text)
 
+    def append_goal(self, command_text):
+        self.goal_stack.enqueue(command_text)
+        self.commands.append(command_text)
+
+    def append_word_group(self, command_text):
+        self.current_word_group = command_text
+        self.commands.append(command_text)
+
     def write_commands_single_phrase_question_single_phrase_statement(self):
 
         word_group_chunks = self.question.word_group_chunks_matching_sentence(
@@ -332,10 +364,10 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         )
 
         if len(word_group_chunks) == 1:
-            self.commands.append(f".wg {' '.join(word_group_chunks[0])}")
+            self.append_word_group(f".wg {' '.join(word_group_chunks[0])}")
         elif len(word_group_chunks) > 1:
-            self.commands.append(f".pg {' '.join(word_group_chunks[0])}")
-            self.commands.append(f".wg {' '.join(word_group_chunks[-1])}")
+            self.append_goal(f".pg {' '.join(word_group_chunks[0])}")
+            self.append_word_group(f".wg {' '.join(word_group_chunks[-1])}")
 
     def write_commands_single_phrase_question_multi_phrase_statement(self):
         phrases_and_word_group_chunks_for_question = (
@@ -353,9 +385,9 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         last_text_index = len(word_group_texts) - 1
         for index, word_group_text in enumerate(word_group_texts):
             if index < last_text_index:
-                self.commands.append(f".pg {word_group_text}")
+                self.append_goal(f".pg {word_group_text}")
             else:
-                self.commands.append(f".wg {word_group_text}")
+                self.append_word_group(f".wg {word_group_text}")
 
     def write_commands_multi_phrase_question_single_phrase_statement(self):
         for question_phrase in self.question.phrases[:-1]:
@@ -365,7 +397,7 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             )
             for word_group_chunk in word_group_chunks:
                 word_group_text = " ".join(word_group_chunk)
-                self.commands.append(f".pg {word_group_text}")
+                self.append_goal(f".pg {word_group_text}")
 
         final_question_phrase = self.question.phrases[-1]
         self.commands.append(f".sctx {final_question_phrase.text}")
@@ -373,10 +405,10 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             self.declarative_sentence
         )
         if len(word_group_chunks) == 1:
-            self.commands.append(f".wg {' '.join(word_group_chunks[0])}")
+            self.append_word_group(f".wg {' '.join(word_group_chunks[0])}")
         elif len(word_group_chunks) > 1:
-            self.commands.append(f".pg {' '.join(word_group_chunks[0])}")
-            self.commands.append(f".wg {' '.join(word_group_chunks[-1])}")
+            self.append_goal(f".pg {' '.join(word_group_chunks[0])}")
+            self.append_word_group(f".wg {' '.join(word_group_chunks[-1])}")
 
     def write_commands_multi_phrase_question_multi_phrase_statement(self):
         last_phrase_index = len(self.question.phrases) - 1
@@ -397,9 +429,9 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
                     phrase_index == last_phrase_index
                     and chunk_index == len(declarative_context_word_group_chunks) - 1
                 ):
-                    self.commands.append(f".wg {word_group_text}")
+                    self.append_word_group(f".wg {word_group_text}")
                 else:
-                    self.commands.append(f".pg {word_group_text}")
+                    self.append_goal(f".pg {word_group_text}")
 
     def write_question_commands_for_phrase(self, phrase, declarative_context):
 
