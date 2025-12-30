@@ -250,15 +250,6 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(generator.commands, expected_phrases)
 
-    def test_write_answer_commands_short_sentence_short_answer(self):
-        """Test write_answer_commands with a short sentence and short answer."""
-        generator = AnnabellBaseCommandGenerator(
-            self.sample_id, "the sky is blue", self.question, "blue", max_words=10
-        )
-        generator.write_answer_commands()
-        expected_commands = [".ph the sky is blue", ".wg blue", ".rw"]
-        self.assertEqual(expected_commands, generator.commands)
-
     def test_write_answer_commands_short_sentence_long_answer(self):
         """Test write_answer_commands with a short sentence and long answer."""
         declarative_sentence = "the color of the sky is blue and sometimes grey"
@@ -269,9 +260,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         generator.write_answer_commands()
         expected_commands = [
             f".ph {declarative_sentence}",
-            ".wg blue and sometimes",
-            ".prw",
-            ".wg grey",
+            ".wg blue and sometimes grey",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
@@ -305,7 +294,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         )
         answer = "a marian place of prayer and reflection"
         generator = AnnabellAnswerCommandGenerator(
-            self.sample_id, declarative_sentence, self.question, answer, max_words=10
+            declarative_sentence, self.question, answer, max_words=10
         )
         generator.write_answer_commands()
         expected_commands = [
@@ -461,13 +450,13 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def test_goal_stack_is_correct(self):
         self.assertTrue(self.generator.goal_stack.is_empty())
         self.generator.write_commands()
-        expected_goal_stack_items = [".pg sit on top", ".pg Main_Building"]
+        expected_goal_stack_items = [["sit on top"], ["Main_Building"]]
         self.assertEqual(expected_goal_stack_items, self.generator.goal_stack.items())
 
     def test_word_group_is_set_correctly(self):
-        self.assertTrue(self.generator.current_word_group is None)
+        self.assertTrue(len(self.generator.current_word_group) == 0)
         self.generator.write_commands()
-        expected_word_group = ".wg Notre_Dame"
+        expected_word_group = ["Notre_Dame"]
         self.assertEqual(expected_word_group, self.generator.current_word_group)
 
     def test_write_long_question_long_declaration_commands(self):
@@ -636,6 +625,24 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
+    def test_write_commands_short_answer_multi_phrase_statement(self):
+        answer = "the Virgin_Mary"
+        generator = AnnabellAnswerCommandGenerator(
+            self.declarative_sentence, answer, self.question_generator, max_words=9
+        )
+        generator.write_commands_short_answer_multi_phrase_statement()
+        expected_commands = [
+            ".ph of the Main_Building at Notre_Dame",
+            ".drop_goal",
+            # todo test alternative commands - .ph instead of .sctx which results in the best generalisation?
+            ".ph a golden statue of the Virgin_Mary sit on top",
+            # ".sctx a golden statue of the Virgin_Mary sit on top",
+            ".drop_goal",
+            ".wg the Virgin_Mary",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
     def test_write_commands_long_answer_multi_phrase_statement(self):
 
         generator = AnnabellAnswerCommandGenerator(
@@ -656,20 +663,69 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    def test_write_commands_short_answer_multi_phrase_statement(self):
-        answer = "the Virgin_Mary"
-        generator = AnnabellAnswerCommandGenerator(
-            self.declarative_sentence, answer, self.question_generator, max_words=9
+
+class TestAnnabellBaseCommandGenerator(unittest.TestCase):
+    def setUp(self):
+        """Set up a common instance for testing."""
+        self.sample_id = "test_01"
+        self.declarative_sentence = "the sky is blue with patches of grey"
+        self.question = "? what color is the sky"
+
+        self.short_answer = "blue"
+        self.long_answer = "blue with patches of grey"
+
+        self.long_question = (
+            "? what was the trade -ing post that precede -d New-York-City call -ed"
         )
-        generator.write_commands_short_answer_multi_phrase_statement()
+        self.long_declarative_sentence = "the trade -ing post that precede -d New-York-City was call -ed New-Amsterdam"
+
+    def test_create_base_command_generator(self):
+        generator = AnnabellBaseCommandGenerator(
+            self.sample_id,
+            self.declarative_sentence,
+            self.question,
+            self.short_answer,
+            is_pre_training=True,
+            max_words=10,
+        )
+        self.assertEqual(generator.sample_id, self.sample_id)
+        self.assertEqual(generator.declarative_sentence.text, self.declarative_sentence)
+        self.assertEqual(generator.question, self.question)
+        self.assertEqual(generator.answer, self.short_answer)
+        self.assertTrue(generator.is_pre_training)
+        self.assertEqual(generator.max_words, 10)
+
+    def test_write_question_commands(self):
+        generator = AnnabellBaseCommandGenerator(
+            self.sample_id,
+            self.declarative_sentence,
+            self.question,
+            self.short_answer,
+            max_words=10,
+        )
+        generator.write_question_commands()
         expected_commands = [
-            ".ph of the Main_Building at Notre_Dame",
-            ".drop_goal"
-            # todo test alternative commands - .ph instead of .sctx which results in the best generalisation?
-            # ".ph a golden statue of the Virgin_Mary sit on top",
-            ".sctx a golden statue of the Virgin_Mary sit on top",
-            ".drop_goal",
-            ".wg the Virgin_Mary",
+            "? what color is the sky",
+            ".wg sky",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_answer_commands(self):
+        generator = AnnabellBaseCommandGenerator(
+            self.sample_id,
+            self.declarative_sentence,
+            self.question,
+            self.short_answer,
+            max_words=10,
+        )
+        generator.write_question_commands()
+        generator.write_answer_commands()
+
+        expected_commands = [
+            "? what color is the sky",
+            ".wg sky",
+            ".ph the sky is blue with patches of grey",
+            ".wg blue",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
