@@ -2,25 +2,56 @@ import logging
 import nltk
 from nltk.corpus import stopwords
 from config.global_config import GlobalConfig
+from collections import deque
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
 
 
+class LIFOQueue:
+    def __init__(self):
+        self._items = deque()
+
+    def enqueue(self, item):
+        self._items.append(item)
+
+    def dequeue(self):
+        return self._items.pop()
+
+    def is_empty(self):
+        return len(self._items) == 0
+
+    def items(self):
+        return list(self._items)
+
+    def peek(self):
+        if not self.is_empty():
+            return self._items[-1]
+        else:
+            return None
+
+
+class AnnabellGoalStack(LIFOQueue):
+    pass
+
+
 class AbstractAnnabellCommandGenerator:
 
-    def __init__(self, declarative_sentence, max_words):
-        self.declarative_sentence = declarative_sentence
+    def __init__(self, declarative_sentence_text, max_words):
         self.max_words = max_words
+        self.declarative_sentence = AnnabellDeclarativeContext(
+            declarative_sentence_text, self.max_words
+        )
+        self.declarative_sentence_type = (
+            self.declarative_sentence.get_declarative_sentence_type()
+        )
+
         self.commands = []
 
     def create_list_of_commands(self):
         raise NotImplementedError(
             "Subclasses must implement create_list_of_commands method"
         )
-
-    def sentence_word_length(self):
-        return len(self.declarative_sentence.split())
 
     def phrases_in_context(self, context):
         phrases = []
@@ -31,6 +62,12 @@ class AbstractAnnabellCommandGenerator:
             phrase = " ".join(phrase_words)
             phrases.append(phrase)
         return phrases
+
+    def get_declarative_sentence_type(self):
+        if len(self.declarative_sentence.text.split()) > self.max_words:
+            return LongDeclarativeSentenceType()
+        else:
+            return ShortDeclarativeSentenceType()
 
 
 class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
@@ -50,18 +87,21 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
         self.question = question
         self.answer = answer
         self.is_pre_training = is_pre_training
-        self.answer_command_generator = self.answer_command_generator()
         self.question_command_generator = self.question_command_generator()
+        self.answer_command_generator = self.answer_command_generator()
 
     def question_command_generator(self):
         generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, self.max_words
+            self.declarative_sentence.text, self.question, self.max_words
         )
         return generator
 
     def answer_command_generator(self):
         generator = AnnabellAnswerCommandGenerator(
-            self.declarative_sentence, self.answer, self.max_words
+            self.declarative_sentence.text,
+            self.answer,
+            self.question_command_generator,
+            self.max_words,
         )
         return generator
 
@@ -71,8 +111,8 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
 
     def write_declarative_sentence(self):
 
-        for phrase in self.phrases_in_context(self.declarative_sentence):
-            self.commands.append(phrase)
+        for phrase in self.declarative_sentence.phrases:
+            self.commands.append(phrase.text)
 
     @staticmethod
     def informational_non_pretraining_command():
@@ -115,7 +155,7 @@ class AnnabellTestingCommandGenerator(AnnabellBaseCommandGenerator):
         question,
     ):
         super().__init__(
-            sample_id, declarative_sentence=None, question=question, answer=None
+            sample_id, declarative_sentence="", question=question, answer=None
         )
 
     def answer_command_generator(self):
@@ -173,40 +213,12 @@ class AnnabellTrainingCommandGenerator(AnnabellBaseCommandGenerator):
 
 
 class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
-    def __init__(
-        self,
-        declarative_sentence,
-        answer,
-        max_words,
-    ):
+    def __init__(self, declarative_sentence, answer, question_generator, max_words):
         super().__init__(declarative_sentence, max_words)
 
-        self.answer = answer
-        self.declarative_sentence_type = self.get_declarative_sentence_type()
-        self.answer_type = self.get_answer_type()
-
-    def get_declarative_sentence_type(self):
-        if len(self.declarative_sentence.split()) > self.max_words:
-            return LongDeclarativeSentenceType()
-        else:
-            return ShortDeclarativeSentenceType()
-
-    def get_answer_type(self):
-        if len(self.answer.split()) > self.max_words:
-            return LongQuestionType()
-        else:
-            return ShortQuestionType()
-
-    @staticmethod
-    def phrases_and_answer_words(phrases, answer_words):
-        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
-        phrase_answer_words = {}
-        for phrase in phrases:
-            phrase_answer_words[phrase] = []
-            for word in answer_words:
-                if word in phrase.split():
-                    phrase_answer_words[phrase].append(word)
-        return phrase_answer_words
+        self.answer = AnnabellAnswerContext(answer)
+        self.answer_type = self.answer.get_answer_type()
+        self.question_generator = question_generator
 
     @staticmethod
     def answer_command_for_phrase_index(index):
@@ -218,47 +230,191 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
         return command
 
     def write_answer_commands(self):
-        self.declarative_sentence_type.write_answer_commands(self)
+        self.answer_type.write_answer_commands(self)
+
+    def write_commands_short_answer_single_phrase_statement(self):
+        self.commands.append(f".ph {self.declarative_sentence.text}")
+        answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
+            self.declarative_sentence
+        )
+        for index, word_group_chunk in enumerate(answer_word_group_chunks):
+            word_group_text = " ".join(word_group_chunk)
+            self.commands.append(f".wg {word_group_text}")
+            if index < len(answer_word_group_chunks) - 1:
+                self.commands.append(".prw")
+            else:
+                self.commands.append(".rw")
+
+    def write_commands_long_answer_single_phrase_statement(self):
+        self.commands.append(f".ph {self.declarative_sentence.text}")
+        answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
+            self.declarative_sentence
+        )
+        for index, word_group_chunk in enumerate(answer_word_group_chunks):
+            word_group_text = " ".join(word_group_chunk)
+            self.commands.append(f".wg {word_group_text}")
+            if index < len(answer_word_group_chunks) - 1:
+                self.commands.append(".prw")
+            else:
+                self.commands.append(".rw")
+
+    def lookup_declarative_sentence(self):
+        candidate_target_sentences = []
+        drop_goal = False
+        for declarative_sentence in self.declarative_sentence.phrases:
+            if declarative_sentence.contains_word_group(
+                self.question_generator.current_word_group
+            ):
+                candidate_target_sentences.append(declarative_sentence)
+            else:
+                pass
+        if len(candidate_target_sentences) == 0:
+            logger.critical(
+                f"No declarative sentences found for lookup word group: {self.question_generator.current_word_group}"
+            )
+            raise Exception
+        elif len(candidate_target_sentences) > 1:
+            target_sentence = candidate_target_sentences[0]
+            logger.info(
+                f"Multiple declarative sentences found for lookup word group: {self.question_generator.current_word_group}, checking goal stack for disambiguation."
+            )
+            for candidate_target_sentence in candidate_target_sentences:
+                if candidate_target_sentence.contains(
+                    self.question_generator.goal_stack.peek()
+                ):
+                    target_sentence = candidate_target_sentence
+                    drop_goal = True
+                else:
+                    pass
+        else:
+            target_sentence = candidate_target_sentences[0]
+            if self.question_generator.goal_stack.is_empty():
+                drop_goal = False
+            elif target_sentence.contains_word_group(
+                self.question_generator.goal_stack.peek()
+            ):
+                drop_goal = True
+        return target_sentence, drop_goal
+
+    def lookup_declarative_sentence_with_word_group(self, word_group):
+        found_declarative_sentence = None
+        for declarative_sentence in self.declarative_sentence.phrases:
+            if declarative_sentence.contains_word_group(word_group):
+                found_declarative_sentence = declarative_sentence
+                break
+        return found_declarative_sentence
+
+    def write_answer_words_in_chunk(
+        self, answer_words_remaining, answer_word_group_chunks
+    ):
+        for index, word_group_chunk in enumerate(answer_word_group_chunks):
+            if all(word in answer_words_remaining for word in word_group_chunk):
+                word_group_text = " ".join(word_group_chunk)
+                self.commands.append(f".wg {word_group_text}")
+                for word in word_group_chunk:
+                    answer_words_remaining.remove(word)
+                if len(answer_words_remaining) > 0:
+                    self.commands.append(".prw")
+                else:
+                    self.commands.append(".rw")
+
+    @staticmethod
+    def drop_goal_command():
+        return ".drop_goal"
+
+    def write_commands_short_answer_multi_phrase_statement(self):
+        answer_words_remaining = self.answer.words().copy()
+        declarative_sentence, drop_goal = self.lookup_declarative_sentence()
+        self.commands.append(f".ph {declarative_sentence.text}")
+        if drop_goal:
+            self.commands.append(self.drop_goal_command())
+            self.question_generator.goal_stack.dequeue()
+        else:
+            pass
+
+        # check if any answer words are in the first
+        answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
+            declarative_sentence
+        )
+        self.write_answer_words_in_chunk(
+            answer_words_remaining, answer_word_group_chunks
+        )
+
+        # using the goal stack lookup remaining sentences and check them for remaining answer words
+        while not self.question_generator.goal_stack.is_empty():
+            current_goal = self.question_generator.goal_stack.dequeue()
+            found_declarative_sentence = (
+                self.lookup_declarative_sentence_with_word_group(current_goal)
+            )
+            if found_declarative_sentence:
+                self.commands.append(f".ph {found_declarative_sentence.text}")
+                self.commands.append(f".drop_goal")
+                answer_word_group_chunks = (
+                    self.answer.word_group_chunks_matching_sentence(
+                        found_declarative_sentence
+                    )
+                )
+                self.write_answer_words_in_chunk(
+                    answer_words_remaining, answer_word_group_chunks
+                )
+            else:
+                pass
+
+    def write_commands_long_answer_multi_phrase_statement(self):
+        self.write_commands_short_answer_multi_phrase_statement()
+
+    def write_long_declaration_long_answer_commands(self):
+        answer_words_remaining = self.answer.words().copy()
+        # look up the first phrase of the context
+        self.commands.append(f".ph {self.declarative_sentence.first_phrase().text}")
+        # for each remaining phrase in the declarative sentence search the context for the phrase and write the answer words that are in that phrase.
+        for declarative_phrase in self.declarative_sentence.phrases:
+            self.commands.append(f".sctx {declarative_phrase.text}")
+            for declarative_word in declarative_phrase.words():
+                if declarative_word in answer_words_remaining:
+                    self.commands.append(f".wg {declarative_word}")
+                    answer_words_remaining.remove(declarative_word)
+                    if len(answer_words_remaining) > 0:
+                        self.commands.append(".prw")
+                    else:
+                        continue
         self.commands.append(".rw")
 
-    def write_short_answer_commands(self):
-        self.commands.append(f".ph {self.declarative_sentence}")
+    def write_short_declaration_short_answer_commands(self):
+        self.commands.append(f".ph {self.declarative_sentence.text}")
         # the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
 
-        answer_words = self.answer.split()
-        if len(answer_words) < 4:
-            self.commands.append(f".wg {self.answer}")
+        if len(self.answer.words()) < 4:
+            self.commands.append(f".wg {self.answer.text}")
         else:
-            self.commands.append(f".wg {" ".join(answer_words[:3])}")
+            self.commands.append(f".wg {" ".join(self.answer.words()[:3])}")
             self.commands.append(".prw")
-            self.commands.append(f".wg {" ".join(answer_words[3:])}")
+            self.commands.append(f".wg {" ".join(self.answer.words()[3:])}")
+        self.commands.append(".rw")
 
-    def write_long_answer_commands(self):
-        # todo - instead of looking for the answer on the phrase via .ph instead look up the start of the context with .ph then sctx to find the phrase in the context that has the answer words
-        answer_words = self.answer.split()
-        phrases = self.phrases_in_context(self.declarative_sentence)
-        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
-        phrase_answer_words = self.phrases_and_answer_words(phrases, answer_words)
+    def write_long_declaration_short_answer_commands(self):
         # for each phrase in the declarative sentence, write the phrase command and the answer words
-
-        for phrase_index, (phrase, answer_words) in enumerate(
-            phrase_answer_words.items()
+        for phrase_index, (phrase, phrase_answer_words) in enumerate(
+            self.declarative_sentence.phrases_and_answer_words(
+                self.answer.words()
+            ).items()
         ):
-            if len(answer_words) == 0 and phrase_index > 0:
+            if len(phrase_answer_words) == 0 and phrase_index > 0:
                 continue
             else:
                 self.commands.append(
-                    f"{self.answer_command_for_phrase_index(phrase_index)} {phrase}"
+                    f"{self.answer_command_for_phrase_index(phrase_index)} {phrase.text}"
                 )
-                if len(answer_words) == 0:
+                if len(phrase_answer_words) == 0:
                     continue
-                elif len(answer_words) < 4:
-                    self.commands.append(f".wg {" ".join(answer_words)}")
+                elif len(phrase_answer_words) < 4:
+                    self.commands.append(f".wg {" ".join(phrase_answer_words)}")
                 else:
-                    self.commands.append(f".wg {" ".join(answer_words[:3])}")
+                    self.commands.append(f".wg {" ".join(phrase_answer_words[:3])}")
                     self.commands.append(".prw")
-                    self.commands.append(f".wg {" ".join(answer_words[3:])}")
+                    self.commands.append(f".wg {" ".join(phrase_answer_words[3:])}")
                     self.commands.append(".prw")
+        self.commands.append(".rw")
 
 
 class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
@@ -269,26 +425,10 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         max_words,
     ):
         super().__init__(declarative_sentence, max_words)
-        self.question = question
-        self.declarative_sentence_type = self.get_declarative_sentence_type()
-        self.question_type = self.get_question_type()
-
-    def get_declarative_sentence_type(self):
-        if self.declarative_sentence is None:
-            return None
-        elif len(self.declarative_sentence.split()) > self.max_words:
-            return LongDeclarativeSentenceType()
-        else:
-            return ShortDeclarativeSentenceType()
-
-    def get_question_type(self):
-        if len(self.question.split()) > self.max_words:
-            return LongQuestionType()
-        else:
-            return ShortQuestionType()
-
-    def question_word_length(self):
-        return len(self.question.split())
+        self.question = AnnabellQuestionContext(question, max_words)
+        self.question_type = self.question.get_question_type()
+        self.current_word_group = []
+        self.goal_stack = AnnabellGoalStack()
 
     def write_commands(self):
         self.commands = []
@@ -303,18 +443,233 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.question_type.write_question_commands(self)
 
     def append_question(self):
-        self.commands.append(self.question)
+        self.commands.append(self.question.text)
 
     def append_question_phrases(self):
         # split the question into phrases of max_words length
-        for phrase in self.phrases_in_context(self.question):
-            self.commands.append(phrase)
+        for phrase in self.question.phrases_in_context():
+            self.commands.append(phrase.text)
 
-    def key_words_in_phrase(self, phrase):
-        key_words = self.remove_stopwords(phrase)
-        key_words = self.remove_suffixes(key_words)
-        key_words = self.remove_question_mark(key_words)
-        return key_words
+    def append_goal(self, goal_word_group_text):
+        goal_word_group = [goal_word_group_text]
+        self.goal_stack.enqueue(goal_word_group)
+        goal_word_group_command_text = (
+            f"{self.push_goal_command()} {goal_word_group_text}"
+        )
+        self.commands.append(goal_word_group_command_text)
+
+    def set_current_word_group(self, word_group_text):
+        self.current_word_group.clear()
+        self.current_word_group.append(word_group_text)
+
+    @staticmethod
+    def word_group_command():
+        return ".wg"
+
+    @staticmethod
+    def push_goal_command():
+        return ".pg"
+
+    def append_word_group(self, word_group_text):
+        self.set_current_word_group(word_group_text)
+        word_group_command_text = f"{self.word_group_command()} {word_group_text}"
+        self.commands.append(word_group_command_text)
+
+    def write_commands_single_phrase_question_single_phrase_statement(self):
+
+        word_group_chunks = self.question.word_group_chunks_matching_sentence(
+            self.declarative_sentence
+        )
+
+        if len(word_group_chunks) == 1:
+            self.append_word_group(f"{' '.join(word_group_chunks[0])}")
+        elif len(word_group_chunks) > 1:
+            self.append_goal(f"{' '.join(word_group_chunks[0])}")
+            self.append_word_group(f"{' '.join(word_group_chunks[-1])}")
+
+    def write_commands_single_phrase_question_multi_phrase_statement(self):
+        phrases_and_word_group_chunks_for_question = (
+            self.declarative_sentence.phrases_and_word_group_chunks_for_question(
+                self.question
+            )
+        )
+
+        word_group_texts = []
+        for word_group_chunks in phrases_and_word_group_chunks_for_question.values():
+            for word_group_chunk in word_group_chunks:
+                word_group_text = " ".join(word_group_chunk)
+                word_group_texts.append(word_group_text)
+
+        last_text_index = len(word_group_texts) - 1
+        for index, word_group_text in enumerate(word_group_texts):
+            if index < last_text_index:
+                self.append_goal(f"{word_group_text}")
+            else:
+                self.append_word_group(f"{word_group_text}")
+
+    def write_commands_multi_phrase_question_single_phrase_statement(self):
+        for question_phrase in self.question.phrases[:-1]:
+            self.commands.append(f".sctx {question_phrase.text}")
+            word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
+                self.declarative_sentence
+            )
+            for word_group_chunk in word_group_chunks:
+                word_group_text = " ".join(word_group_chunk)
+                self.append_goal(f"{word_group_text}")
+
+        final_question_phrase = self.question.phrases[-1]
+        self.commands.append(f".sctx {final_question_phrase.text}")
+        word_group_chunks = final_question_phrase.word_group_chunks_matching_sentence(
+            self.declarative_sentence
+        )
+        if len(word_group_chunks) == 1:
+            self.append_word_group(f"{' '.join(word_group_chunks[0])}")
+        elif len(word_group_chunks) > 1:
+            self.append_goal(f"{' '.join(word_group_chunks[0])}")
+            self.append_word_group(f"{' '.join(word_group_chunks[-1])}")
+
+    def write_commands_multi_phrase_question_multi_phrase_statement(self):
+        last_phrase_index = len(self.question.phrases) - 1
+        for phrase_index, question_phrase in enumerate(self.question.phrases):
+            self.commands.append(f".sctx {question_phrase.text}")
+            declarative_context_word_group_chunks = []
+            for declarative_phrase in self.declarative_sentence.phrases:
+                word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
+                    declarative_phrase
+                )
+                declarative_context_word_group_chunks.extend(word_group_chunks)
+            for chunk_index, declarative_context_word_group_chunk in enumerate(
+                declarative_context_word_group_chunks
+            ):
+                word_group_text = " ".join(declarative_context_word_group_chunk)
+
+                if (
+                    phrase_index == last_phrase_index
+                    and chunk_index == len(declarative_context_word_group_chunks) - 1
+                ):
+                    self.append_word_group(f"{word_group_text}")
+                else:
+                    self.append_goal(f"{word_group_text}")
+
+    def write_question_commands_for_phrase(self, phrase, declarative_context):
+
+        declarative_phrases = declarative_context.phrases
+        first_declarative_context_phrase = declarative_phrases[0]
+        key_words = phrase.key_words()
+
+        self.commands.append(f".sctx {phrase.text}")
+        for word in key_words.split():
+            if word in first_declarative_context_phrase.text.split():
+                self.commands.append(f".wg {word}")
+                # remove the lookup word once it has been added to the commands
+                key_words = key_words.replace(word, "").strip()
+            # write a command to look up the first phrase in the lookup context
+            else:
+                self.commands.append(f".ph {first_declarative_context_phrase.text}")
+
+                for index, declarative_phrase in enumerate(declarative_phrases):
+                    if index == 0 or len(key_words) == 0:
+                        # ignore the first phrase in the lookup context as this has already been processed
+                        continue
+                    else:
+                        if word in declarative_phrase.text.split():
+                            self.commands.append(f".sctx {declarative_phrase.text}")
+                            self.commands.append(f".wg {word}")
+                            key_words = key_words.replace(word, "").strip()
+
+
+class ShortDeclarativeSentenceType:
+    @staticmethod
+    def write_question_commands_for_single_phrase_question(command_generator):
+        command_generator.write_commands_single_phrase_question_single_phrase_statement()
+
+    @staticmethod
+    def write_question_commands_for_multi_phrase_question(command_generator):
+        command_generator.write_commands_multi_phrase_question_single_phrase_statement(
+            command_generator.question, command_generator.declarative_sentence
+        )
+
+    @staticmethod
+    def write_answer_commands_for_long_answer(command_generator):
+        command_generator.write_commands_long_answer_multi_phrase_statement()
+
+    @staticmethod
+    def write_answer_commands_for_short_answer(command_generator):
+        command_generator.write_commands_short_answer_multi_phrase_statement()
+
+
+class LongDeclarativeSentenceType:
+
+    @staticmethod
+    def write_question_commands_for_single_phrase_question(command_generator):
+        command_generator.write_commands_single_phrase_question_multi_phrase_statement()
+
+    @staticmethod
+    def write_question_commands_for_multi_phrase_question(command_generator):
+        command_generator.write_commands_multi_phrase_question_multi_phrase_statement()
+
+    @staticmethod
+    def write_answer_commands_for_long_answer(command_generator):
+        command_generator.write_commands_long_answer_multi_phrase_statement()
+
+    @staticmethod
+    def write_answer_commands_for_short_answer(command_generator):
+        command_generator.write_commands_single_phrase_answer_multi_phrase_statement()
+
+
+class ShortQuestionType:
+
+    @staticmethod
+    def write_question(command_generator):
+        command_generator.append_question()
+
+    @staticmethod
+    def write_question_commands(command_generator):
+
+        command_generator.declarative_sentence_type.write_question_commands_for_single_phrase_question(
+            command_generator
+        )
+
+
+class LongQuestionType:
+
+    @staticmethod
+    def write_question(command_generator):
+        command_generator.append_question_phrases()
+
+    @staticmethod
+    def write_question_commands(command_generator):
+        command_generator.declarative_sentence_type.write_question_commands_for_multi_phrase_question(
+            command_generator
+        )
+
+
+class ShortAnswerType:
+
+    @staticmethod
+    def write_answer_commands(command_generator):
+
+        command_generator.declarative_sentence_type.write_answer_commands_for_short_answer(
+            command_generator
+        )
+
+
+class LongAnswerType:
+
+    @staticmethod
+    def write_answer_commands(command_generator):
+        command_generator.declarative_sentence_type.write_answer_commands_for_long_answer(
+            command_generator
+        )
+
+
+class AnnabellAbstractWordCollection:
+    def __init__(self, text):
+        self.text = text
+
+    @staticmethod
+    def max_words_per_word_group():
+        return 4
 
     @staticmethod
     def remove_stopwords(a_string):
@@ -340,133 +695,233 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         cleaned_string = a_string.replace("?", "").strip()
         return cleaned_string
 
-    def write_question_commands_for_single_phrase_context(self):
-        self.declarative_sentence_type.write_question_commands_for_single_phrase_question(
-            self
-        )
+    def key_words(self):
+        key_words = self.remove_stopwords(self.text)
+        key_words = self.remove_suffixes(key_words)
+        key_words = self.remove_question_mark(key_words)
+        return key_words
 
-    def write_commands_single_phrase_question_single_phrase_statement(
-        self, question, lookup_context
-    ):
-        key_words = self.key_words_in_phrase(question)
-        for word in key_words.split():
-            if word in lookup_context.split():
-                self.commands.append(f".wg {word}")
+    def words(self):
+        return self.text.split()
 
-    def write_commands_single_phrase_question_multi_phrase_statement(
-        self, question, lookup_context
-    ):
+    def key_words_in_phrase(self, sentence):
+        key_words = self.key_words().split()
+        # remove any key words that are not in the declarative sentence
+        key_words = [
+            word for word in key_words if word in sentence.key_words_for_phrase(self)
+        ]
+        return key_words
 
-        self.write_question_commands_for_phrase(question, lookup_context)
+    def word_group_chunks_matching_sentence(self, sentence):
+        word_group_chunks = []
+        # find any consecutive word groups in chunks of 4 that are in the sentence
+        key_words_in_sentence = self.key_words_in_phrase(sentence)
+        word_group = []
 
-    def write_commands_multi_phrase_question_single_phrase_statement(
-        self, question_context, lookup_context
-    ):
-        for phrase in self.phrases_in_context(question_context):
-            self.commands.append(f".sctx {phrase}")
-            for word in self.key_words_in_phrase(phrase).split():
-                if word in lookup_context.split():
-                    self.commands.append(f".wg {word}")
+        for index, word in enumerate(self.words()):
+            if word in key_words_in_sentence and len(word_group) == 0:
+                word_group.append(word)
+                key_words_in_sentence.remove(word)
+            elif 0 < len(word_group) < 4:
+                words_remaining_in_phrase_chunk = self.words()[
+                    index : index + (4 - len(word_group))
+                ]
+                any_key_words_in_phrase_chunk = any(
+                    w in key_words_in_sentence for w in words_remaining_in_phrase_chunk
+                )
+                proposed_word_group = word_group + [word]
+                if any_key_words_in_phrase_chunk and sentence.contains_word_group(
+                    proposed_word_group
+                ):
+                    word_group.append(word)
+                    if word in key_words_in_sentence:
+                        key_words_in_sentence.remove(word)
+                else:
+                    word_group_chunks.append(word_group)
+                    word_group = []
+                    if word in key_words_in_sentence:
+                        word_group.append(word)
+                        key_words_in_sentence.remove(word)
+                if len(word_group) == 4:
+                    word_group_chunks.append(word_group)
+                    word_group = []
+        if len(word_group) > 0:
+            word_group_chunks.append(word_group)
 
-    def write_commands_multi_phrase_question_multi_phrase_statement(
-        self, question_context, lookup_context
-    ):
-        for phrase in self.phrases_in_context(question_context):
-            self.commands.append(f".sctx {phrase}")
-            self.write_commands_single_phrase_question_multi_phrase_statement(
-                phrase, lookup_context
+        return word_group_chunks
+
+    def contains_word_group(self, word_group):
+        word_group_text = " ".join(word_group)
+        if word_group_text in self.text:
+            return True
+        else:
+            return False
+
+    def key_words_for_phrase(self, phrase):
+        return phrase.key_words_in_context(self)
+
+
+class AnnabellAbstractPhrase(AnnabellAbstractWordCollection):
+    def __init__(self, text, context):
+        super().__init__(text)
+        self.context = context
+
+    def key_words_in_context(self, context):
+        return context.key_words()
+
+
+class AnnabellQuestionPhrase(AnnabellAbstractPhrase):
+    pass
+
+
+class AnnabellDeclarativePhrase(AnnabellAbstractPhrase):
+    pass
+
+
+class AnnabellAnswerPhrase(AnnabellAbstractPhrase):
+    def key_words(self):
+        return self.text
+
+    def key_words_in_phrase(self, sentence):
+        return sentence.key_words_for_phrase(self)
+
+    def key_words_in_context(self, context):
+        key_words = []
+        answer_words_remaining = self.words().copy()
+
+        if " ".join(answer_words_remaining) in context.text:
+            key_words.extend(answer_words_remaining)
+        else:
+            for index, declarative_word in enumerate(context.words()):
+                if (
+                    declarative_word in answer_words_remaining
+                    and len(answer_words_remaining) > 1
+                    and index < len(context.words()) - 1
+                ):
+                    next_declarative_word = context.words()[index + 1]
+                    if next_declarative_word == answer_words_remaining[1]:
+                        key_words.append(declarative_word)
+                        key_words.append(next_declarative_word)
+                        answer_words_remaining.remove(declarative_word)
+                        answer_words_remaining.remove(next_declarative_word)
+                elif declarative_word in answer_words_remaining:
+                    key_words.append(declarative_word)
+                    answer_words_remaining.remove(declarative_word)
+        return key_words
+
+
+class AnnabellAbstractContext(AnnabellAbstractWordCollection):
+    def __init__(self, text, max_words_per_phrase):
+        super().__init__(text)
+        self.max_words_per_phrase = max_words_per_phrase
+        self.phrases = self.phrases_in_context()
+
+    def phrase_class(self):
+        raise NotImplementedError("Subclasses must implement phrase_class method")
+
+    def first_phrase(self):
+
+        return self.phrases[0]
+
+    def tail_phrases(self):
+        return self.phrases[1:]
+
+    def phrases_in_context(self):
+        phrases = []
+        context_words = self.text.split()
+        number_of_phrases = (
+            len(context_words) + self.max_words_per_phrase - 1
+        ) // self.max_words_per_phrase
+        for i in range(number_of_phrases):
+            phrase_words = context_words[
+                i * self.max_words_per_phrase : (i + 1) * self.max_words_per_phrase
+            ]
+            phrase_text = " ".join(phrase_words)
+            phrase = self.phrase_class()(phrase_text, self)
+            phrases.append(phrase)
+        return phrases
+
+    def word_group_chunks_matching_sentence(self, sentence):
+        word_group_chunks = []
+        for phrase in self.phrases:
+            word_group_chunks.extend(
+                phrase.word_group_chunks_matching_sentence(sentence)
             )
+        return word_group_chunks
 
-    def write_question_commands_for_long_context(
-        self, question_context, lookup_context
+
+class AnnabellQuestionContext(AnnabellAbstractContext):
+
+    def get_question_type(self):
+        if len(self.text.split()) > self.max_words_per_phrase:
+            return LongQuestionType()
+        else:
+            return ShortQuestionType()
+
+    def phrase_class(self):
+        return AnnabellQuestionPhrase
+
+
+class AnnabellDeclarativeContext(AnnabellAbstractContext):
+
+    def get_declarative_sentence_type(self):
+        if len(self.text.split()) > self.max_words_per_phrase:
+            return LongDeclarativeSentenceType()
+        else:
+            return ShortDeclarativeSentenceType()
+
+    def phrases_and_answer_words(self, answer_words):
+        # construct a dictionary that contains each phrase as the key and the list of words from the answer that are in that phrase as the value
+        phrase_answer_words = {}
+        for phrase in self.phrases:
+            phrase_answer_words[phrase] = []
+            for word in answer_words:
+                if word in phrase.text.split():
+                    phrase_answer_words[phrase].append(word)
+        return phrase_answer_words
+
+    def phrase_class(self):
+        return AnnabellDeclarativePhrase
+
+    def phrases_and_word_group_chunks_for_question(self, question_phrase):
+        phrases_and_word_group_chunks = {}
+        for phrase in self.phrases:
+            word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
+                phrase
+            )
+            phrases_and_word_group_chunks[phrase] = word_group_chunks
+        return phrases_and_word_group_chunks
+
+    # def key_words_for_phrase(self, phrase):
+    #    return phrase.key_words_in_context(self)
+
+
+class AnnabellAnswerContext(AnnabellAbstractContext):
+    def __init__(
+        self,
+        text,
     ):
-        # split the context into phrases of max_words length
-        for phrase in self.phrases_in_context(question_context):
-            self.write_question_commands_for_phrase(phrase, lookup_context)
+        super().__init__(text, max_words_per_phrase=None)
 
-    def write_question_commands_for_phrase(self, phrase, statement_context):
-        statement_phrases = self.phrases_in_context(statement_context)
-        first_lookup_context_phrase = statement_phrases[0]
-        key_words = self.key_words_in_phrase(phrase)
+    def get_answer_type(self):
+        if len(self.text.split()) > self.max_words_per_word_group():
+            return LongAnswerType()
+        else:
+            return ShortAnswerType()
 
-        self.commands.append(f".sctx {phrase}")
-        for word in key_words.split():
-            if word in first_lookup_context_phrase.split():
-                self.commands.append(f".wg {word}")
-                # remove the lookup word once it has been added to the commands
-                key_words = key_words.replace(word, "").strip()
-            # write a command to look up the first phrase in the lookup context
-            else:
-                self.commands.append(f".ph {first_lookup_context_phrase}")
+    def phrase_class(self):
+        return AnnabellAnswerPhrase
 
-                for index, statement_phrase in enumerate(statement_phrases):
-                    if index == 0 or len(key_words) == 0:
-                        # ignore the first phrase in the lookup context as this has already been processed
-                        continue
-                    else:
-                        if word in statement_phrase.split():
-                            self.commands.append(f".sctx {statement_phrase}")
-                            self.commands.append(f".wg {word}")
-                            key_words = key_words.replace(word, "").strip()
+    def word_group_chunks_matching_sentence(self, sentence):
+        word_group_chunks = []
+        for phrase in self.phrases:
+            word_group_chunks.extend(
+                phrase.word_group_chunks_matching_sentence(sentence)
+            )
+        return word_group_chunks
 
-
-class ShortDeclarativeSentenceType:
-    @staticmethod
-    def write_question_commands_for_single_phrase_question(command_generator):
-        command_generator.write_commands_single_phrase_question_single_phrase_statement(
-            command_generator.question, command_generator.declarative_sentence
-        )
-
-    @staticmethod
-    def write_question_commands_for_multi_phrase_question(command_generator):
-        command_generator.write_commands_multi_phrase_question_single_phrase_statement(
-            command_generator.question, command_generator.declarative_sentence
-        )
-
-    @staticmethod
-    def write_answer_commands(command_generator):
-        command_generator.write_short_answer_commands()
-
-
-class LongDeclarativeSentenceType:
-
-    @staticmethod
-    def write_question_commands_for_single_phrase_question(command_generator):
-        command_generator.write_commands_single_phrase_question_multi_phrase_statement(
-            command_generator.question, command_generator.declarative_sentence
-        )
-
-    @staticmethod
-    def write_question_commands_for_multi_phrase_question(command_generator):
-        command_generator.write_commands_multi_phrase_question_multi_phrase_statement(
-            command_generator.question, command_generator.declarative_sentence
-        )
-
-    @staticmethod
-    def write_answer_commands(command_generator):
-        command_generator.write_long_answer_commands()
-
-
-class ShortQuestionType:
-
-    @staticmethod
-    def write_question(command_generator):
-        command_generator.append_question()
-
-    @staticmethod
-    def write_question_commands(command_generator):
-
-        command_generator.write_question_commands_for_single_phrase_context()
-
-
-class LongQuestionType:
-
-    @staticmethod
-    def write_question(command_generator):
-        command_generator.append_question_phrases()
-
-    @staticmethod
-    def write_question_commands(command_generator):
-        command_generator.write_question_commands_for_long_context(
-            command_generator.question, command_generator.declarative_sentence
-        )
+    def phrases_in_context(self):
+        phrases = []
+        phrase = self.phrase_class()(self.text, self)
+        phrases.append(phrase)
+        return phrases
