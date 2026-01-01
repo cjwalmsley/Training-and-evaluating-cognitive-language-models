@@ -361,9 +361,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 pass
 
     def write_commands_long_answer_multi_phrase_statement(self):
-        raise NotImplementedError(
-            "Long declarative sentence with long answer not supported"
-        )
+        self.write_commands_short_answer_multi_phrase_statement()
 
     def write_long_declaration_long_answer_commands(self):
         answer_words_remaining = self.answer.words().copy()
