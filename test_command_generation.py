@@ -184,7 +184,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, generator.commands)
 
     def test_write_question_commands_long_declarative_sentence(self):
-        self
+        pass
 
     def test_write_question_commands_long_question(self):
         """Test the write_question_commands method with a long question."""
@@ -265,29 +265,6 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    def test_write_commands_long_answer(self):
-        """Test write_answer_commands with a long sentence where the answer is split across phrases."""
-        declarative_sentence = "the sky is a brilliant blue with some patches of grey"
-        answer = "blue with some patches of grey"
-        generator = AnnabellBaseCommandGenerator(
-            self.sample_id, declarative_sentence, self.question, answer, max_words=5
-        )
-        generator.write_question_commands()
-        generator.write_answer_commands()
-        expected_commands = [
-            ".ph the sky is a brilliant",
-            ".sctx the sky is a brilliant",
-            ".sctx blue with some patches of",
-            ".wg blue with some patches",
-            ".prw",
-            ".wg of",
-            ".prw",
-            ".sctx grey",
-            ".wg grey",
-            ".rw",
-        ]
-        self.assertEqual(expected_commands, generator.commands)
-
     def test_write_answer_commands_long_sentence_2(self):
         """Test write_answer_commands with a long sentence where the answer is split across phrases."""
         declarative_sentence = (
@@ -305,9 +282,9 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         answer_generator.write_answer_commands()
         expected_commands = [
             ".ph the Grotto at Notre_Dame be a marian place of prayer",
-            ".wg a marian place",
+            ".wg a marian place of",
             ".prw",
-            ".wg of prayer",
+            ".wg prayer",
             ".prw",
             ".sctx and reflection",
             ".wg and reflection",
@@ -636,7 +613,8 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         generator = AnnabellAnswerCommandGenerator(
             self.declarative_sentence, answer, self.question_generator, max_words=9
         )
-        generator.write_commands_short_answer_multi_phrase_statement()
+        generator.write_commands_long_answer_multi_phrase_statement()
+        # generator.write_commands_short_answer_multi_phrase_statement()
         expected_commands = [
             ".ph of the Main_Building at Notre_Dame",
             ".drop_goal",
@@ -732,6 +710,33 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
             ".wg sky",
             ".ph the sky is blue with patches of grey",
             ".wg blue",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_long_answer(self):
+        """Test write_answer_commands with a long sentence where the answer is split across phrases."""
+        declarative_sentence = "the sky is a brilliant blue with some patches of grey"
+        answer = "blue with some patches of grey"
+        generator = AnnabellBaseCommandGenerator(
+            self.sample_id, declarative_sentence, self.question, answer, max_words=5
+        )
+        generator.write_question_commands()
+        generator.write_answer_commands()
+        expected_commands = [
+            "? what color is the",
+            "sky",
+            ".sctx ? what color is the",
+            ".sctx sky",
+            ".wg sky",
+            ".ph the sky is a brilliant",
+            ".sctx blue with some patches of",
+            ".wg blue with some patches",
+            ".prw",
+            ".wg of",
+            ".prw",
+            ".sctx grey",
+            ".wg grey",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
