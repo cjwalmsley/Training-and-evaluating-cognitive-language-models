@@ -1,4 +1,6 @@
 import logging
+from operator import indexOf
+
 import nltk
 from nltk.corpus import stopwords
 from config.global_config import GlobalConfig
@@ -47,6 +49,14 @@ class AbstractAnnabellCommandGenerator:
         )
 
         self.commands = []
+
+    @staticmethod
+    def phrase_command():
+        return ".ph"
+
+    @staticmethod
+    def search_context_command():
+        return ".sctx"
 
     def create_list_of_commands(self):
         raise NotImplementedError(
@@ -305,8 +315,12 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
         return found_declarative_sentence
 
     def write_answer_words_in_chunk(
-        self, answer_words_remaining, answer_word_group_chunks
+        self, answer_words_remaining, answer_word_group_chunks, lookup_phrase=None
     ):
+        if lookup_phrase:
+            self.commands.append(
+                f"{self.search_context_command()} {lookup_phrase.text}"
+            )
         for index, word_group_chunk in enumerate(answer_word_group_chunks):
             if all(word in answer_words_remaining for word in word_group_chunk):
                 word_group_text = " ".join(word_group_chunk)
@@ -361,7 +375,53 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 pass
 
     def write_commands_long_answer_multi_phrase_statement(self):
-        self.write_commands_short_answer_multi_phrase_statement()
+        declarative_sentence, drop_goal = self.lookup_declarative_sentence()
+        self.commands.append(f".ph {declarative_sentence.text}")
+        if drop_goal:
+            self.commands.append(self.drop_goal_command())
+            self.question_generator.goal_stack.dequeue()
+        else:
+            pass
+
+        # check if any answer words are in the first
+        answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
+            declarative_sentence
+        )
+        self.write_answer_words_in_chunk(
+            self.answer.answer_words_remaining, answer_word_group_chunks
+        )
+
+        if self.question_generator.goal_stack.is_empty():
+            # check the remaining declarative sentences for any remaining answer words
+            for declarative_phrase in self.declarative_sentence.tail_phrases():
+                answer_word_group_chunks = (
+                    self.answer.word_group_chunks_matching_sentence(declarative_phrase)
+                )
+                self.write_answer_words_in_chunk(
+                    self.answer.answer_words_remaining,
+                    answer_word_group_chunks,
+                    lookup_phrase=declarative_phrase,
+                )
+
+        # using the goal stack lookup remaining sentences and check them for remaining answer words
+        while not self.question_generator.goal_stack.is_empty():
+            current_goal = self.question_generator.goal_stack.dequeue()
+            found_declarative_sentence = (
+                self.lookup_declarative_sentence_with_word_group(current_goal)
+            )
+            if found_declarative_sentence:
+                self.commands.append(f".ph {found_declarative_sentence.text}")
+                self.commands.append(f".drop_goal")
+                answer_word_group_chunks = (
+                    self.answer.word_group_chunks_matching_sentence(
+                        found_declarative_sentence
+                    )
+                )
+                self.write_answer_words_in_chunk(
+                    self.answer.answer_words_remaining, answer_word_group_chunks
+                )
+            else:
+                pass
 
     def write_long_declaration_long_answer_commands(self):
         answer_words_remaining = self.answer.words().copy()
@@ -683,6 +743,11 @@ class AnnabellAbstractWordCollection:
         return cleaned_string
 
     @staticmethod
+    def is_stopword(a_word):
+        stop_words = set(stopwords.words("english"))
+        return a_word in stop_words
+
+    @staticmethod
     def remove_suffixes(a_string):
         # remove any words prefixed with "-"
         words = a_string.split()
@@ -779,34 +844,69 @@ class AnnabellDeclarativePhrase(AnnabellAbstractPhrase):
 
 
 class AnnabellAnswerPhrase(AnnabellAbstractPhrase):
+    def __init__(self, text, context):
+        super().__init__(text, context)
+
+    def answer_words_remaining(self):
+        return self.context.answer_words_remaining
+
     def key_words(self):
         return self.text
 
     def key_words_in_phrase(self, sentence):
         return sentence.key_words_for_phrase(self)
 
+    @staticmethod
+    def common_consecutive_words(text1, text2):
+        words1 = text1.split()
+        words2 = text2.split()
+        common_words = []
+        for word in words1:
+            candidate_words = common_words + [word]
+            candidate_phrase = " ".join(candidate_words)
+            if candidate_phrase in text2 and word in words2:
+                common_words.append(word)
+            else:
+                break
+        return common_words
+
     def key_words_in_context(self, context):
         key_words = []
-        answer_words_remaining = self.words().copy()
+        answer_words_in_context = []
+        candidate_answer_words_in_context = self.common_consecutive_words(
+            " ".join(self.answer_words_remaining()), context.text
+        )
+        # only include the answer word in the context if the next answer word is also in the context
+        if len(candidate_answer_words_in_context) == 1:
+            if indexOf(
+                context.text.split(), candidate_answer_words_in_context[0]
+            ) == len(context.words()) - 1 or not self.is_stopword(
+                candidate_answer_words_in_context[0]
+            ):
+                answer_words_in_context.extend(candidate_answer_words_in_context)
+            else:
+                pass
+        else:
+            answer_words_in_context.extend(candidate_answer_words_in_context)
 
-        if " ".join(answer_words_remaining) in context.text:
-            key_words.extend(answer_words_remaining)
+        if " ".join(answer_words_in_context) in context.text:
+            key_words.extend(answer_words_in_context)
         else:
             for index, declarative_word in enumerate(context.words()):
                 if (
-                    declarative_word in answer_words_remaining
-                    and len(answer_words_remaining) > 1
+                    declarative_word in answer_words_in_context
+                    and len(answer_words_in_context) > 1
                     and index < len(context.words()) - 1
                 ):
                     next_declarative_word = context.words()[index + 1]
-                    if next_declarative_word == answer_words_remaining[1]:
+                    if next_declarative_word == answer_words_in_context[1]:
                         key_words.append(declarative_word)
                         key_words.append(next_declarative_word)
-                        answer_words_remaining.remove(declarative_word)
-                        answer_words_remaining.remove(next_declarative_word)
-                elif declarative_word in answer_words_remaining:
+                        answer_words_in_context.remove(declarative_word)
+                        answer_words_in_context.remove(next_declarative_word)
+                elif declarative_word in answer_words_in_context:
                     key_words.append(declarative_word)
-                    answer_words_remaining.remove(declarative_word)
+                    answer_words_in_context.remove(declarative_word)
         return key_words
 
 
@@ -902,6 +1002,7 @@ class AnnabellAnswerContext(AnnabellAbstractContext):
         text,
     ):
         super().__init__(text, max_words_per_phrase=None)
+        self.answer_words_remaining = self.words().copy()
 
     def get_answer_type(self):
         if len(self.text.split()) > self.max_words_per_word_group():
