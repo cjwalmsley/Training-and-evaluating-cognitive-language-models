@@ -337,42 +337,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
         return ".drop_goal"
 
     def write_commands_short_answer_multi_phrase_statement(self):
-        answer_words_remaining = self.answer.words().copy()
-        declarative_sentence, drop_goal = self.lookup_declarative_sentence()
-        self.commands.append(f".ph {declarative_sentence.text}")
-        if drop_goal:
-            self.commands.append(self.drop_goal_command())
-            self.question_generator.goal_stack.dequeue()
-        else:
-            pass
-
-        # check if any answer words are in the first
-        answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
-            declarative_sentence
-        )
-        self.write_answer_words_in_chunk(
-            answer_words_remaining, answer_word_group_chunks
-        )
-
-        # using the goal stack lookup remaining sentences and check them for remaining answer words
-        while not self.question_generator.goal_stack.is_empty():
-            current_goal = self.question_generator.goal_stack.dequeue()
-            found_declarative_sentence = (
-                self.lookup_declarative_sentence_with_word_group(current_goal)
-            )
-            if found_declarative_sentence:
-                self.commands.append(f".ph {found_declarative_sentence.text}")
-                self.commands.append(f".drop_goal")
-                answer_word_group_chunks = (
-                    self.answer.word_group_chunks_matching_sentence(
-                        found_declarative_sentence
-                    )
-                )
-                self.write_answer_words_in_chunk(
-                    answer_words_remaining, answer_word_group_chunks
-                )
-            else:
-                pass
+        self.write_commands_long_answer_multi_phrase_statement()
 
     def write_commands_long_answer_multi_phrase_statement(self):
         declarative_sentence, drop_goal = self.lookup_declarative_sentence()
@@ -674,7 +639,7 @@ class LongDeclarativeSentenceType:
 
     @staticmethod
     def write_answer_commands_for_short_answer(command_generator):
-        command_generator.write_commands_single_phrase_answer_multi_phrase_statement()
+        command_generator.write_commands_long_answer_multi_phrase_statement()
 
 
 class ShortQuestionType:
