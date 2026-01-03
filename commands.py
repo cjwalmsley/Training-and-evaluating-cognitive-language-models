@@ -128,6 +128,10 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
     def informational_non_pretraining_command():
         return "# This is a non-pretraining sample. No commands to execute."
 
+    @staticmethod
+    def error_generating_pretraining_command():
+        return "# There was an error generating commands for this pre-training sample."
+
     def write_question_commands(self):
         self.question_command_generator.write_commands()
         self.commands.extend(self.question_command_generator.commands)
@@ -140,21 +144,28 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
         self.commands.append("#id: " + str(self.sample_id))
 
     def create_list_of_commands(self):
+        try:
+            self.commands = []
 
-        self.commands = []
+            if self.is_pre_training:
+                self.write_sample_id()
+                self.write_declarative_sentence()
+                # add a blank line to terminate the context
+                self.commands.append(self.blank_line())
+                self.write_question_commands()
+                self.write_answer_commands()
+                # add a blank line to terminate the context
+                self.commands.append(self.blank_line())
+            else:
+                self.commands.append(self.informational_non_pretraining_command())
+            return self.commands
+        except Exception as e:
+            logger.error(
+                f"Error creating commands for sample {self.sample_id}: {e} Declarative sentence: '{self.declarative_sentence.text}' Question: '{self.question}' Answer: '{self.answer}"
+            )
+            self.commands.append(self.error_generating_pretraining_command())
 
-        if self.is_pre_training:
-            self.write_sample_id()
-            self.write_declarative_sentence()
-            # add a blank line to terminate the context
-            self.commands.append(self.blank_line())
-            self.write_question_commands()
-            self.write_answer_commands()
-            # add a blank line to terminate the context
-            self.commands.append(self.blank_line())
-        else:
-            self.commands.append(self.informational_non_pretraining_command())
-        return self.commands
+            return []
 
 
 class AnnabellTestingCommandGenerator(AnnabellBaseCommandGenerator):
@@ -736,7 +747,7 @@ class AnnabellAbstractWordCollection:
 
     def key_words_in_phrase(self, sentence):
         key_words = self.key_words().split()
-        # remove any key words that are not in the declarative sentence
+        # remove any keywords that are not in the declarative sentence
         key_words = [
             word for word in key_words if word in sentence.key_words_for_phrase(self)
         ]

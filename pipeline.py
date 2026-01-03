@@ -16,6 +16,7 @@ from config.global_config import GlobalConfig
 import logging
 import pandas as pd
 import argparse
+import os
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -148,6 +149,9 @@ class Pipeline:
         self.datasetPreProcessor.select_pretraining_data(
             global_config.percentage_of_pre_training_samples()
         )
+        self.save_prepared_dataset(
+            global_config.prepared_dataset_pre_commands_filename()
+        )
         self.datasetPreProcessor.create_commands_for_pretraining()
         logger.info("Generation of pre-training data completed.")
 
@@ -177,16 +181,20 @@ class Pipeline:
         )
         logger.info("Categorisation of statements completed.")
 
-    def save_prepared_dataset(self):
+    def save_prepared_dataset(self, filename=None):
+        if filename is None:
+            filepath = global_config.prepared_dataset_with_commands_filepath()
+        else:
+            filepath = os.path.join(
+                global_config.prepared_dataset_directory(), filename
+            )
 
         self.declarative_sentences_dataset.to_json(
-            global_config.prepared_dataset_with_commands_filepath(),
+            filepath,
             orient="records",
             lines=True,
         )
-        logger.info(
-            f"dataset saved to file: {global_config.prepared_dataset_with_commands_filepath()}"
-        )
+        logger.info(f"dataset saved to file: {filepath}")
 
 
 def main():

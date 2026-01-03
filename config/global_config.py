@@ -439,13 +439,6 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.categorised_questions_filename,
         )
 
-    def prepared_dataset_with_commands_filepath(self) -> str:
-
-        return os.path.join(
-            self.prepared_dataset_directory(),
-            self.settings.file_locations.prepared_dataset_with_commands_filename,
-        )
-
     def categorised_statements_filepath(self) -> str:
 
         return os.path.join(
@@ -639,6 +632,9 @@ class GlobalConfig(metaclass=SingletonMeta):
     def prepared_dataset_with_commands_filename(self):
         return self.settings.file_locations.prepared_dataset_with_commands_filename
 
+    def prepared_dataset_pre_commands_filename(self):
+        return self.settings.file_locations.prepared_dataset_pre_commands_filename
+
     def percentage_of_pre_training_samples(self) -> float:
 
         return self.settings.experiments.percentage_of_pretraining_samples
@@ -736,4 +732,3 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.docker_training_directory(),
             self.training_weights_filename(),
         )
-        pass

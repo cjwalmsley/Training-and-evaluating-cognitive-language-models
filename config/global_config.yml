@@ -40,6 +40,7 @@ file_locations:
   categorised_questions_filename: "llm_question_categorisation_results.jsonl"
   categorised_statements_filename: "llm_sentence_categorisation_results.jsonl"
   prepared_dataset_with_commands_filename: "nyc_squad_with_pretraining_commands.jsonl"
+  prepared_dataset_pre_commands_filename: "nyc_squad_without_pretraining_commands.jsonl"
   classify_sentence_prompt_part_1_filename: "classify_sentence_prompt_part_1.txt"
   classify_sentence_prompt_part_2_filename: "classify_sentence_prompt_part_2.txt"
   sentence_patterns_filename: "sentence_patterns.jsonl"

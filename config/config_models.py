@@ -50,6 +50,7 @@ class FileLocations(BaseModel):
     categorised_questions_filename: str
     categorised_statements_filename: str
     prepared_dataset_with_commands_filename: str
+    prepared_dataset_pre_commands_filename: str
     classify_sentence_prompt_part_1_filename: str
     classify_sentence_prompt_part_2_filename: str
     sentence_patterns_filename: str
