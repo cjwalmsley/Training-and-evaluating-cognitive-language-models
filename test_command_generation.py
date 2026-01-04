@@ -742,5 +742,9 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, generator.commands)
 
 
+# todo write test case for this example
+"""2026-01-04 18:21:01,135 - commands - INFO - Multiple declarative sentences found for lookup word group: [], checking goal stack for disambiguation.
+2026-01-04 18:21:01,135 - commands - ERROR - Error creating commands for sample 5733be284776f4190066117e: 'AnnabellDeclarativePhrase' object has no attribute 'contains' Declarative sentence: 'a golden statue of the virgin mary sit on top of the main building at notre_dame' Question: '? what sit on top of the Main_Building at Notre_Dame' Answer: 'a golden statue of the Virgin Mary"""
+
 if __name__ == "__main__":
     unittest.main(argv=["first-arg-is-ignored"], exit=False)
