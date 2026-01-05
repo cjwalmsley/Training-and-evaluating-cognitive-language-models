@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
 
 
+class MissingAnswerWordsException(Exception):
+    pass
+
+
 class LIFOQueue:
     def __init__(self):
         self._items = deque()
@@ -399,6 +403,11 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 )
             else:
                 pass
+        if len(self.answer.answer_words_remaining) != 0:
+            # if there are still answer words remaining, raise an exception
+            error_msg = f"Not all answer words were found in the declarative sentence. missing answer words: {self.answer.answer_words_remaining}"
+            logger.critical(error_msg)
+            raise MissingAnswerWordsException(error_msg)
 
     def write_long_declaration_long_answer_commands(self):
         answer_words_remaining = self.answer.words().copy()
@@ -462,10 +471,37 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         max_words,
     ):
         super().__init__(declarative_sentence, max_words)
+        self.candidate_question_phrases_and_word_groups = {}
         self.question = AnnabellQuestionContext(question, max_words)
         self.question_type = self.question.get_question_type()
         self.current_word_group = []
         self.goal_stack = AnnabellGoalStack()
+
+    def reset_candidate_question_phrases_and_word_groups(self):
+        self.candidate_question_phrases_and_word_groups = {}
+
+    def last_phrase_index(self):
+        return len(self.question.phrases) - 1
+
+    def write_commands_from_candidate_question_phrases_and_word_groups(self):
+        for phrase_index, (
+            question_phrase,
+            declarative_context_word_group_chunks,
+        ) in enumerate(self.candidate_question_phrases_and_word_groups.items()):
+            self.commands.append(f".sctx {question_phrase.text}")
+            for chunk_index, declarative_context_word_group_chunk in enumerate(
+                declarative_context_word_group_chunks
+            ):
+                word_group_text = " ".join(declarative_context_word_group_chunk)
+
+                if (
+                    phrase_index
+                    == len(self.candidate_question_phrases_and_word_groups) - 1
+                    and chunk_index == len(declarative_context_word_group_chunks) - 1
+                ):
+                    self.append_word_group(f"{word_group_text}")
+                else:
+                    self.append_goal(f"{word_group_text}")
 
     def write_commands(self):
         self.commands = []
@@ -566,27 +602,22 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             self.append_word_group(f"{' '.join(word_group_chunks[-1])}")
 
     def write_commands_multi_phrase_question_multi_phrase_statement(self):
-        last_phrase_index = len(self.question.phrases) - 1
+        self.reset_candidate_question_phrases_and_word_groups()
         for phrase_index, question_phrase in enumerate(self.question.phrases):
-            self.commands.append(f".sctx {question_phrase.text}")
+
             declarative_context_word_group_chunks = []
             for declarative_phrase in self.declarative_sentence.phrases:
                 word_group_chunks = question_phrase.word_group_chunks_matching_sentence(
                     declarative_phrase
                 )
                 declarative_context_word_group_chunks.extend(word_group_chunks)
-            for chunk_index, declarative_context_word_group_chunk in enumerate(
-                declarative_context_word_group_chunks
-            ):
-                word_group_text = " ".join(declarative_context_word_group_chunk)
-
-                if (
-                    phrase_index == last_phrase_index
-                    and chunk_index == len(declarative_context_word_group_chunks) - 1
-                ):
-                    self.append_word_group(f"{word_group_text}")
-                else:
-                    self.append_goal(f"{word_group_text}")
+            if len(declarative_context_word_group_chunks) == 0:
+                pass
+            else:
+                self.candidate_question_phrases_and_word_groups[question_phrase] = (
+                    declarative_context_word_group_chunks
+                )
+        self.write_commands_from_candidate_question_phrases_and_word_groups()
 
     def write_question_commands_for_phrase(self, phrase, declarative_context):
 
@@ -622,9 +653,7 @@ class ShortDeclarativeSentenceType:
 
     @staticmethod
     def write_question_commands_for_multi_phrase_question(command_generator):
-        command_generator.write_commands_multi_phrase_question_single_phrase_statement(
-            command_generator.question, command_generator.declarative_sentence
-        )
+        command_generator.write_commands_multi_phrase_question_single_phrase_statement()
 
     @staticmethod
     def write_answer_commands_for_long_answer(command_generator):

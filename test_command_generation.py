@@ -12,6 +12,7 @@ from commands import (
     AnnabellAnswerContext,
     AnnabellAnswerCommandGenerator,
     LIFOQueue,
+    MissingAnswerWordsException,
 )
 
 
@@ -124,7 +125,6 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what color is the",
             "sky",
-            ".sctx ? what color is the",
             ".sctx sky",
             ".wg sky",
         ]
@@ -180,7 +180,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             self.declarative_sentence, self.question, max_words=5
         )
         generator.write_question_commands()
-        expected_commands = [".sctx ? what color is the", ".sctx sky", ".wg sky"]
+        expected_commands = [".sctx sky", ".wg sky"]
         self.assertEqual(expected_commands, generator.commands)
 
     def test_write_question_commands_long_declarative_sentence(self):
@@ -516,6 +516,32 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
+    def test_write_commands_multi_phrase_question_single_phrase_statement2(
+        self,
+    ):
+
+        declarative_sentence = (
+            "Beyonce have sell over 118_million record throughout the world"
+        )
+        question = "? how many record have Beyonce sell throughout the world"
+        # answer = "over 118_million"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? how many record have Beyonce sell throughout the",
+            "world",
+            ".sctx ? how many record have Beyonce sell throughout the",
+            ".pg many record",
+            ".pg Beyonce sell throughout",
+            ".wg world",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    """2026-01-04 21:35:20,167 - commands - ERROR - Error creating commands for sample 56d4eb762ccc5a1400d8334f: AnnabellQuestionCommandGenerator.write_commands_multi_phrase_question_single_phrase_statement() takes 1 positional argument but 3 were given Declarative sentence: 'Beyonce have sell over 118_million record throughout the world' Question: '? how many record have Beyonce sell throughout the world' Answer: 'over 118_million"""
+
     def test_write_commands_multi_phrase_question_multi_phrase_statement(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
@@ -531,6 +557,27 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             ".wg Notre_Dame",
         ]
         self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement2(
+        self,
+    ):
+
+        declarative_sentence = "a golden statue of the virgin mary sit on top of the main building at notre_dame"
+        question = "? what sit on top of the Main_Building at Notre_Dame"
+        # answer = "a golden statue of the Virgin Mary"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? what sit on top of the Main_Building at",
+            "Notre_Dame",
+            ".sctx ? what sit on top of the Main_Building at",
+            ".pg sit",
+            ".wg top",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
 
 
 class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
@@ -569,9 +616,11 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         self.assertEqual(context.text, answer)
 
     def test_write_commands_short_answer_single_phrase_statement(self):
-        question = "? what sit on top of the Main_Building"
-        declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
-        answer = "a golden statue"
+        question = "? how many record have Beyonce sell throughout the world"
+        declarative_sentence = (
+            "Beyonce have sell over 118_million record throughout the world"
+        )
+        answer = "over 118_million"
         question_generator = AnnabellQuestionCommandGenerator(
             declarative_sentence, question, max_words=9
         )
@@ -580,8 +629,12 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_commands_short_answer_single_phrase_statement()
         expected_commands = [
-            ".ph a golden statue of the Virgin_Mary sit on top",
-            ".wg a golden statue",
+            ".ph Beyonce have sell over 118_million record throughout the world",
+            ".drop_goal",
+            ".drop_goal",
+            ".drop_goal",
+            ".drop_goal",
+            ".wg 118_million record",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
@@ -646,6 +699,23 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_long_answer_multi_phrase_statement_no_matching_word_group(
+        self,
+    ):
+
+        declarative_sentence = "a golden statue of the virgin mary sit on top of the main building at notre_dame"
+        question = "? what sit on top of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin Mary"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, max_words=9
+        )
+        question_generator.write_commands()
+        answer_generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        with self.assertRaises(MissingAnswerWordsException):
+            answer_generator.write_commands_long_answer_multi_phrase_statement()
 
 
 class TestAnnabellBaseCommandGenerator(unittest.TestCase):
@@ -726,7 +796,6 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what color is the",
             "sky",
-            ".sctx ? what color is the",
             ".sctx sky",
             ".wg sky",
             ".ph the sky is a brilliant",
@@ -743,8 +812,6 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
 
 
 # todo write test case for this example
-"""2026-01-04 18:21:01,135 - commands - INFO - Multiple declarative sentences found for lookup word group: [], checking goal stack for disambiguation.
-2026-01-04 18:21:01,135 - commands - ERROR - Error creating commands for sample 5733be284776f4190066117e: 'AnnabellDeclarativePhrase' object has no attribute 'contains' Declarative sentence: 'a golden statue of the virgin mary sit on top of the main building at notre_dame' Question: '? what sit on top of the Main_Building at Notre_Dame' Answer: 'a golden statue of the Virgin Mary"""
 
 """2026-01-04 21:35:20,167 - commands - ERROR - Error creating commands for sample 56d4eb762ccc5a1400d8334f: AnnabellQuestionCommandGenerator.write_commands_multi_phrase_question_single_phrase_statement() takes 1 positional argument but 3 were given Declarative sentence: 'Beyonce have sell over 118_million record throughout the world' Question: '? how many record have Beyonce sell throughout the world' Answer: 'over 118_million"""
 
