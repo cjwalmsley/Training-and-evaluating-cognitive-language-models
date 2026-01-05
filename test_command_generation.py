@@ -746,5 +746,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
 """2026-01-04 18:21:01,135 - commands - INFO - Multiple declarative sentences found for lookup word group: [], checking goal stack for disambiguation.
 2026-01-04 18:21:01,135 - commands - ERROR - Error creating commands for sample 5733be284776f4190066117e: 'AnnabellDeclarativePhrase' object has no attribute 'contains' Declarative sentence: 'a golden statue of the virgin mary sit on top of the main building at notre_dame' Question: '? what sit on top of the Main_Building at Notre_Dame' Answer: 'a golden statue of the Virgin Mary"""
 
+"""2026-01-04 21:35:20,167 - commands - ERROR - Error creating commands for sample 56d4eb762ccc5a1400d8334f: AnnabellQuestionCommandGenerator.write_commands_multi_phrase_question_single_phrase_statement() takes 1 positional argument but 3 were given Declarative sentence: 'Beyonce have sell over 118_million record throughout the world' Question: '? how many record have Beyonce sell throughout the world' Answer: 'over 118_million"""
+
 if __name__ == "__main__":
     unittest.main(argv=["first-arg-is-ignored"], exit=False)

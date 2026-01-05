@@ -55,7 +55,7 @@ experiments:
   maximum_number_of_words: 50
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 10
+  number_of_training_samples: 1000
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
 

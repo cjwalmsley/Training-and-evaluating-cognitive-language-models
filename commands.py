@@ -163,9 +163,10 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
             logger.error(
                 f"Error creating commands for sample {self.sample_id}: {e} Declarative sentence: '{self.declarative_sentence.text}' Question: '{self.question}' Answer: '{self.answer}"
             )
+            self.commands = []
             self.commands.append(self.error_generating_pretraining_command())
 
-            return []
+        return self.commands
 
 
 class AnnabellTestingCommandGenerator(AnnabellBaseCommandGenerator):
