@@ -467,7 +467,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         generator = AnnabellQuestionCommandGenerator(
             declarative_sentence, question, max_words=14
         )
-        generator.write_commands_single_phrase_question_single_phrase_statement()
+        generator.write_question_commands()
         expected_commands = [
             ".pg sit on top",
             ".wg Main_Building at Notre_Dame",
@@ -498,6 +498,19 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
+    def test_write_commands_single_phrase_question_single_phrase_statement(self):
+        declarative_sentence = "Notre_Dames_Juggler be publish twice"
+        question = "? how often be Notre_Dames the Juggler publish"
+        answer = "twice"
+        generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, max_words=9
+        )
+        generator.write_question_commands()
+        expected_commands = [
+            ".wg publish",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
     def test_write_commands_multi_phrase_question_single_phrase_statement(self):
         declarative_sentence = (
             "Virgin_Mary sit on top of the Main_Building at Notre_Dame"
@@ -506,7 +519,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         generator = AnnabellQuestionCommandGenerator(
             declarative_sentence, question, max_words=9
         )
-        generator.write_commands_multi_phrase_question_single_phrase_statement()
+        generator.write_question_commands()
         expected_commands = [
             ".sctx ? what sit on top of the Main_Building at",
             ".pg sit on top",
@@ -533,14 +546,15 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             "? how many record have Beyonce sell throughout the",
             "world",
             ".sctx ? how many record have Beyonce sell throughout the",
-            ".pg many record",
-            ".pg Beyonce sell throughout",
+            ".pg record",
+            ".pg Beyonce",
+            ".pg sell",
+            ".pg throughout",
+            ".sctx world",
             ".wg world",
         ]
 
         self.assertEqual(expected_commands, question_generator.commands)
-
-    """2026-01-04 21:35:20,167 - commands - ERROR - Error creating commands for sample 56d4eb762ccc5a1400d8334f: AnnabellQuestionCommandGenerator.write_commands_multi_phrase_question_single_phrase_statement() takes 1 positional argument but 3 were given Declarative sentence: 'Beyonce have sell over 118_million record throughout the world' Question: '? how many record have Beyonce sell throughout the world' Answer: 'over 118_million"""
 
     def test_write_commands_multi_phrase_question_multi_phrase_statement(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
@@ -624,17 +638,18 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         question_generator = AnnabellQuestionCommandGenerator(
             declarative_sentence, question, max_words=9
         )
+        question_generator.write_commands()
         generator = AnnabellAnswerCommandGenerator(
             declarative_sentence, answer, question_generator, max_words=9
         )
-        generator.write_commands_short_answer_single_phrase_statement()
+        generator.write_answer_commands()
         expected_commands = [
             ".ph Beyonce have sell over 118_million record throughout the world",
             ".drop_goal",
             ".drop_goal",
             ".drop_goal",
             ".drop_goal",
-            ".wg 118_million record",
+            ".wg over 118_million",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
@@ -810,10 +825,6 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-
-# todo write test case for this example
-
-"""2026-01-04 21:35:20,167 - commands - ERROR - Error creating commands for sample 56d4eb762ccc5a1400d8334f: AnnabellQuestionCommandGenerator.write_commands_multi_phrase_question_single_phrase_statement() takes 1 positional argument but 3 were given Declarative sentence: 'Beyonce have sell over 118_million record throughout the world' Question: '? how many record have Beyonce sell throughout the world' Answer: 'over 118_million"""
 
 if __name__ == "__main__":
     unittest.main(argv=["first-arg-is-ignored"], exit=False)
