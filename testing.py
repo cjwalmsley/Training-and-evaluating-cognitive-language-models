@@ -238,7 +238,7 @@ class AnnabellTestResultsEvaluator:
         )
         logger.info(
             "percentage of total: "
-            + str(self.percentage_of_answers_below_cosine_distance_threshold)
+            + str(self.percentage_of_answers_below_cosine_distance_threshold())
             + " %"
         )
 

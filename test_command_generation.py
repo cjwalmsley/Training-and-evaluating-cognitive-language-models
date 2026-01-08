@@ -826,5 +826,33 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, generator.commands)
 
 
+# todo add test case for the following - 2026-01-08 10:28:43,739 - commands - ERROR - Error creating commands for sample 5733bf84d058e614000b61c0: Not all answer words were found in the declarative sentence. missing answer words: ['the', 'Observer'] Declarative sentence: 'the daily student paper at Notre_Dame be call the Observer' Question: '? what be the daily student paper at Notre_Dame call' Answer: 'the Observer
+
+"""#id: 5733a6424776f41900660f4f
+before the creation of the College_of_Engineering similar study be
+carry out at the College_of_Science
+
+ >>> End context
+
+ >>> End context
+? before the creation of the College_of_Engineering similar study
+be carry out at which Notre_Dame college"""
+
+"""#id: 5733a70c4776f41900660f64
+? what entity provide help with the management of
+time for new student at Notre_Dame
+.x
+ -> management
+.
+management
+#END OF TESTING SAMPLE"""
+
+"""#id: 5733a6424776f41900660f50
+? how many department be within the Stinson -
+Remick Hall of Engineering
+.x
+
+#END OF TESTING SAMPLE"""
+
 if __name__ == "__main__":
     unittest.main(argv=["first-arg-is-ignored"], exit=False)
