@@ -119,7 +119,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
     def test_write_question_commands_for_phrase(self):
         """Test the write_question_commands_for_phrase method."""
         generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, max_words=5
+            self.declarative_sentence, self.question, self.short_answer, max_words=5
         )
         generator.write_commands()
         expected_commands = [
@@ -135,6 +135,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         generator = AnnabellQuestionCommandGenerator(
             self.long_declarative_sentence,
             self.long_question,
+            self.short_answer,
             max_words=5,
         )
 
@@ -158,10 +159,12 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
 
         question = "? what sit on top of the_Main_Building at Notre_Dame"
         declarative_sentence = "a golden statue of the_Virgin_Mary sit on top of the_Main_Building at Notre_Dame"
+        answer = "a golden statue of the_Virgin_Mary"
 
         generator = AnnabellQuestionCommandGenerator(
             declarative_sentence,
             question,
+            answer,
             max_words=10,
         )
         generator.write_question_commands()
@@ -177,7 +180,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
     def test_write_question_commands_short_question(self):
         """Test the write_question_commands method with a short question."""
         generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, max_words=5
+            self.declarative_sentence, self.question, self.short_answer, max_words=5
         )
         generator.write_question_commands()
         expected_commands = [".sctx sky", ".wg sky"]
@@ -191,6 +194,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         generator = AnnabellQuestionCommandGenerator(
             self.long_declarative_sentence,
             self.long_question,
+            self.short_answer,
             max_words=5,
         )
 
@@ -218,7 +222,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
     def test_write_question(self):
         """Test the write_question method with a short question."""
         generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, max_words=5
+            self.declarative_sentence, self.question, self.short_answer, max_words=5
         )
 
         expected_commands = ["? what color is the", "sky"]
@@ -227,7 +231,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         self.assertEqual(generator.commands, expected_commands)
 
         generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, max_words=6
+            self.declarative_sentence, self.question, self.short_answer, max_words=6
         )
 
         expected_commands = ["? what color is the sky"]
@@ -240,6 +244,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         generator = AnnabellQuestionCommandGenerator(
             self.declarative_sentence,
             self.long_question,
+            self.short_answer,
             max_words=5,
         )
         generator.write_question()
@@ -273,7 +278,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         question = "? what is the grotto at Notre_Dame"
         answer = "a marian place of prayer and reflection"
         question_generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=10
+            declarative_sentence, question, answer, max_words=10
         )
         question_generator.write_commands()
         answer_generator = AnnabellAnswerCommandGenerator(
@@ -426,8 +431,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def setUp(self):
         self.declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         self.question = "? what sit on top of the Main_Building at Notre_Dame"
+        self.answer = "a golden statue of the Virgin_Mary"
         self.generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, max_words=9
+            self.declarative_sentence, self.question, self.answer, max_words=9
         )
 
     def test_goal_stack_is_correct(self):
@@ -445,8 +451,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def test_write_long_question_long_declaration_commands(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin_Mary"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         generator.write_commands()
 
@@ -464,8 +471,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def test_write_short_question_short_declaration_commands(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin_Mary"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=14
+            declarative_sentence, question, answer, max_words=14
         )
         generator.write_question_commands()
         expected_commands = [
@@ -476,8 +484,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
         question = "? what sit on top of the Main_Building at"
+        answer = "a golden statue of the Virgin_Mary"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         generator.write_commands_single_phrase_question_single_phrase_statement()
         expected_commands = [
@@ -488,11 +497,13 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def test_write_commands_single_phrase_question_multi_phrase_statement(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin_Mary"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=10
+            declarative_sentence, question, answer, max_words=10
         )
-        generator.write_commands_single_phrase_question_multi_phrase_statement()
+        generator.write_commands()
         expected_commands = [
+            "? what sit on top of the Main_Building at Notre_Dame",
             ".pg sit on top",
             ".wg Main_Building at Notre_Dame",
         ]
@@ -503,7 +514,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         question = "? how often be Notre_Dames the Juggler publish"
         answer = "twice"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         generator.write_question_commands()
         expected_commands = [
@@ -516,8 +527,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             "Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         )
         question = "? what sit on top of the Main_Building at Notre_Dame"
+        answer = "Virgin_Mary"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         generator.write_question_commands()
         expected_commands = [
@@ -537,9 +549,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             "Beyonce have sell over 118_million record throughout the world"
         )
         question = "? how many record have Beyonce sell throughout the world"
-        # answer = "over 118_million"
+        answer = "over 118_million"
         question_generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         question_generator.write_commands()
         expected_commands = [
@@ -559,8 +571,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def test_write_commands_multi_phrase_question_multi_phrase_statement(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
+        answer = "a golden statue of the Virgin_Mary"
         generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         generator.write_commands_multi_phrase_question_multi_phrase_statement()
         expected_commands = [
@@ -578,9 +591,9 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         declarative_sentence = "a golden statue of the virgin mary sit on top of the main building at notre_dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
-        # answer = "a golden statue of the Virgin Mary"
+        answer = "a golden statue of the Virgin Mary"
         question_generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         question_generator.write_commands()
         expected_commands = [
@@ -593,6 +606,29 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, question_generator.commands)
 
+    def test_write_commands_multi_phrase_question_multi_phrase_statement3(
+        self,
+    ):
+
+        declarative_sentence = "before the creation of the College_of_Engineering similar study be carry out at the College_of_Science"
+        question = "? before the creation of the College_of_Engineering similar study be carry out at which Notre_Dame college"
+        answer = "the College_of_Science"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? before the creation of the College_of_Engineering similar study",
+            "be carry out at which Notre_Dame college",
+            ".sctx be carry out at which Notre_Dame college",
+            ".pg carry",
+            ".sctx ? before the creation of the College_of_Engineering similar study",
+            ".pg creation of the College_of_Engineering",
+            ".wg similar study",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
 
 class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
 
@@ -601,7 +637,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         self.answer = "a golden statue of the Virgin_Mary"
         self.question = "? what sit on top of the Main_Building at Notre_Dame"
         self.question_generator = AnnabellQuestionCommandGenerator(
-            self.declarative_sentence, self.question, max_words=9
+            self.declarative_sentence, self.question, self.answer, max_words=9
         )
         self.question_generator.write_commands()
         self.answer_context = AnnabellAnswerContext(self.answer)
@@ -636,7 +672,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         answer = "over 118_million"
         question_generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         question_generator.write_commands()
         generator = AnnabellAnswerCommandGenerator(
@@ -659,7 +695,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top"
         answer = "a golden statue of the Virgin_Mary sit on top of the Main_Building"
         question_generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         generator = AnnabellAnswerCommandGenerator(
             declarative_sentence, answer, question_generator, max_words=9
@@ -686,11 +722,31 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         expected_commands = [
             ".ph of the Main_Building at Notre_Dame",
             ".drop_goal",
-            # todo test alternative commands - .ph instead of .sctx which results in the best generalisation?
-            ".ph a golden statue of the Virgin_Mary sit on top",
-            # ".sctx a golden statue of the Virgin_Mary sit on top",
+            ".sctx a golden statue of the Virgin_Mary sit on top",
             ".drop_goal",
             ".wg the Virgin_Mary",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_short_answer_multi_phrase_statement2(self):
+        declarative_sentence = "before the creation of the College_of_Engineering similar study be carry out at the College_of_Science"
+        question = "? before the creation of the College_of_Engineering similar study be carry out at which Notre_Dame college"
+        answer = "the College_of_Science"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph before the creation of the College_of_Engineering similar study be",
+            ".drop_goal",
+            ".sctx carry out at the College_of_Science",
+            ".drop_goal",
+            ".wg the College_of_Science",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
@@ -704,9 +760,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         expected_commands = [
             ".ph of the Main_Building at Notre_Dame",
             ".drop_goal",
-            # todo test alternative commands - .ph instead of .sctx which results in the best generalisation?
-            ".ph a golden statue of the Virgin_Mary sit on top",
-            # ".sctx a golden statue of the Virgin_Mary sit on top",
+            ".sctx a golden statue of the Virgin_Mary sit on top",
             ".drop_goal",
             ".wg a golden statue of",
             ".prw",
@@ -723,7 +777,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         question = "? what sit on top of the Main_Building at Notre_Dame"
         answer = "a golden statue of the Virgin Mary"
         question_generator = AnnabellQuestionCommandGenerator(
-            declarative_sentence, question, max_words=9
+            declarative_sentence, question, answer, max_words=9
         )
         question_generator.write_commands()
         answer_generator = AnnabellAnswerCommandGenerator(
@@ -827,6 +881,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
 
 
 # todo add test case for the following - 2026-01-08 10:28:43,739 - commands - ERROR - Error creating commands for sample 5733bf84d058e614000b61c0: Not all answer words were found in the declarative sentence. missing answer words: ['the', 'Observer'] Declarative sentence: 'the daily student paper at Notre_Dame be call the Observer' Question: '? what be the daily student paper at Notre_Dame call' Answer: 'the Observer
+
 
 """#id: 5733a6424776f41900660f4f
 before the creation of the College_of_Engineering similar study be
