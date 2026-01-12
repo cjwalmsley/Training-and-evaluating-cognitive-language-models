@@ -148,10 +148,10 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             ".pg trade",
             ".sctx -ing post that precede -d",
             ".pg post",
-            ".pg precede",
             ".sctx New-York-City call -ed",
             ".pg New-York-City",
-            ".wg call",
+            ".pg call",
+            ".wg precede",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
@@ -212,10 +212,10 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             ".pg trade",
             ".sctx -ing post that precede -d",
             ".pg post",
-            ".pg precede",
             ".sctx New-York-City call -ed",
             ".pg New-York-City",
-            ".wg call",
+            ".pg call",
+            ".wg precede",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
@@ -445,8 +445,10 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
     def test_word_group_is_set_correctly(self):
         self.assertTrue(len(self.generator.current_word_group) == 0)
         self.generator.write_commands()
+        expected_goal_item = ["Main_Building"]
         expected_word_group = ["Notre_Dame"]
         self.assertEqual(expected_word_group, self.generator.current_word_group)
+        self.assertEqual(expected_goal_item, self.generator.goal_stack.peek())
 
     def test_write_long_question_long_declaration_commands(self):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
@@ -572,10 +574,10 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
         answer = "a golden statue of the Virgin_Mary"
-        generator = AnnabellQuestionCommandGenerator(
+        question_generator = AnnabellQuestionCommandGenerator(
             declarative_sentence, question, answer, max_words=9
         )
-        generator.write_commands_multi_phrase_question_multi_phrase_statement()
+        question_generator.write_question_commands()
         expected_commands = [
             ".sctx ? what sit on top of the Main_Building at",
             ".pg sit on top",
@@ -583,7 +585,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             ".sctx Notre_Dame",
             ".wg Notre_Dame",
         ]
-        self.assertEqual(expected_commands, generator.commands)
+        self.assertEqual(expected_commands, question_generator.commands)
 
     def test_write_commands_multi_phrase_question_multi_phrase_statement2(
         self,
@@ -600,8 +602,8 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             "? what sit on top of the Main_Building at",
             "Notre_Dame",
             ".sctx ? what sit on top of the Main_Building at",
-            ".pg sit",
-            ".wg top",
+            ".pg top",
+            ".wg sit",
         ]
 
         self.assertEqual(expected_commands, question_generator.commands)
@@ -625,6 +627,115 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             ".sctx ? before the creation of the College_of_Engineering similar study",
             ".pg creation of the College_of_Engineering",
             ".wg similar study",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement4(
+        self,
+    ):
+
+        declarative_sentence = "the change to national standard at Notre_Dame in the early_20th_century take place over three_year"
+        question = "? over how many year do the change to national standard undertake at Notre_Dame in the early_20th_century take place"
+        answer = "three_year"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? over how many year do the change to",
+            "national standard undertake at Notre_Dame in the early_20th_century take",
+            "place",
+            ".sctx national standard undertake at Notre_Dame in the early_20th_century "
+            "take",
+            ".pg early_20th_century take",
+            ".sctx place",
+            ".pg place",
+            ".sctx ? over how many year do the change to",
+            ".pg change",
+            ".sctx national standard undertake at Notre_Dame in the early_20th_century "
+            "take",
+            ".pg national standard",
+            ".wg Notre_Dame",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement5(
+        self,
+    ):
+
+        # todo make a change to preferentially choose the goal lookup word group to be that with the longest numbr of letters - in this case, Notre_Dame and daily_student paper instead, instead of call and Notre_Dame
+
+        declarative_sentence = (
+            "the daily student paper at Notre_Dame be call the Observer"
+        )
+        question = "? what be the daily student paper at Notre_Dame call"
+        answer = "the Observer"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? what be the daily student paper at Notre_Dame",
+            "call",
+            ".sctx ? what be the daily student paper at Notre_Dame",
+            ".pg daily student paper",
+            ".pg Notre_Dame",
+            ".sctx call",
+            ".wg call",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement6(
+        self,
+    ):
+
+        declarative_sentence = "the number of department within the Stinson - Remick Hall of Engineering be five"
+        question = (
+            "? how many department be within the Stinson - Remick Hall of Engineering"
+        )
+        answer = "five"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? how many department be within the Stinson -",
+            "Remick Hall of Engineering",
+            ".sctx Remick Hall of Engineering",
+            ".pg Hall of Engineering",
+            ".sctx ? how many department be within the Stinson -",
+            ".pg department",
+            ".pg within the Stinson",
+            ".sctx Remick Hall of Engineering",
+            ".wg Remick",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement7(
+        self,
+    ):
+
+        declarative_sentence = "the entity that provide help with the management of time for new student at Notre_Dame be Learning_Resource_Center"
+        question = "? what entity provide help with the management of time for new student at Notre_Dame"
+        answer = "Learning_Resource_Center"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? what entity provide help with the management of",
+            "time for new student at Notre_Dame",
+            ".sctx time for new student at Notre_Dame",
+            ".pg time for new student",
+            ".pg Notre_Dame",
+            ".sctx ? what entity provide help with the management of",
+            ".pg entity",
+            ".pg provide help",
+            ".wg management",
         ]
 
         self.assertEqual(expected_commands, question_generator.commands)
@@ -717,7 +828,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         generator = AnnabellAnswerCommandGenerator(
             self.declarative_sentence, answer, self.question_generator, max_words=9
         )
-        generator.write_commands_long_answer_multi_phrase_statement()
+        generator.write_answer_commands()
         # generator.write_commands_short_answer_multi_phrase_statement()
         expected_commands = [
             ".ph of the Main_Building at Notre_Dame",
@@ -751,12 +862,122 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    def test_write_commands_long_answer_multi_phrase_statement(self):
+    def test_write_commands_short_answer_multi_phrase_statement3(self):
+        declarative_sentence = "the change to national standard at Notre_Dame in the early_20th_century take place over three_year"
+        question = "? over how many year do the change to national standard undertake at Notre_Dame in the early_20th_century take place"
+        answer = "three_year"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph the change to national standard at Notre_Dame in the",
+            ".drop_goal",
+            ".drop_goal",
+            ".sctx early_20th_century take place over three_year",
+            ".drop_goal",
+            ".drop_goal",
+            ".wg three_year",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_short_answer_multi_phrase_statement4(self):
+        # todo: handles this case where an answer word group is split across multiple phrases ("the", "Observer")
+        declarative_sentence = (
+            "the daily student paper at Notre_Dame be call the Observer"
+        )
+        question = "? what be the daily student paper at Notre_Dame call"
+        answer = "the Observer"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        with self.assertRaises(MissingAnswerWordsException):
+            generator.write_answer_commands()
+        expected_commands = [
+            "? what be the daily student paper at Notre_Dame call",
+            ".drop_goal",
+            ".drop_goal",
+            ".sctx the Observer",
+            ".drop_goal",
+            ".drop_goal",
+            ".wg the Observer",
+            ".rw",
+        ]
+        # self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_short_answer_multi_phrase_statement5(self):
+
+        declarative_sentence = "the number of department within the Stinson - Remick Hall of Engineering be five"
+        question = (
+            "? how many department be within the Stinson - Remick Hall of Engineering"
+        )
+        answer = "five"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
 
         generator = AnnabellAnswerCommandGenerator(
-            self.declarative_sentence, self.answer, self.question_generator, max_words=9
+            declarative_sentence, answer, question_generator, max_words=9
         )
-        generator.write_commands_long_answer_multi_phrase_statement()
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph the number of department within the Stinson - Remick",
+            ".drop_goal",
+            ".drop_goal",
+            ".sctx Hall of Engineering be five",
+            ".drop_goal",
+            ".wg five",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_short_answer_multi_phrase_statement6(self):
+
+        declarative_sentence = "the entity that provide help with the management of time for new student at Notre_Dame be Learning_Resource_Center"
+        question = "? what entity provide help with the management of time for new student at Notre_Dame"
+        answer = "Learning_Resource_Center"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph the entity that provide help with the management of",
+            ".drop_goal",
+            ".drop_goal",
+            ".sctx time for new student at Notre_Dame be Learning_Resource_Center",
+            ".drop_goal",
+            ".drop_goal",
+            ".wg Learning_Resource_Center",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_long_answer_multi_phrase_statement(self):
+
+        question_generator = AnnabellQuestionCommandGenerator(
+            self.declarative_sentence, self.question, self.answer, max_words=9
+        )
+        question_generator.write_commands()
+
+        generator = AnnabellAnswerCommandGenerator(
+            self.declarative_sentence, self.answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
         expected_commands = [
             ".ph of the Main_Building at Notre_Dame",
             ".drop_goal",
@@ -784,7 +1005,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
             declarative_sentence, answer, question_generator, max_words=9
         )
         with self.assertRaises(MissingAnswerWordsException):
-            answer_generator.write_commands_long_answer_multi_phrase_statement()
+            answer_generator.write_answer_commands()
 
 
 class TestAnnabellBaseCommandGenerator(unittest.TestCase):
@@ -879,35 +1100,6 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-
-# todo add test case for the following - 2026-01-08 10:28:43,739 - commands - ERROR - Error creating commands for sample 5733bf84d058e614000b61c0: Not all answer words were found in the declarative sentence. missing answer words: ['the', 'Observer'] Declarative sentence: 'the daily student paper at Notre_Dame be call the Observer' Question: '? what be the daily student paper at Notre_Dame call' Answer: 'the Observer
-
-
-"""#id: 5733a6424776f41900660f4f
-before the creation of the College_of_Engineering similar study be
-carry out at the College_of_Science
-
- >>> End context
-
- >>> End context
-? before the creation of the College_of_Engineering similar study
-be carry out at which Notre_Dame college"""
-
-"""#id: 5733a70c4776f41900660f64
-? what entity provide help with the management of
-time for new student at Notre_Dame
-.x
- -> management
-.
-management
-#END OF TESTING SAMPLE"""
-
-"""#id: 5733a6424776f41900660f50
-? how many department be within the Stinson -
-Remick Hall of Engineering
-.x
-
-#END OF TESTING SAMPLE"""
 
 if __name__ == "__main__":
     unittest.main(argv=["first-arg-is-ignored"], exit=False)

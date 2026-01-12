@@ -260,17 +260,6 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
 
     def write_commands_short_answer_single_phrase_statement(self):
         self.write_commands_long_answer_multi_phrase_statement()
-        """self.commands.append(f".ph {self.declarative_sentence.text}")
-        answer_word_group_chunks = self.answer.word_group_chunks_matching_sentence(
-            self.declarative_sentence
-        )
-        for index, word_group_chunk in enumerate(answer_word_group_chunks):
-            word_group_text = " ".join(word_group_chunk)
-            self.commands.append(f".wg {word_group_text}")
-            if index < len(answer_word_group_chunks) - 1:
-                self.commands.append(".prw")
-            else:
-                self.commands.append(".rw")"""
 
     def write_commands_long_answer_single_phrase_statement(self):
         self.commands.append(f".ph {self.declarative_sentence.text}")
@@ -331,7 +320,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 break
         return found_declarative_sentence
 
-    def write_answer_words_in_chunk(
+    def write_answer_words_in_chunks(
         self, answer_words_remaining, answer_word_group_chunks, lookup_phrase=None
     ):
         # check if all the remaining answer words are in the word group chunks. if so, drop any reaming goals.
@@ -371,12 +360,21 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
         words_list = [word for word_group in list_of_word_groups for word in word_group]
         return words_list
 
+    def drop_goals_for_current_sentence(self, declarative_sentence):
+        drop_goal = True
+        while drop_goal and not self.question_generator.goal_stack.is_empty():
+            current_goal = self.question_generator.goal_stack.peek()
+            if declarative_sentence.contains_word_group(current_goal):
+                self.commands.append(self.drop_goal_command())
+                self.question_generator.goal_stack.dequeue()
+            else:
+                drop_goal = False
+
     def write_commands_long_answer_multi_phrase_statement(self):
         declarative_sentence, drop_goal = self.lookup_declarative_sentence()
         self.commands.append(f"{self.phrase_command()} {declarative_sentence.text}")
         if drop_goal:
-            self.commands.append(self.drop_goal_command())
-            self.question_generator.goal_stack.dequeue()
+            self.drop_goals_for_current_sentence(declarative_sentence)
         else:
             pass
 
@@ -385,17 +383,18 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
             declarative_sentence
         )
 
-        self.write_answer_words_in_chunk(
+        self.write_answer_words_in_chunks(
             self.answer.answer_words_remaining, answer_word_group_chunks
         )
 
         if self.question_generator.goal_stack.is_empty():
             # check the remaining declarative sentences for any remaining answer words
+            # todo: handles the case where an answer word group is split across multiple phrases
             for declarative_phrase in self.declarative_sentence.tail_phrases():
                 answer_word_group_chunks = (
                     self.answer.word_group_chunks_matching_sentence(declarative_phrase)
                 )
-                self.write_answer_words_in_chunk(
+                self.write_answer_words_in_chunks(
                     self.answer.answer_words_remaining,
                     answer_word_group_chunks,
                     lookup_phrase=declarative_phrase,
@@ -403,7 +402,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
 
         # using the goal stack lookup remaining sentences and check them for remaining answer words
         while not self.question_generator.goal_stack.is_empty():
-            current_goal = self.question_generator.goal_stack.dequeue()
+            current_goal = self.question_generator.goal_stack.peek()
             found_declarative_sentence = (
                 self.lookup_declarative_sentence_with_word_group(current_goal)
             )
@@ -411,13 +410,13 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 self.commands.append(
                     f"{self.search_context_command()} {found_declarative_sentence.text}"
                 )
-                self.commands.append(f".drop_goal")
+                self.drop_goals_for_current_sentence(found_declarative_sentence)
                 answer_word_group_chunks = (
                     self.answer.word_group_chunks_matching_sentence(
                         found_declarative_sentence
                     )
                 )
-                self.write_answer_words_in_chunk(
+                self.write_answer_words_in_chunks(
                     self.answer.answer_words_remaining, answer_word_group_chunks
                 )
             else:
@@ -462,6 +461,23 @@ class CandidateQuestionPhrase:
     def __init__(self, question_phrase, word_groups):
         self.question_phrase = question_phrase
         self.word_groups = word_groups
+        self.declarative_lookup_word_groups = []
+
+    def word_groups_text(self):
+        return [" ".join(word_group) for word_group in self.word_groups]
+
+    def question_phrase_text(self):
+        return self.question_phrase.text
+
+    def add_lookup_word_groups(self, lookup_word_groups):
+        self.declarative_lookup_word_groups.extend(lookup_word_groups)
+
+    def declarative_answer_lookup_word_groups(self):
+        word_groups = []
+        for word_group in self.word_groups:
+            if word_group not in self.declarative_lookup_word_groups:
+                word_groups.append(word_group)
+        return word_groups
 
 
 class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
@@ -479,6 +495,7 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.answer = AnnabellAnswerContext(answer)
         self.current_word_group = []
         self.goal_stack = AnnabellGoalStack()
+        self.current_context = None
 
     def reset_candidate_question_phrases_and_word_groups(self):
         self.candidate_question_phrases_and_word_groups = []
@@ -488,8 +505,34 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             candidate_question_phrase
         )
 
+    def get_declarative_candidate_phrases_and_word_groups(self):
+        result = [
+            candidate_phrase
+            for candidate_phrase in self.candidate_question_phrases_and_word_groups
+            if candidate_phrase.is_declaration_lookup_candidate_phrase()
+        ]
+        return result
+
+    def candidate_phrases_with_declarative_lookup_words(self):
+        result = [
+            candidate_phrase
+            for candidate_phrase in self.candidate_question_phrases_and_word_groups
+            if candidate_phrase.declarative_lookup_word_groups
+        ]
+        return result
+
+    def answer_sentence_word_group_chunks(self):
+        return self.answer.word_group_chunks_matching_sentence(
+            self.declarative_sentence
+        )
+
     def last_phrase_index(self):
         return len(self.question.phrases) - 1
+
+    def write_search_context_command(self, text):
+        if self.current_context != text:
+            self.commands.append(f".sctx {text}")
+            self.current_context = text
 
     def sort_candidate_question_phrases_and_word_groups(self):
         # sort the phrases so that the phrase containing key words which are in the declarative phrase that contains the answer words comes first.
@@ -513,9 +556,96 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             for keyword in question_phrase_keywords:
                 if keyword in target_keywords:
                     total_matching_words += 1
-            return -total_matching_words
+            return (len(candidate_phrase.word_groups), -total_matching_words)
 
         self.candidate_question_phrases_and_word_groups.sort(key=phrase_sort_key)
+
+    def all_lookup_word_groups(self):
+        lookup_word_groups = []
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            lookup_word_groups.extend(candidate_phrase.word_groups)
+        return lookup_word_groups
+
+    def get_candidate_lookup_declarative_phrase(self):
+        lookup_word_groups = self.all_lookup_word_groups()
+        # find the declarative_phrase that has the most word groups in the lookup word groups
+        max_word_groups = 0
+        selected_declarative_phrase = None
+        for declarative_phrase in self.declarative_sentence.phrases:
+            word_groups_for_declarative_phrase = []
+            for word_group in lookup_word_groups:
+                if declarative_phrase.contains_word_group(word_group):
+                    word_groups_for_declarative_phrase.append(word_group)
+            if len(word_groups_for_declarative_phrase) > max_word_groups:
+                max_word_groups = len(word_groups_for_declarative_phrase)
+                selected_declarative_phrase = declarative_phrase
+        return selected_declarative_phrase
+
+    def set_lookup_word_groups_for_candidate_phrases(self):
+        declarative_phrase = self.get_candidate_lookup_declarative_phrase()
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            word_groups_for_declarative_phrase = (
+                candidate_phrase.question_phrase.word_group_chunks_matching_sentence(
+                    declarative_phrase
+                )
+            )
+            if word_groups_for_declarative_phrase:
+                candidate_phrase.add_lookup_word_groups(
+                    word_groups_for_declarative_phrase
+                )
+
+    def write_lookup_declarative_sentence_commands(self):
+
+        for candidate_phrase_index, candidate_phrase in enumerate(
+            self.candidate_question_phrases_and_word_groups
+        ):
+            if candidate_phrase.declarative_lookup_word_groups:
+                self.question_type.write_search_context_command(
+                    self, candidate_phrase.question_phrase_text()
+                )
+                for chunk_index, declarative_context_word_group_chunk in enumerate(
+                    candidate_phrase.declarative_lookup_word_groups
+                ):
+
+                    word_group_text = " ".join(declarative_context_word_group_chunk)
+
+                    if (
+                        candidate_phrase_index
+                        == len(self.candidate_phrases_with_declarative_lookup_words())
+                        - 1
+                        and chunk_index
+                        == len(candidate_phrase.declarative_lookup_word_groups) - 1
+                    ):
+                        self.set_current_word_group(word_group_text)
+                    else:
+                        self.append_goal(f"{word_group_text}")
+
+    def write_lookup_answer_commands(self):
+
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            answer_word_group_chunks = (
+                candidate_phrase.declarative_answer_lookup_word_groups()
+            )
+
+            if len(answer_word_group_chunks) > 0:
+                self.question_type.write_search_context_command(
+                    self, candidate_phrase.question_phrase_text()
+                )
+                for chunk_index, answer_sentence_word_group_chunk in enumerate(
+                    answer_word_group_chunks
+                ):
+                    word_group_text = " ".join(answer_sentence_word_group_chunk)
+                    self.append_goal(f"{word_group_text}")
+
+    def write_commands_from_candidate_question_phrases_and_word_groups_new(self):
+
+        # self.sort_candidate_question_phrases_and_word_groups()
+        self.set_lookup_word_groups_for_candidate_phrases()
+        self.write_lookup_answer_commands()
+        self.write_lookup_declarative_sentence_commands()
+
+        # finally write the word group command that will be used for the lookup of the first declarative sentence
+        self.write_word_group_command(" ".join(self.current_word_group))
 
     def write_commands_from_candidate_question_phrases_and_word_groups(self):
         self.sort_candidate_question_phrases_and_word_groups()
@@ -534,7 +664,8 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
                     == len(self.candidate_question_phrases_and_word_groups) - 1
                     and chunk_index == len(candidate_phrase.word_groups) - 1
                 ):
-                    self.append_word_group(f"{word_group_text}")
+                    self.set_current_word_group(word_group_text)
+                    self.write_word_group_command(word_group_text)
                 else:
                     self.append_goal(f"{word_group_text}")
 
@@ -570,6 +701,10 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.current_word_group.clear()
         self.current_word_group.append(word_group_text)
 
+    def write_word_group_command(self, word_group_text):
+        word_group_command_text = f"{self.word_group_command()} {word_group_text}"
+        self.commands.append(word_group_command_text)
+
     @staticmethod
     def word_group_command():
         return ".wg"
@@ -577,11 +712,6 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
     @staticmethod
     def push_goal_command():
         return ".pg"
-
-    def append_word_group(self, word_group_text):
-        self.set_current_word_group(word_group_text)
-        word_group_command_text = f"{self.word_group_command()} {word_group_text}"
-        self.commands.append(word_group_command_text)
 
     def write_commands_single_phrase_question_single_phrase_statement(self):
         self.write_commands_multi_phrase_question_multi_phrase_statement()
@@ -604,7 +734,8 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             if index < last_text_index:
                 self.append_goal(f"{word_group_text}")
             else:
-                self.append_word_group(f"{word_group_text}")
+                self.set_current_word_group(word_group_text)
+                self.write_word_group_command(word_group_text)
 
     def write_commands_multi_phrase_question_single_phrase_statement(self):
         self.write_commands_multi_phrase_question_multi_phrase_statement()
@@ -628,7 +759,7 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
                     )
                 )
 
-        self.write_commands_from_candidate_question_phrases_and_word_groups()
+        self.write_commands_from_candidate_question_phrases_and_word_groups_new()
 
 
 class ShortDeclarativeSentenceType:
@@ -683,6 +814,10 @@ class ShortQuestionType:
         return False
 
     @staticmethod
+    def write_search_context_command(command_generator, text):
+        pass
+
+    @staticmethod
     def write_question(command_generator):
         command_generator.append_question()
 
@@ -699,6 +834,10 @@ class LongQuestionType:
     @staticmethod
     def has_multiple_phrases():
         return True
+
+    @staticmethod
+    def write_search_context_command(command_generator, text):
+        command_generator.write_search_context_command(text)
 
     @staticmethod
     def write_question(command_generator):

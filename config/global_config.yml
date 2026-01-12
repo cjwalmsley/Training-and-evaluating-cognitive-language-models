@@ -53,9 +53,9 @@ experiments:
   experiment_name: "sandbox"
   percentage_of_pretraining_samples: 50
   maximum_number_of_words: 50
-  maximum_word_length: 25
+  maximum_word_length: 18
   maximum_phrase_length: 9
-  number_of_training_samples: 400
+  number_of_training_samples: 50
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
 

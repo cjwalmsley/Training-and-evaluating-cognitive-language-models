@@ -262,7 +262,8 @@ class DatasetPreProcessor:
         else:
             return the_text
 
-    def replace_entities(self, text, entities):
+    @staticmethod
+    def replace_entities(text, entities):
         if not entities:
             return text
 
