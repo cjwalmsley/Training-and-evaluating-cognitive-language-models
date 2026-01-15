@@ -94,7 +94,7 @@ class DatasetPreProcessor:
     def __init__(
         self,
         dataset,
-        max_words_limit=global_config.maximum_word_length(),
+        max_words_limit=global_config.maximum_number_of_words(),
         max_word_length_limit=global_config.maximum_word_length(),
         columns_to_process=None,
     ):
@@ -528,6 +528,25 @@ class DatasetPreProcessor:
 
         self.dataset.loc[pretraining_indices, "is_pretraining"] = True
 
+        # Ensure we have exactly the requested number of unique samples
+        actual_pretraining_size = self.dataset["is_pretraining"].sum()
+        shortfall = num_pretraining_samples - actual_pretraining_size
+
+        if shortfall > 0:
+            logger.info(
+                f"Selection shortfall of {shortfall} samples (due to overlap or scarcity). Filling with random remaining samples."
+            )
+            df_not_selected = self.dataset[~self.dataset["is_pretraining"]]
+            if len(df_not_selected) >= shortfall:
+                extra_indices = np.random.choice(
+                    df_not_selected.index, shortfall, replace=False
+                )
+                self.dataset.loc[extra_indices, "is_pretraining"] = True
+            else:
+                # This case implies available samples < requested, which should be caught early,
+                # but for safety we take all remaining.
+                self.dataset.loc[df_not_selected.index, "is_pretraining"] = True
+
         actual_pretraining_size = self.dataset["is_pretraining"].sum()
         logger.info(f"Selected {actual_pretraining_size} samples for pre-training.")
 
@@ -622,20 +641,44 @@ class DatasetPreProcessor:
     def create_commands_for_pretraining(self):
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
-        self.dataset[self.created_commands_column_name()] = self.dataset.apply(
-            lambda row: AnnabellBaseCommandGenerator(
+        def generate_commands(row):
+            generator = AnnabellBaseCommandGenerator(
                 row[self.id_column_name()],
                 row[self.declarative_statement_formatted_column_name()],
                 row[self.question_formatted_column_name()],
                 row[self.answer_formatted_column_name()],
                 row[self.is_pretraining_column_name()],
-            ).create_list_of_commands(),
-            axis=1,
-        )
+            )
+            commands = generator.create_list_of_commands()
+            has_error = (
+                AnnabellBaseCommandGenerator.error_generating_pretraining_command()
+                in commands
+            )
+            return pd.Series(
+                {
+                    self.created_commands_column_name(): commands,
+                    "created_commands_error": has_error,
+                }
+            )
+
+        generated_data = self.dataset.apply(generate_commands, axis=1)
+        self.dataset[self.created_commands_column_name()] = generated_data[
+            self.created_commands_column_name()
+        ]
+        self.dataset["created_commands_error"] = generated_data[
+            "created_commands_error"
+        ]
 
     def write_pretraining_file(self, the_filepath):
         with open(the_filepath, "w") as commands_file:
-            for index, row in self.pretraining_dataset().iterrows():
+            dataset_to_write = self.pretraining_dataset()
+            # Only filter if the column exists
+            if "created_commands_error" in dataset_to_write.columns:
+                dataset_to_write = dataset_to_write[
+                    dataset_to_write["created_commands_error"] != True
+                ]
+
+            for index, row in dataset_to_write.iterrows():
                 commands = row["created_commands"]
                 for command in commands:
                     commands_file.write(command + "\n")
@@ -687,7 +730,12 @@ class DatasetPreProcessor:
         logger.info(f"file written: {the_filepath}")
 
     def write_pretraining_testing_file(self, the_filepath):
-        self.write_testing_file_with_dataset(the_filepath, self.pretraining_dataset())
+        dataset_to_write = self.pretraining_dataset()
+        if "created_commands_error" in dataset_to_write.columns:
+            dataset_to_write = dataset_to_write[
+                dataset_to_write["created_commands_error"] != True
+            ]
+        self.write_testing_file_with_dataset(the_filepath, dataset_to_write)
 
     def write_testing_file(self, the_filepath):
         self.write_testing_file_with_dataset(the_filepath, self.training_dataset())

@@ -740,6 +740,50 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, question_generator.commands)
 
+    def test_write_commands_multi_phrase_question_multi_phrase_statement8(
+        self,
+    ):
+
+        declarative_sentence = "Forbescom place Notre_Dame at 8th position compare to other US research university"
+        question = "? Forbescom place Notre_Dame at what position compare to other US research university"
+        answer = "8th"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? Forbescom place Notre_Dame at what position compare to",
+            "other US research university",
+            ".sctx other US research university",
+            ".pg US research university",
+            ".sctx ? Forbescom place Notre_Dame at what position compare to",
+            ".pg Forbescom place Notre_Dame",
+            ".wg position compare",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+
+# todo add test case for the below case
+"""#id: 5733afd3d058e614000b6047
+Forbescom place Notre_Dame at 8th position compare to other
+US research university
+
+
+? Forbescom place Notre_Dame at what position compare to
+other US research university
+.sctx other US research university
+.pg US research university
+.sctx ? Forbescom place Notre_Dame at what position compare to
+.pg Forbescom place Notre_Dame
+.wg position compare
+.ph Forbescom place Notre_Dame at 8th position compare to other
+.drop_goal
+.drop_goal
+.wg 8th
+.rw
+.sctx US research university"""
+
 
 class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
 
@@ -967,6 +1011,49 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
+    # todo add test case for the below case
+    """#id: 5733afd3d058e614000b6047
+    Forbescom place Notre_Dame at 8th position compare to other
+    US research university
+
+
+    ? Forbescom place Notre_Dame at what position compare to
+    other US research university
+    .sctx other US research university
+    .pg US research university
+    .sctx ? Forbescom place Notre_Dame at what position compare to
+    .pg Forbescom place Notre_Dame
+    .wg position compare
+    .ph Forbescom place Notre_Dame at 8th position compare to other
+    .drop_goal
+    .drop_goal
+    .wg 8th
+    .rw
+    .sctx US research university"""
+
+    def test_write_commands_short_answer_multi_phrase_statement7(self):
+
+        declarative_sentence = "Forbescom place Notre_Dame at 8th position compare to other US research university"
+        question = "? Forbescom place Notre_Dame at what position compare to other US research university"
+        answer = "8th"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ph Forbescom place Notre_Dame at 8th position compare to other",
+            ".drop_goal",
+            ".drop_goal",
+            ".wg 8th",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
     def test_write_commands_long_answer_multi_phrase_statement(self):
 
         question_generator = AnnabellQuestionCommandGenerator(
@@ -1099,6 +1186,27 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
+
+
+# todo add test case for the below case
+"""#id: 5733afd3d058e614000b6047
+Forbescom place Notre_Dame at 8th position compare to other
+US research university
+
+
+? Forbescom place Notre_Dame at what position compare to
+other US research university
+.sctx other US research university
+.pg US research university
+.sctx ? Forbescom place Notre_Dame at what position compare to
+.pg Forbescom place Notre_Dame
+.wg position compare
+.ph Forbescom place Notre_Dame at 8th position compare to other
+.drop_goal
+.drop_goal
+.wg 8th
+.rw
+.sctx US research university"""
 
 
 if __name__ == "__main__":

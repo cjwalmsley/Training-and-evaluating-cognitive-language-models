@@ -273,7 +273,7 @@ class AnnabellTestResultsEvaluator:
                 f"number_of_test_answers\t{str(len(self.prepared_dataframe))}\n"
             )
             results_file.write(
-                f"total_number_of_pretraining_samples\t{str(self.testing_context.total_number_of_pretraining_samples)}\n"
+                f"total_number_of_pretraining_samples\t{str(self.testing_context.total_number_of_pretraining_samples())}\n"
             )
             results_file.write(
                 f"percentage_correct\t{str(self.percentage_of_correct_answers())}\n"
@@ -469,4 +469,4 @@ class AnnabellTrainingTestContext(AnnabellTestContext):
         return global_config.test_summary_results_filepath()
 
     def total_number_of_pretraining_samples(self):
-        return self.dataset_processor.total_number_of_pretraining_samples()
+        return self.dataset_processor.total_pretraining_samples()
