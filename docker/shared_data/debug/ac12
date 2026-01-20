@@ -1,0 +1,24 @@
+#id: 573398ebd058e614000b5e67
+the student union building at Notre_Dame be rename to
+LaFortune_Center in 1950
+
+? in what_year do the student union building at
+Notre_Dame get rename to LaFortune_Center
+.sctx Notre_Dame get rename to LaFortune_Center
+.pg LaFortune_Center
+.sctx ? in what_year do the student union building at
+.pg student union building
+.sctx Notre_Dame get rename to LaFortune_Center
+.pg Notre_Dame
+.wg rename
+.ph the student union building at Notre_Dame be rename to
+.drop_goal
+.drop_goal
+.sctx LaFortune_Center in 1950
+.drop_goal
+.wg 1950
+.rw
+
+? in what_year do the student union building at
+Notre_Dame get rename to LaFortune_Center
+.x
