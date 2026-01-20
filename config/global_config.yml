@@ -46,16 +46,17 @@ file_locations:
   sentence_patterns_filename: "sentence_patterns.jsonl"
   dataset_with_generated_sentences_filename: "squad_dataset_with_generated_sentences.jsonl"
   dataset_with_sentence_categories_filename: "squad_dataset_with_sentence_categories.jsonl"
-
+  test_pre_training_validation_results_dataframe_filename: "squad_dataset_with_pre_training_validation_results.jsonl"
+  test_results_dataframe_filename: "squad_dataset_with_testing_results"
 
 
 experiments:
-  experiment_name: "sandbox_v2"
-  percentage_of_pretraining_samples: 50
+  experiment_name: "sandbox"
+  percentage_of_pretraining_samples: 75
   maximum_number_of_words: 18
   maximum_word_length: 50
   maximum_phrase_length: 9
-  number_of_training_samples: 50
+  number_of_training_samples: 400
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
 
@@ -94,3 +95,4 @@ ollama:
     - "gemma3:1b-it-qat"
     - "gemma3:4b-it-qat"
     - "gemma3:27b-it-qat"
+    - "ministral-3:8b"

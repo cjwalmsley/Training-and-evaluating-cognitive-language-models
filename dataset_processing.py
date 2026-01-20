@@ -607,8 +607,17 @@ class DatasetPreProcessor:
     def is_pretraining_column_name():
         return "is_pretraining"
 
+    @staticmethod
+    def created_commands_error_column_name():
+        return "created_commands_error"
+
     def pretraining_dataset(self):
-        return self.dataset[self.dataset[self.is_pretraining_column_name()] == True]
+        filter_mask = self.dataset[self.is_pretraining_column_name()] == True
+        filter_mask = filter_mask & (
+            self.dataset[self.created_commands_error_column_name()] != True
+        )
+
+        return self.dataset[filter_mask]
 
     def total_pretraining_samples(self):
         return self.dataset[self.is_pretraining_column_name()].sum()
@@ -731,10 +740,10 @@ class DatasetPreProcessor:
 
     def write_pretraining_testing_file(self, the_filepath):
         dataset_to_write = self.pretraining_dataset()
-        if "created_commands_error" in dataset_to_write.columns:
-            dataset_to_write = dataset_to_write[
-                dataset_to_write["created_commands_error"] != True
-            ]
+        dataset_to_write = dataset_to_write[
+            dataset_to_write[self.created_commands_error_column_name()] != True
+        ]
+
         self.write_testing_file_with_dataset(the_filepath, dataset_to_write)
 
     def write_testing_file(self, the_filepath):

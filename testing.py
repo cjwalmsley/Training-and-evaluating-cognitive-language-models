@@ -150,6 +150,7 @@ class AnnabellTestResultsEvaluator:
     def count_of_answers_below_cosine_distance_threshold(self):
 
         threshold = global_config.cosine_distance_threshold()
+
         return (
             self.prepared_dataframe["test_answer_cosine_distance"] < threshold
         ).sum()
@@ -206,13 +207,19 @@ class AnnabellTestResultsEvaluator:
             & (self.prepared_dataframe["test_answer_correct"])
         ]
 
+    def write_dataframe_with_test_results_to_file(self):
+        filepath = self.testing_context.test_results_dataframe_filepath()
+        self.prepared_dataframe.to_csv(filepath, sep="\t", index=False)
+        logger.info(f"test results written to {filepath}")
+
     def run_processing(self):
 
         self.add_answers_column_to_dataframe()
-        self.remove_samples_with_no_answers()
+        # self.remove_samples_with_no_answers()
         self.generate_embeddings()
         self.add_cosine_distance()
         self.write_test_answer_summary()
+        self.write_dataframe_with_test_results_to_file()
 
         # count the number of results where the test answer is > 20 words
         logger.info(
@@ -245,7 +252,7 @@ class AnnabellTestResultsEvaluator:
         logger.info(
             f"number of rows with cosine distance less than {str(global_config.cosine_distance_threshold())} and any matching answer correct: {str(self.count_of_answers_with_any_word_match_below_cosine_distance_threshold())}"
         )
-        print(
+        logger.info(
             "percentage of total: "
             + str(
                 self.percentage_of_answers_with_any_word_match_below_cosine_distance_threshold()
@@ -346,6 +353,13 @@ class AnnabellTestResultsEvaluator:
                     ]
                 ].to_markdown(index=False)
             )
+            # write the rows that were incorrect
+            results_file.write("\nRows with incorrect answers:\n")
+            results_file.write(
+                self.incorrect_matches()[
+                    ["question", "answer", "test_answer"]
+                ].to_markdown(index=False)
+            )
         print(
             f"results written to {detailed_results_filepath} and {results_summary_filepath}"
         )
@@ -367,9 +381,13 @@ class AnnabellTestResultsEvaluator:
 
     @staticmethod
     def cosine_distance(a_row):
-        return cosine(
-            a_row["test_answer_embedding"], a_row["answer_formatted_embedding"]
-        )
+        if not a_row["test_answer_embedding"]:
+            result = 999
+        else:
+            result = cosine(
+                a_row["test_answer_embedding"], a_row["answer_formatted_embedding"]
+            )
+        return result
 
     @staticmethod
     def answers_with_any_word_match_to_ground_truth(row):
@@ -423,6 +441,9 @@ class AnnabellTestContext:
     def total_number_of_pretraining_samples(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
+    def test_results_dataframe_filepath(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
 
 class AnnabellPreTrainingTestContext(AnnabellTestContext):
 
@@ -443,6 +464,9 @@ class AnnabellPreTrainingTestContext(AnnabellTestContext):
 
     def test_summary_results_filepath(self):
         return global_config.test_pre_training_validation_summary_results_filepath()
+
+    def test_results_dataframe_filepath(self):
+        return global_config.test_pre_training_validation_results_dataframe_filepath()
 
     def total_number_of_pretraining_samples(self):
         return 0
@@ -467,6 +491,9 @@ class AnnabellTrainingTestContext(AnnabellTestContext):
 
     def test_summary_results_filepath(self):
         return global_config.test_summary_results_filepath()
+
+    def test_results_dataframe_filepath(self):
+        return global_config.test_validation_results_dataframe_filepath()
 
     def total_number_of_pretraining_samples(self):
         return self.dataset_processor.total_pretraining_samples()

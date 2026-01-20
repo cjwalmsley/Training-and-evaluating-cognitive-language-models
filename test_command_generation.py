@@ -763,26 +763,55 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, question_generator.commands)
 
+    def test_write_commands_multi_phrase_question_multi_phrase_statement9(
+        self,
+    ):
 
-# todo add test case for the below case
-"""#id: 5733afd3d058e614000b6047
-Forbescom place Notre_Dame at 8th position compare to other
-US research university
+        declarative_sentence = "the percentage of food serve at Notre_Dame that be locally grow be 40_percent"
+        question = "? what percentage of the food serve at Notre_Dame be locally grow"
+        answer = "40_percent"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
 
+        question_generator.write_commands()
 
-? Forbescom place Notre_Dame at what position compare to
-other US research university
-.sctx other US research university
-.pg US research university
-.sctx ? Forbescom place Notre_Dame at what position compare to
-.pg Forbescom place Notre_Dame
-.wg position compare
-.ph Forbescom place Notre_Dame at 8th position compare to other
-.drop_goal
-.drop_goal
-.wg 8th
-.rw
-.sctx US research university"""
+        expected_commands = [
+            "? what percentage of the food serve at Notre_Dame",
+            "be locally grow",
+            ".sctx be locally grow",
+            ".pg locally grow",
+            ".sctx ? what percentage of the food serve at Notre_Dame",
+            ".pg percentage of",
+            ".wg food serve at Notre_Dame",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement10(
+        self,
+    ):
+
+        declarative_sentence = (
+            "the encounter between Notre_Dame student and the KKK occur in South_Bend"
+        )
+        question = "? where do Notre_Dame student and the KKK have their encounter"
+        answer = "south Bend"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? where do Notre_Dame student and the KKK have",
+            "their encounter",
+            ".sctx ? where do Notre_Dame student and the KKK have",
+            ".pg Notre_Dame student",
+            ".pg KKK",
+            ".sctx their encounter",
+            ".wg encounter",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
 
 
 class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
@@ -1011,26 +1040,6 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    # todo add test case for the below case
-    """#id: 5733afd3d058e614000b6047
-    Forbescom place Notre_Dame at 8th position compare to other
-    US research university
-
-
-    ? Forbescom place Notre_Dame at what position compare to
-    other US research university
-    .sctx other US research university
-    .pg US research university
-    .sctx ? Forbescom place Notre_Dame at what position compare to
-    .pg Forbescom place Notre_Dame
-    .wg position compare
-    .ph Forbescom place Notre_Dame at 8th position compare to other
-    .drop_goal
-    .drop_goal
-    .wg 8th
-    .rw
-    .sctx US research university"""
-
     def test_write_commands_short_answer_multi_phrase_statement7(self):
 
         declarative_sentence = "Forbescom place Notre_Dame at 8th position compare to other US research university"
@@ -1188,25 +1197,9 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, generator.commands)
 
 
-# todo add test case for the below case
-"""#id: 5733afd3d058e614000b6047
-Forbescom place Notre_Dame at 8th position compare to other
-US research university
-
-
-? Forbescom place Notre_Dame at what position compare to
-other US research university
-.sctx other US research university
-.pg US research university
-.sctx ? Forbescom place Notre_Dame at what position compare to
-.pg Forbescom place Notre_Dame
-.wg position compare
-.ph Forbescom place Notre_Dame at 8th position compare to other
-.drop_goal
-.drop_goal
-.wg 8th
-.rw
-.sctx US research university"""
+"the encounter between Notre_Dame student and the KKK occur in South_Bend"
+"? where do Notre_Dame student and the KKK have their encounter"
+"south Bend"
 
 
 if __name__ == "__main__":

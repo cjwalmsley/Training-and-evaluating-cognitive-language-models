@@ -56,6 +56,8 @@ class FileLocations(BaseModel):
     sentence_patterns_filename: str
     dataset_with_generated_sentences_filename: str
     dataset_with_sentence_categories_filename: str
+    test_pre_training_validation_results_dataframe_filename: str
+    test_results_dataframe_filename: str
 
 
 class OllamaOptions(BaseModel):

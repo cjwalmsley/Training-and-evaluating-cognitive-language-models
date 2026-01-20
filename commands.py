@@ -466,6 +466,10 @@ class CandidateQuestionPhrase:
         self.word_groups = word_groups
         self.declarative_lookup_word_groups = []
 
+    def __repr__(self):
+        # Displays the phrase text and how many word groups it has
+        return f"<CandidateQuestionPhrase: '{self.question_phrase.text}' | Groups: {self.word_groups}>"
+
     def word_groups_text(self):
         return [" ".join(word_group) for word_group in self.word_groups]
 
@@ -855,6 +859,12 @@ class LongAnswerType:
 class AnnabellAbstractWordCollection:
     def __init__(self, text):
         self.text = text
+
+    def __repr__(self):
+        # Displays the class name and the text content (e.g., <AnnabellQuestionPhrase: 'what is commands'>)
+        # Slices text [:50] to keep the debug view clean if text is very long
+        display_text = (self.text[:50] + "..") if len(self.text) > 50 else self.text
+        return f"<{self.__class__.__name__}: '{display_text}'>"
 
     @staticmethod
     def max_words_per_word_group():

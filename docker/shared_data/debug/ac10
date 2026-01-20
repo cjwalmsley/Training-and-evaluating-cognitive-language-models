@@ -1,17 +1,25 @@
-#id: 5733be284776f41900661180
-the Basilica of the Sacred Heart at Notre_Dame be beside
-the_Main_Building
+#id: 57339b36d058e614000b5ea4
+the locally grow percentage of food serve at Notre_Dame
+be 40_percent
 
-? the Basilica of the Sacred Heart at Notre_Dame be
-beside to which structure
-.sctx ? the Basilica of the Sacred Heart at Notre_Dame be
-.wg Basilica
-.wg Sacred Heart
-.ph the Basilica of the Sacred Heart at Notre_Dame be beside
+
+? what percentage of the food serve at Notre_Dame
+be locally grow
+.sctx be locally grow
+.pg locally grow
+.sctx ? what percentage of the food serve at Notre_Dame
+.pg percentage
+.pg food serve
 .wg Notre_Dame
-.sctx beside to which structure
-.wg beside
-.ph the Basilica of the Sacred Heart at Notre_Dame be beside
-.sctx the_Main_Building
-.wg the_Main_Building
+.ph the locally grow percentage of food serve at Notre_Dame
+.drop_goal
+.drop_goal
+.sctx be 40_percent
+.drop_goal
+.wg 40_percent
 .rw
+
+? what percentage of the food serve at Notre_Dame
+be locally grow
+.sctx be locally grow
+.x
