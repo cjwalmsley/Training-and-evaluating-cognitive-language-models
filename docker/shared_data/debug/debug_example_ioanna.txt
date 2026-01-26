@@ -1,0 +1,7 @@
+.logfile debug_example_ioanna_log.txt
+in front of the Notre_Dame_Main_Building stand a copper statue
+of Christ
+
+? what be in front of the Notre_Dame_Main_Building
+.ph /front & Notre_Dame_Main_Building/in front of the Notre_Dame_Main_Building stand a copper statue/stand/
+.snto

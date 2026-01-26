@@ -1,0 +1,8 @@
+Enter command: ? what be in front of the Notre_Dame_Main_Building
+? what be in front of the Notre_Dame_Main_Building
+.Enter command: x
+.x
+-> a copper statue
+... ->  of Christ
+.
+a copper statue of Christ

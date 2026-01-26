@@ -1,0 +1,8 @@
+.logfile debug_example_log.txt
+in front of the Notre_Dame_Main_Building stand a copper statue
+of Christ
+? what be in front of the Notre_Dame_Main_Building
+.f monitor.txt
+.pg front of the Notre_Dame_Main_Building
+.ggp
+.ph in front of the Notre_Dame_Main_Building stand a copper statue

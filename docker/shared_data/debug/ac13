@@ -1,0 +1,18 @@
+#id: 5733bf84d058e614000b61bd
+Notre_Dame host three student newspaper
+
+
+? how many student news paper be find at
+Notre_Dame
+.sctx ? how many student news paper be find at
+.pg student
+.sctx Notre_Dame
+.wg Notre_Dame
+.ph Notre_Dame host three student newspaper
+.drop_goal
+.wg three
+.rw
+
+? how many student news paper be find at
+Notre_Dame
+.x

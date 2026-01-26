@@ -1,0 +1,9 @@
+.logfile debug_example2_log.txt
+the Grotto at Notre_Dame be a marian place of
+prayer and reflection
+
+? what be the Grotto at Notre_Dame
+.monitor display WGB always on
+.wg Grotto at Notre_Dame
+.monitor display WkPhB always on
+.ph the Grotto at Notre_Dame be a marian place of

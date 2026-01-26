@@ -1,0 +1,1871 @@
+in front of the Notre_Dame_Main_Building stand a copper statue
+of Christ
+? what be in front of the Notre_Dame_Main_Building
+.monitor display Header always on
+Monitor: 
+.monitor display InPhB always on
+Monitor: 
+.monitor display WkPhB always on
+Monitor: 
+.monitor display WGB always on
+Monitor: 
+.monitor display AcqAct always on
+Monitor: 
+.monitor display ElAct always on
+Monitor: 
+.monitor display GoalPh always on
+Monitor: 
+.monitor display GoalWG always on
+Monitor: 
+.monitor display CurrStartPh always on
+Monitor: 
+.monitor display StartPh always on
+Monitor: 
+.monitor console on
+Monitor: 
+.monitor display mode_change on
+Monitor: 
+.wg front of the Notre_Dame_Main_Building
+Operating mode changed to: explore
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_IN
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in front ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in front ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in front of ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in front of ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in front of ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ? what be in front of ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+.push_goal
+Operating mode changed to: null_mode
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+GoalPh: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: PUSH_GL
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+.ggp
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_GL_PH
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+.ph in front of the Notre_Dame_Main_Building stand a copper statue
+Operating mode changed to: explore
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: RETR_AS
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what be ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what be ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what be in ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what be in ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what be in ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: RETR_AS
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: what be in ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be in ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be in ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be in front ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be in front ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be in front ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: RETR_AS
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: be in front ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: RETR_AS
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: the ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: W_FROM_WK
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: FLUSH_WG
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front ---  ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: NEXT_W
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+WGB: front of ---  ---  ---  ---  ---  ---  ---  ---  
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---  
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---  
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------

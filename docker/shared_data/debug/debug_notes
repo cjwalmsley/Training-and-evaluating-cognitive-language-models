@@ -1,0 +1,28 @@
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---
+WGB: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---
+Next acquisition action: NULL_ACT
+Next elaboration action: NULL_ACT
+-------------------------------------------------------
+.ph in front of the Notre_Dame_Main_Building stand a copper statue
+Operating mode changed to: explore
+....
+
+Successful case
+
+-------------------------------------------------------
+-------------------------------------------------------
+InPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---
+WkPhB: ? what be in front of the Notre_Dame_Main_Building ---  ---
+WGB: front of ---  ---  ---  ---  ---  ---  ---  ---
+StartPh: 1
+CurrStartPh: 1
+GoalWG: front of the Notre_Dame_Main_Building ---  ---  ---  ---  ---  ---
+GoalPh: ? what be in front of the Notre_Dame_Main_Building ---  ---
+Next acquisition action: NULL_ACT
+Next elaboration action: GET_W
+-------------------------------------------------------

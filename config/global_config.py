@@ -453,7 +453,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def test_validation_results_dataframe_filepath(self):
         return os.path.join(
             self.testing_directory(),
-            self.settings.file_locations.test_validation_results_dataframe_filename,
+            self.settings.file_locations.test_results_dataframe_filename,
         )
 
     def test_pre_training_validation_results_dataframe_filepath(self):
