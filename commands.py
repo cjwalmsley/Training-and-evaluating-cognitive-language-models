@@ -348,6 +348,13 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 else:
                     self.commands.append(".rw")
 
+    def write_get_goal_phrase_command(self):
+        self.commands.append(self.get_goal_phrase_command())
+
+    @staticmethod
+    def get_goal_phrase_command():
+        return ".ggp"
+
     @staticmethod
     def drop_goal_command():
         return ".drop_goal"
@@ -371,6 +378,8 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 drop_goal = False
 
     def write_commands_long_answer_multi_phrase_statement(self):
+        if not self.question_generator.goal_stack.is_empty():
+            self.write_get_goal_phrase_command()
         declarative_sentence, drop_goal = self.lookup_declarative_sentence()
         self.commands.append(f"{self.phrase_command()} {declarative_sentence.text}")
         if drop_goal:
@@ -503,6 +512,9 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.current_word_group = []
         self.goal_stack = AnnabellGoalStack()
         self.current_context = None
+
+    def current_word_group_text(self):
+        return " ".join(self.current_word_group)
 
     def set_candidate_question_phrases_and_word_groups(self):
         self.candidate_question_phrases_and_word_groups = []
@@ -672,7 +684,10 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.write_lookup_declarative_sentence_commands()
 
         # finally write the word group command that will be used for the lookup of the first declarative sentence
-        self.write_word_group_command(" ".join(self.current_word_group))
+        if self.goal_stack.is_empty():
+            self.append_goal(self.current_word_group_text())
+        else:
+            self.write_word_group_command(self.current_word_group_text())
 
     def write_commands(self):
         self.commands = []
@@ -736,8 +751,9 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
 
         last_text_index = len(word_group_texts) - 1
         for index, word_group_text in enumerate(word_group_texts):
-            if index < last_text_index:
-                self.append_goal(f"{word_group_text}")
+            if index < last_text_index or len(word_group_texts) == 1:
+                self.append_goal(word_group_text)
+                self.set_current_word_group(word_group_text)
             else:
                 self.set_current_word_group(word_group_text)
                 self.write_word_group_command(word_group_text)

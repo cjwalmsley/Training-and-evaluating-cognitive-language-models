@@ -84,14 +84,16 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "the sky is blue with patches of grey",
             "\n",
             "? what color is the sky",
-            ".wg sky",
+            ".pg sky",
+            ".ggp",
             ".ph the sky is blue with patches of grey",
+            ".drop_goal",
             ".wg blue",
             ".rw",
             "\n",
         ]
 
-        self.assertEqual(commands, expected_commands)
+        self.assertEqual(expected_commands, commands)
 
     def test_create_list_of_commands_long_answer(self):
         """Test command generation for an answer with more than 3 words."""
@@ -105,8 +107,10 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "the sky is blue with patches of grey",
             "\n",
             "? what color is the sky",
-            ".wg sky",
+            ".pg sky",
+            ".ggp",
             ".ph the sky is blue with patches of grey",
+            ".drop_goal",
             ".wg blue with patches of",
             ".prw",
             ".wg grey",
@@ -126,7 +130,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "? what color is the",
             "sky",
             ".sctx sky",
-            ".wg sky",
+            ".pg sky",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
@@ -183,7 +187,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             self.declarative_sentence, self.question, self.short_answer, max_words=5
         )
         generator.write_question_commands()
-        expected_commands = [".sctx sky", ".wg sky"]
+        expected_commands = [".sctx sky", ".pg sky"]
         self.assertEqual(expected_commands, generator.commands)
 
     def test_write_question_commands_long_declarative_sentence(self):
@@ -286,7 +290,9 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         )
         answer_generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph the Grotto at Notre_Dame be a marian place of prayer",
+            ".drop_goal",
             ".wg a marian place of",
             ".prw",
             ".wg prayer",
@@ -492,7 +498,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         )
         generator.write_commands_single_phrase_question_single_phrase_statement()
         expected_commands = [
-            ".wg sit on top",
+            ".pg sit on top",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
@@ -520,7 +526,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         )
         generator.write_question_commands()
         expected_commands = [
-            ".wg publish",
+            ".pg publish",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
@@ -813,6 +819,26 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, question_generator.commands)
 
+    def test_write_commands_multi_phrase_question_multi_phrase_statement11(
+        self,
+    ):
+
+        declarative_sentence = (
+            "in front of the Notre_Dame_Main_Building stand a copper statue of Christ"
+        )
+        question = "? what be in front of the Notre_Dame_Main_Building"
+        answer = "a copper statue of Christ"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? what be in front of the Notre_Dame_Main_Building",
+            ".pg front of the Notre_Dame_Main_Building",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
 
 class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
 
@@ -864,6 +890,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph Beyonce have sell over 118_million record throughout the world",
             ".drop_goal",
             ".drop_goal",
@@ -904,6 +931,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         generator.write_answer_commands()
         # generator.write_commands_short_answer_multi_phrase_statement()
         expected_commands = [
+            ".ggp",
             ".ph of the Main_Building at Notre_Dame",
             ".drop_goal",
             ".sctx a golden statue of the Virgin_Mary sit on top",
@@ -926,6 +954,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph before the creation of the College_of_Engineering similar study be",
             ".drop_goal",
             ".sctx carry out at the College_of_Science",
@@ -948,6 +977,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph the change to national standard at Notre_Dame in the",
             ".drop_goal",
             ".drop_goal",
@@ -1004,6 +1034,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph the number of department within the Stinson - Remick",
             ".drop_goal",
             ".drop_goal",
@@ -1029,6 +1060,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph the entity that provide help with the management of",
             ".drop_goal",
             ".drop_goal",
@@ -1055,6 +1087,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph Forbescom place Notre_Dame at 8th position compare to other",
             ".drop_goal",
             ".drop_goal",
@@ -1075,6 +1108,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         )
         generator.write_answer_commands()
         expected_commands = [
+            ".ggp",
             ".ph of the Main_Building at Notre_Dame",
             ".drop_goal",
             ".sctx a golden statue of the Virgin_Mary sit on top",
@@ -1082,6 +1116,34 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
             ".wg a golden statue of",
             ".prw",
             ".wg the Virgin_Mary",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_long_answer_multi_phrase_statement2(self):
+
+        declarative_sentence = (
+            "in front of the Notre_Dame_Main_Building stand a copper statue of Christ"
+        )
+        question = "? what be in front of the Notre_Dame_Main_Building"
+        answer = "a copper statue of Christ"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ggp",
+            ".ph in front of the Notre_Dame_Main_Building stand a copper statue",
+            ".drop_goal",
+            ".wg a copper statue",
+            ".prw",
+            ".sctx of Christ",
+            ".wg of Christ",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)
@@ -1146,7 +1208,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         generator.write_question_commands()
         expected_commands = [
             "? what color is the sky",
-            ".wg sky",
+            ".pg sky",
         ]
         self.assertEqual(expected_commands, generator.commands)
 
@@ -1163,8 +1225,10 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
 
         expected_commands = [
             "? what color is the sky",
-            ".wg sky",
+            ".pg sky",
+            ".ggp",
             ".ph the sky is blue with patches of grey",
+            ".drop_goal",
             ".wg blue",
             ".rw",
         ]
@@ -1183,8 +1247,10 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
             "? what color is the",
             "sky",
             ".sctx sky",
-            ".wg sky",
+            ".pg sky",
+            ".ggp",
             ".ph the sky is a brilliant",
+            ".drop_goal",
             ".sctx blue with some patches of",
             ".wg blue with some patches",
             ".prw",

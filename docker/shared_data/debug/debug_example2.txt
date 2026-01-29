@@ -1,9 +1,19 @@
 .logfile debug_example2_log.txt
-the Grotto at Notre_Dame be a marian place of
-prayer and reflection
+.f monitor.txt
+#id: 5733be284776f4190066117f
+in front of the Notre_Dame_Main_Building stand a copper statue
+of Christ
 
-? what be the Grotto at Notre_Dame
-.monitor display WGB always on
-.wg Grotto at Notre_Dame
-.monitor display WkPhB always on
-.ph the Grotto at Notre_Dame be a marian place of
+? what be in front of the Notre_Dame_Main_Building
+.pg front of the Notre_Dame_Main_Building
+.ggp
+.ph in front of the Notre_Dame_Main_Building stand a copper statue
+.drop_goal
+.wg a copper statue
+.prw
+.sctx of Christ
+.wg of Christ
+.rw
+
+? what be in front of the Notre_Dame_Main_Building
+.x

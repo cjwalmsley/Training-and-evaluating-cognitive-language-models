@@ -1,0 +1,28 @@
+ROLE: you are a software developer
+TASK: create a logfile parser, in python that produces a summary of the activity in the provided logfile.
+
+LOGFILE CONTENT:
+* Each set of logfile entries is created after a row beginning with a "." which represents a system command.
+* The state of the system is represented by buffers which are written on rows that begin with "<BUFFER_NAME>:"
+* The actions being performed by the system are written in rows that begin with "Next <ACTION_NAME> action:"
+
+The possible BUFFER_NAMEs are:
+InPhB:
+WkPhB:
+WGB:
+StartPh:
+CurrStartPh:
+GoalWG:
+GoalPh:
+
+The possible ACTION_NAMEs are:
+Next acquisition action:
+Next elaboration action:
+
+KEY PIECES OF INFORMATION TO EXTRACT:
+* The command
+* any state changes in the system that happen in the entries that follow the command up to the next command
+* any actions that are performed
+
+OTHER RULES:
+Only changes to state or action should be reported.

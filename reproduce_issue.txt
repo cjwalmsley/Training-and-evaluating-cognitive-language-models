@@ -1,0 +1,7 @@
+.monitor display Header always on
+.monitor display InPhB always on
+.monitor display WkPhB always on
+InPhB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+WkPhB: ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+InPhB: .end_context ---  ---  ---  ---  ---  ---  ---  ---  ---
+WkPhB: .end_context ---  ---  ---  ---  ---  ---  ---  ---  ---
