@@ -690,7 +690,10 @@ class DatasetPreProcessor:
             for index, row in dataset_to_write.iterrows():
                 commands = row["created_commands"]
                 for command in commands:
-                    commands_file.write(command + "\n")
+                    if command.endswith("\n"):
+                        commands_file.write(command)
+                    else:
+                        commands_file.write(command + "\n")
         logger.info(f"Wrote {the_filepath}")
 
         with open(the_filepath, "r") as commands_file:
