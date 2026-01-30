@@ -674,6 +674,13 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
                     word_group_text = " ".join(non_lookup_sentence_word_group_chunk)
                     self.append_goal(f"{word_group_text}")
 
+    def all_declarative_phrase_lookup_word_groups(self):
+        lookup_word_groups = []
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            for word_group in candidate_phrase.declarative_lookup_word_groups:
+                lookup_word_groups.append(word_group)
+        return lookup_word_groups
+
     def write_commands_from_candidate_question_phrases_and_word_groups(self):
 
         # self.sort_candidate_question_phrases_and_word_groups()
@@ -684,10 +691,10 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.write_lookup_declarative_sentence_commands()
 
         # finally write the word group command that will be used for the lookup of the first declarative sentence
-        if self.goal_stack.is_empty():
-            self.append_goal(self.current_word_group_text())
-        else:
+        if len(self.all_declarative_phrase_lookup_word_groups()) > 1:
             self.write_word_group_command(self.current_word_group_text())
+        else:
+            self.append_goal(self.current_word_group_text())
 
     def write_commands(self):
         self.commands = []

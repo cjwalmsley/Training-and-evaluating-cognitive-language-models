@@ -301,15 +301,15 @@ class AnnabellTestResultsEvaluator:
             results_file.write("\nRows with exact matches:\n")
             results_file.write(
                 self.correct_matches()[
-                    ["question", "answer", "test_answer"]
+                    ["id", "question_formatted", "answer_formatted", "test_answer"]
                 ].to_markdown(index=False)
             )
             # write the rows in any_matches to the file
             results_file.write("\nRows with any word matches:\n")
             results_file.write(
-                self.any_matches()[["question", "answer", "test_answer"]].to_markdown(
-                    index=False
-                )
+                self.any_matches()[
+                    ["id", "question_formatted", "answer_formatted", "test_answer"]
+                ].to_markdown(index=False)
             )
             # write the rows that had a close cosine distance to the file
             results_file.write(
@@ -318,8 +318,9 @@ class AnnabellTestResultsEvaluator:
             results_file.write(
                 self.close_cosine_distance_df()[
                     [
-                        "question",
-                        "answer",
+                        "id",
+                        "question_formatted",
+                        "answer_formatted",
                         "test_answer",
                         "test_answer_cosine_distance",
                     ]
@@ -332,8 +333,9 @@ class AnnabellTestResultsEvaluator:
             results_file.write(
                 self.any_matches_below_cosine_distance_threshold()[
                     [
-                        "question",
-                        "answer",
+                        "id",
+                        "question_formatted",
+                        "answer_formatted",
                         "test_answer",
                         "test_answer_cosine_distance",
                     ]
@@ -346,8 +348,9 @@ class AnnabellTestResultsEvaluator:
             results_file.write(
                 self.correct_matches()[
                     [
-                        "question",
-                        "answer",
+                        "id",
+                        "question_formatted",
+                        "answer_formatted",
                         "test_answer",
                         "test_answer_cosine_distance",
                     ]
@@ -357,7 +360,7 @@ class AnnabellTestResultsEvaluator:
             results_file.write("\nRows with incorrect answers:\n")
             results_file.write(
                 self.incorrect_matches()[
-                    ["question", "answer", "test_answer"]
+                    ["id", "question_formatted", "answer_formatted", "test_answer"]
                 ].to_markdown(index=False)
             )
         print(

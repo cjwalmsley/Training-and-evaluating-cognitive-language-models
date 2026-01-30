@@ -2,19 +2,18 @@
 Father John_Francis OHara become the Vice - President of
 the University_of_Notre_Dame in 1933
 
-.at
 ? which person become vice - president of Notre_Dame
 in 1933
 .sctx in 1933
 .pg 1933
 .sctx ? which person become vice - president of Notre_Dame
-.wg become
+.pg become
 .ggp
 .ph Father John_Francis OHara become the Vice - President of
 .drop_goal
+.drop_goal
 .wg Father John_Francis OHara
 .rw
-.eat
 
 ? which person become vice - president of Notre_Dame
 in 1933

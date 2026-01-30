@@ -609,7 +609,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             "Notre_Dame",
             ".sctx ? what sit on top of the Main_Building at",
             ".pg top",
-            ".wg sit",
+            ".pg sit",
         ]
 
         self.assertEqual(expected_commands, question_generator.commands)
@@ -835,6 +835,28 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what be in front of the Notre_Dame_Main_Building",
             ".pg front of the Notre_Dame_Main_Building",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    def test_write_commands_multi_phrase_question_multi_phrase_statement12(
+        self,
+    ):
+
+        declarative_sentence = "Father John_Francis OHara become the Vice - President of the University_of_Notre_Dame in 1933"
+        question = "? which person become vice - president of Notre_Dame in 1933"
+        answer = "Father John_Francis OHara"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? which person become vice - president of Notre_Dame",
+            "in 1933",
+            ".sctx in 1933",
+            ".pg 1933",
+            ".sctx ? which person become vice - president of Notre_Dame",
+            ".pg become",
         ]
 
         self.assertEqual(expected_commands, question_generator.commands)
@@ -1092,6 +1114,30 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
             ".drop_goal",
             ".drop_goal",
             ".wg 8th",
+            ".rw",
+        ]
+        self.assertEqual(expected_commands, generator.commands)
+
+    def test_write_commands_short_answer_multi_phrase_statement8(self):
+
+        declarative_sentence = "Father John_Francis OHara become the Vice - President of the University_of_Notre_Dame in 1933"
+        question = "? which person become vice - president of Notre_Dame in 1933"
+        answer = "Father John_Francis OHara"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+
+        generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        generator.write_answer_commands()
+        expected_commands = [
+            ".ggp",
+            ".ph Father John_Francis OHara become the Vice - President of",
+            ".drop_goal",
+            ".drop_goal",
+            ".wg Father John_Francis OHara",
             ".rw",
         ]
         self.assertEqual(expected_commands, generator.commands)

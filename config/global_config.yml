@@ -51,7 +51,7 @@ file_locations:
 
 
 experiments:
-  experiment_name: "sandbox"
+  experiment_name: "23"
   percentage_of_pretraining_samples: 50
   maximum_number_of_words: 18
   maximum_word_length: 25

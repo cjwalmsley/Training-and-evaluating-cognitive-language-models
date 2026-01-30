@@ -1,24 +1,15 @@
-#id: 57339b36d058e614000b5ea4
-the percentage of food serve at Notre_Dame that be
-locally grow be 40_percent
+#id: 57339b36d058e614000b5ea3
+Notre_Dame establish the Office_of_Sustainability in 2008
 
-? what percentage of the food serve at Notre_Dame
-be locally grow
-.sctx be locally grow
-.pg locally grow
-.sctx ? what percentage of the food serve at Notre_Dame
-.pg percentage of
-.f monitor.txt
-.wg food serve at Notre_Dame
-#
-#.ph the percentage of food serve at Notre_Dame that be
-#.drop_goal
-#.sctx locally grow be 40_percent
-#.drop_goal
-#.wg 40_percent
-#.rw
-#
-#? what percentage of the food serve at Notre_Dame
-#be locally grow
-#.sctx be locally grow
-#.x
+? in what_year do Notre_Dame create the Office_of_sustainability
+.pg Notre_Dame
+.ggp
+.ph Notre_Dame establish the Office_of_Sustainability in 2008
+.drop_goal
+.wg 2008
+.rw
+.t
+
+? in what_year do Notre_Dame create the Office_of_sustainability
+.x
+.t
