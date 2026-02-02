@@ -758,3 +758,6 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.docker_training_directory(),
             self.training_weights_filename(),
         )
+
+    def auto_save_weights(self) -> bool:
+        return self.settings.experiments.auto_save_weights

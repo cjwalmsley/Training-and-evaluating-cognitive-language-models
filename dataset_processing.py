@@ -648,6 +648,10 @@ class DatasetPreProcessor:
     def answer_formatted_column_name():
         return "answer_formatted"
 
+    @staticmethod
+    def auto_save_weights_command():
+        return ".auto_save_links"
+
     def create_commands_for_pretraining(self):
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
@@ -679,7 +683,7 @@ class DatasetPreProcessor:
             "created_commands_error"
         ]
 
-    def write_pretraining_file(self, the_filepath):
+    def write_pretraining_file(self, the_filepath, auto_save_weights):
         with open(the_filepath, "w") as commands_file:
             dataset_to_write = self.pretraining_dataset()
             # Only filter if the column exists
@@ -688,6 +692,11 @@ class DatasetPreProcessor:
                     dataset_to_write["created_commands_error"] != True
                 ]
             dataset_to_write.reset_index(drop=True, inplace=True)
+            if auto_save_weights:
+                logger.info(
+                    "Auto-save weights is enabled; adding save weight commands to pre-training samples."
+                )
+                commands_file.write(f"{self.auto_save_weights_command()}\n")
             for index, row in dataset_to_write.iterrows():
                 commands = row["created_commands"]
                 commands_file.write(

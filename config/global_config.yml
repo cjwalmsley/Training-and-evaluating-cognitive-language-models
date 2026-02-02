@@ -59,6 +59,7 @@ experiments:
   number_of_training_samples: 20
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
+  auto_save_weights: false
 
 dataset:
   dataset_directory: "datasets/squad_dataset"

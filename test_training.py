@@ -45,7 +45,7 @@ class TestPretrainingFileGeneration(unittest.TestCase):
         Tests that write_pretraining_file correctly handles commands that may or may not
         already include newlines, preventing double blank lines.
         """
-        self.processor.write_pretraining_file(self.output_file)
+        self.processor.write_pretraining_file(self.output_file, False)
         with open(self.output_file, "r") as f:
             content = f.read()
 
@@ -58,7 +58,7 @@ class TestPretrainingFileGeneration(unittest.TestCase):
 
     def test_write_pretraining_file_sample_count(self):
 
-        self.processor.write_pretraining_file(self.output_file)
+        self.processor.write_pretraining_file(self.output_file, False)
         with open(self.output_file, "r") as f:
             content = f.read()
 
@@ -68,11 +68,18 @@ class TestPretrainingFileGeneration(unittest.TestCase):
 
     def test_write_pretraining_file_start_of_sample(self):
 
-        self.processor.write_pretraining_file(self.output_file)
+        self.processor.write_pretraining_file(self.output_file, False)
         with open(self.output_file, "r") as f:
             content = f.read()
 
         self.assertIn(f"{AnnabellLogfileInterpreter.start_of_sample_string()}", content)
+
+    def test_write_pretraining_file_with_auto_saving_of_weights(self):
+        self.processor.write_pretraining_file(self.output_file, True)
+        with open(self.output_file, "r") as f:
+            content = f.read()
+
+        self.assertIn(f"{DatasetPreProcessor.auto_save_weights_command()}", content)
 
 
 if __name__ == "__main__":

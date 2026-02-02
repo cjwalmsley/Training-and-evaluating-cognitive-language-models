@@ -201,7 +201,7 @@ class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
     def write_annabell_files_to_gdrive(self):
 
         self.dataset_processor.write_pretraining_file(
-            global_config.pre_training_filepath()
+            global_config.pre_training_filepath(), global_config.auto_save_weights()
         )
 
     def copy_files_to_docker_directory(self):

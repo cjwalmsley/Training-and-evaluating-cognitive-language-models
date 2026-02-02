@@ -83,6 +83,7 @@ class Experiments(BaseModel):
     number_of_training_samples: int
     use_all_available_samples: bool
     cosine_distance_threshold: float
+    auto_save_weights: bool
 
 
 # 2. A nested model for model hyperparameters
