@@ -7,6 +7,7 @@ from datasets import load_dataset, load_from_disk
 from scipy.spatial.distance import cosine
 import ollama
 import pandas as pd
+from annabell_utilities import AnnabellLogfileInterpreter
 from config.global_config import GlobalConfig
 import shutil
 import re
@@ -686,21 +687,22 @@ class DatasetPreProcessor:
                 dataset_to_write = dataset_to_write[
                     dataset_to_write["created_commands_error"] != True
                 ]
-
+            dataset_to_write.reset_index(drop=True, inplace=True)
             for index, row in dataset_to_write.iterrows():
                 commands = row["created_commands"]
+                commands_file.write(
+                    f"{AnnabellLogfileInterpreter.start_of_sample_string()}\n"
+                )
+                commands_file.write(
+                    f"{AnnabellLogfileInterpreter.sample_number_count_string()} {index+1} of {len(dataset_to_write)}\n"
+                )
                 for command in commands:
+
                     if command.endswith("\n"):
                         commands_file.write(command)
                     else:
                         commands_file.write(command + "\n")
-        logger.info(f"Wrote {the_filepath}")
-
-        with open(the_filepath, "r") as commands_file:
-            lines = commands_file.readlines()
-        number_of_reward_lines = sum(1 for line in lines if line.startswith(".rw"))
-        logger.info(f"Number of reward lines: {number_of_reward_lines}")
-        logger.info(f"Number of commands: {len(lines)}")
+        logger.info(f"Wrote {len(dataset_to_write)} samples to {the_filepath}")
 
     @staticmethod
     def declarative_statement_column_name():

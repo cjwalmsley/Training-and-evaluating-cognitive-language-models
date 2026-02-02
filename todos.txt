@@ -1,0 +1,5 @@
+autosave files
+analyse existing logs for error correlations
+add on-the fly evaluation to pretraining
+look at sampling
+load original weights as pre pretraining step

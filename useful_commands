@@ -184,3 +184,5 @@ the city in the United States with the high -est populate -ion is New York
  .rw
 
  .action GET_START_PH
+
+ count number of id rows grep -c "#id:" 'docker/shared_data/pre_training/annabell_pre_training_log.txt'

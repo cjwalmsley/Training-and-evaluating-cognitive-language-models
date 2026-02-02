@@ -83,16 +83,20 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         expected_commands = [
             "#id: test_01",
             "the sky is blue with patches of grey",
+            f"{AnnabellLogfileInterpreter.end_of_declaration_string()}",
             "\n",
             "? what color is the sky",
+            f"{AnnabellLogfileInterpreter.end_of_question_string()}",
             ".pg sky",
             ".ggp",
             ".ph the sky is blue with patches of grey",
             ".drop_goal",
             ".wg blue",
             ".rw",
-            f"{AnnabellBaseCommandGenerator.time_command()}",
             "\n",
+            f"{AnnabellLogfileInterpreter.end_of_commands_string()}",
+            ".time",
+            f"{AnnabellLogfileInterpreter.end_of_time_string()}",
         ]
 
         self.assertEqual(expected_commands, commands)
@@ -107,8 +111,10 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         expected_commands = [
             "#id: test_01",
             "the sky is blue with patches of grey",
+            f"{AnnabellLogfileInterpreter.end_of_declaration_string()}",
             "\n",
             "? what color is the sky",
+            f"{AnnabellLogfileInterpreter.end_of_question_string()}",
             ".pg sky",
             ".ggp",
             ".ph the sky is blue with patches of grey",
@@ -117,8 +123,10 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             ".prw",
             ".wg grey",
             ".rw",
-            f"{AnnabellBaseCommandGenerator.time_command()}",
             "\n",
+            f"{AnnabellLogfileInterpreter.end_of_commands_string()}",
+            ".time",
+            f"{AnnabellLogfileInterpreter.end_of_time_string()}",
         ]
 
         self.assertEqual(expected_commands, commands)
@@ -132,6 +140,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what color is the",
             "sky",
+            "#END OF QUESTION",
             ".sctx sky",
             ".pg sky",
         ]
@@ -151,6 +160,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             "? what was the trade",
             "-ing post that precede -d",
             "New-York-City call -ed",
+            "#END OF QUESTION",
             ".sctx ? what was the trade",
             ".pg trade",
             ".sctx -ing post that precede -d",
@@ -347,10 +357,11 @@ class TestAnnabellTrainingCommandGenerator(unittest.TestCase):
             "#id: 5733be284776f41900661180",
             "the Basilica of the Sacred Heart at Notre_Dame be",
             "beside the_Main_Building",
+            "#END OF DECLARATION",
             "\n",
         ]
         self.command_generator.create_list_of_commands()
-        self.assertEqual(self.command_generator.commands, expected_commands)
+        self.assertEqual(expected_commands, self.command_generator.commands)
 
 
 class TestAnnabellQuestionContext(unittest.TestCase):
@@ -471,6 +482,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what sit on top of the Main_Building at",
             "Notre_Dame",
+            "#END OF QUESTION",
             ".sctx ? what sit on top of the Main_Building at",
             ".pg sit on top",
             ".pg Main_Building",
@@ -515,6 +527,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         generator.write_commands()
         expected_commands = [
             "? what sit on top of the Main_Building at Notre_Dame",
+            "#END OF QUESTION",
             ".pg sit on top",
             ".wg Main_Building at Notre_Dame",
         ]
@@ -568,6 +581,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? how many record have Beyonce sell throughout the",
             "world",
+            "#END OF QUESTION",
             ".sctx ? how many record have Beyonce sell throughout the",
             ".pg record",
             ".pg Beyonce",
@@ -610,6 +624,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what sit on top of the Main_Building at",
             "Notre_Dame",
+            "#END OF QUESTION",
             ".sctx ? what sit on top of the Main_Building at",
             ".pg top",
             ".pg sit",
@@ -631,6 +646,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? before the creation of the College_of_Engineering similar study",
             "be carry out at which Notre_Dame college",
+            "#END OF QUESTION",
             ".sctx be carry out at which Notre_Dame college",
             ".pg carry",
             ".sctx ? before the creation of the College_of_Engineering similar study",
@@ -655,6 +671,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             "? over how many year do the change to",
             "national standard undertake at Notre_Dame in the early_20th_century take",
             "place",
+            "#END OF QUESTION",
             ".sctx national standard undertake at Notre_Dame in the early_20th_century "
             "take",
             ".pg early_20th_century take",
@@ -688,6 +705,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what be the daily student paper at Notre_Dame",
             "call",
+            "#END OF QUESTION",
             ".sctx ? what be the daily student paper at Notre_Dame",
             ".pg daily student paper",
             ".pg Notre_Dame",
@@ -713,6 +731,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? how many department be within the Stinson -",
             "Remick Hall of Engineering",
+            "#END OF QUESTION",
             ".sctx Remick Hall of Engineering",
             ".pg Hall of Engineering",
             ".sctx ? how many department be within the Stinson -",
@@ -738,6 +757,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what entity provide help with the management of",
             "time for new student at Notre_Dame",
+            "#END OF QUESTION",
             ".sctx time for new student at Notre_Dame",
             ".pg time for new student",
             ".pg Notre_Dame",
@@ -763,6 +783,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? Forbescom place Notre_Dame at what position compare to",
             "other US research university",
+            "#END OF QUESTION",
             ".sctx other US research university",
             ".pg US research university",
             ".sctx ? Forbescom place Notre_Dame at what position compare to",
@@ -788,6 +809,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what percentage of the food serve at Notre_Dame",
             "be locally grow",
+            "#END OF QUESTION",
             ".sctx be locally grow",
             ".pg locally grow",
             ".sctx ? what percentage of the food serve at Notre_Dame",
@@ -813,6 +835,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? where do Notre_Dame student and the KKK have",
             "their encounter",
+            "#END OF QUESTION",
             ".sctx ? where do Notre_Dame student and the KKK have",
             ".pg Notre_Dame student",
             ".pg KKK",
@@ -837,6 +860,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         question_generator.write_commands()
         expected_commands = [
             "? what be in front of the Notre_Dame_Main_Building",
+            "#END OF QUESTION",
             ".pg front of the Notre_Dame_Main_Building",
         ]
 
@@ -856,6 +880,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? which person become vice - president of Notre_Dame",
             "in 1933",
+            "#END OF QUESTION",
             ".sctx in 1933",
             ".pg 1933",
             ".sctx ? which person become vice - president of Notre_Dame",
@@ -1255,10 +1280,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
             max_words=10,
         )
         generator.write_question_commands()
-        expected_commands = [
-            "? what color is the sky",
-            ".pg sky",
-        ]
+        expected_commands = ["? what color is the sky", "#END OF QUESTION", ".pg sky"]
         self.assertEqual(expected_commands, generator.commands)
 
     def test_write_answer_commands(self):
@@ -1274,6 +1296,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
 
         expected_commands = [
             "? what color is the sky",
+            "#END OF QUESTION",
             ".pg sky",
             ".ggp",
             ".ph the sky is blue with patches of grey",
@@ -1295,6 +1318,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         expected_commands = [
             "? what color is the",
             "sky",
+            "#END OF QUESTION",
             ".sctx sky",
             ".pg sky",
             ".ggp",

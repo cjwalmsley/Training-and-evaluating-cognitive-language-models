@@ -10,6 +10,7 @@ class TestAnnabellLogfileInterpreter(unittest.TestCase):
         with open(self.log_filepath, "w") as f:
             f.write(self.sample_logfile_content())
         self.interpreter = AnnabellLogfileInterpreter(self.log_filepath)
+        self.interpreter.parse_entries()
 
     def tearDown(self):
         if os.path.exists(self.log_filepath):
@@ -17,7 +18,9 @@ class TestAnnabellLogfileInterpreter(unittest.TestCase):
 
     @staticmethod
     def sample_logfile_content():
-        return f"""#id: 5733be284776f41900661180
+        return f"""{AnnabellLogfileInterpreter.start_of_sample_string()}
+#sample: 1 of 3
+#id: 5733be284776f41900661180
 the Basilica of the Sacred Heart at Notre_Dame be
 adjacent to the Main_Building
 {AnnabellLogfileInterpreter.end_of_declaration_string()}
@@ -49,6 +52,8 @@ RemPhfWG->as_time: 0.000000
 ElActfSt neurons: 0
 ElActfSt links: 0
 {AnnabellLogfileInterpreter.end_of_time_string()}
+{AnnabellLogfileInterpreter.start_of_sample_string()}
+#sample: 2 of 3
 #id: 5733be284776f4190066117e
 atop the Main_Building of Notre - Dame a golden
 statue of the Virgin_Mary be prominently display
@@ -82,6 +87,8 @@ RemPhfWG->as_time: 0.000000
 ElActfSt neurons: 0
 ElActfSt links: 0
 {AnnabellLogfileInterpreter.end_of_time_string()}
+{AnnabellLogfileInterpreter.start_of_sample_string()}
+#sample: 3 of 3
 #id: 5733bf84d058e614000b61be
 the Scholastic_Magazine of Notre_Dame begin publish in September_1876
 {AnnabellLogfileInterpreter.end_of_declaration_string()}
@@ -118,14 +125,12 @@ ElActfSt links: 0
 """
 
     def test_timing_extraction(self):
-        self.interpreter.parse_entries()
-        entries = self.interpreter.entries
-        timings = [entry.time() for entry in entries]
+        timings = [entry.time() for entry in self.interpreter.entries]
         self.assertEqual(3, len(timings))
         self.assertEqual(1.0, timings[0])
         self.assertEqual(3.0, timings[1])
         self.assertEqual(6.0, timings[2])
-        elapsed_timings = [entry.elapsed_time() for entry in entries]
+        elapsed_timings = [entry.elapsed_time() for entry in self.interpreter.entries]
         self.assertEqual(1.0, elapsed_timings[0], 1.0)
         self.assertEqual(4.0, elapsed_timings[1])
         self.assertEqual(10.0, elapsed_timings[2])
@@ -134,6 +139,20 @@ ElActfSt links: 0
             self.interpreter.total_elapsed_time_recorded(),
             self.interpreter.total_elapsed_time_computed(),
         )
+
+    def test_id_extraction(self):
+        ids = [entry.id() for entry in self.interpreter.entries]
+        self.assertEqual(3, len(ids))
+        self.assertEqual("5733be284776f41900661180", ids[0])
+        self.assertEqual("5733be284776f4190066117e", ids[1])
+        self.assertEqual("5733bf84d058e614000b61be", ids[2])
+
+    def test_sample_numbers(self):
+        sample_numbers = [entry.sample_number() for entry in self.interpreter.entries]
+        self.assertEqual(3, len(sample_numbers))
+        self.assertEqual(1, sample_numbers[0])
+        self.assertEqual(2, sample_numbers[1])
+        self.assertEqual(3, sample_numbers[2])
 
 
 if __name__ == "__main__":

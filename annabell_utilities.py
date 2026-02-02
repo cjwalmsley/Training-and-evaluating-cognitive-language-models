@@ -23,21 +23,40 @@ class AnnabellLogfileInterpreter:
     def end_of_time_string():
         return "#END OF TIME"
 
+    @staticmethod
+    def start_of_sample_string():
+        return "#START OF SAMPLE"
+
+    @staticmethod
+    def id_string():
+        return "#id:"
+
+    @staticmethod
+    def sample_number_count_string():
+        return "#sample:"
+
     def parse_entries(self):
-        # read the file and split the contents by the delimiter "#id: "
+        # read the file and split the contents by the start_of_sample_string delimiter
         with open(self.logfile_path, "r") as file:
             content = file.read()
-        raw_entries = content.split("#id: ")[1:]  # Skip the first empty split
+        raw_entries = content.split(self.start_of_sample_string())[
+            1:
+        ]  # Skip the first empty split
         self.entries.extend([self.create_entry(raw_entry) for raw_entry in raw_entries])
 
     def create_entry(self, raw_entry):
 
         lines = raw_entry.strip().split("\n")
 
-        entry_id = lines[0].strip()
-
+        sample_number_line = [
+            line for line in lines if line.startswith(self.sample_number_count_string())
+        ][0].strip()
+        entry_id_line = [line for line in lines if line.startswith(self.id_string())][
+            0
+        ].strip()
+        index_of_id_line = lines.index(entry_id_line)
         index_of_declaration_end = lines.index(self.end_of_declaration_string())
-        declaration_lines = lines[1:index_of_declaration_end]
+        declaration_lines = lines[index_of_id_line + 1 : index_of_declaration_end]
         index_of_question_end = lines.index(self.end_of_question_string())
         question_lines = lines[index_of_declaration_end + 2 : index_of_question_end]
         index_of_commands_end = lines.index(self.end_of_commands_string())
@@ -46,7 +65,13 @@ class AnnabellLogfileInterpreter:
         time_lines = lines[index_of_commands_end + 1 : index_of_time_end]
 
         return AnnabellLogEntry(
-            self, entry_id, declaration_lines, question_lines, command_lines, time_lines
+            self,
+            sample_number_line,
+            entry_id_line,
+            declaration_lines,
+            question_lines,
+            command_lines,
+            time_lines,
         )
 
     def previous_entry(self, reference_entry):
@@ -71,14 +96,16 @@ class AnnabellLogEntry:
     def __init__(
         self,
         interpreter,
-        entry_id,
+        sample_number_line,
+        entry_id_line,
         declaration_lines,
         question_lines,
         command_lines,
         time_lines,
     ):
         self.interpreter = interpreter
-        self.entry_id = entry_id
+        self.sample_number_line = sample_number_line
+        self.entry_id_line = entry_id_line
         self.declaration_lines = declaration_lines
         self.question_lines = question_lines
         self.command_lines = command_lines
@@ -86,7 +113,7 @@ class AnnabellLogEntry:
 
     def __repr__(self):
         # Displays the phrase text and how many word groups it has
-        return f"<AnnabellLogEntry: '{self.entry_id}' | Declaration: {self.declaration_lines[0]}>"
+        return f"<AnnabellLogEntry: '{self.entry_id_line}' | Declaration: {self.declaration_lines[0]}>"
 
     def elapsed_time(self):
         time_line = self.time_lines[1]
@@ -101,3 +128,10 @@ class AnnabellLogEntry:
             previous_entry_elapsed_time = 0.0
 
         return self.elapsed_time() - previous_entry_elapsed_time
+
+    def id(self):
+        return self.entry_id_line.replace(self.interpreter.id_string(), "").strip()
+
+    def sample_number(self):
+        # "#sample: 1 of 3"
+        return int(self.sample_number_line.split(":")[1].split("of")[0].strip())

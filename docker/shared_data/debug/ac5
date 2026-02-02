@@ -1,17 +1,13 @@
-#id: 5733be284776f4190066117f
-a copper statue of Christ be in front of
-the Notre_Dame Main Building
-? what be in front of the Notre_Dame Main
-Building
-.sctx ? what be in front of the Notre_Dame Main
-.wg front
-.wg Notre_Dame
-.wg Main
-.sctx Building
-.wg Building
-.ph a copper statue of Christ be in front of
-.wg a copper statue
-.prw
-.wg of Christ
-.prw
+#id: 57339b36d058e614000b5ea3
+Notre_Dame establish the Office_of_Sustainability in 2008
+
+? in what_year do Notre_Dame create the Office_of_sustainability
+.pg Notre_Dame
+.ggp
+.ph Notre_Dame establish the Office_of_Sustainability in 2008
+.drop_goal
+.wg 2008
 .rw
+
+? in what_year do Notre_Dame create the Office_of_sustainability
+.x

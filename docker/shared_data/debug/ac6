@@ -1,17 +1,10 @@
-#id: 5733bf84d058e614000b61be
-the Scholastic_Magazine of Notre_Dame begin publish in September_1876
-#words in question and sentence phrase Scholastic_Magazine, begin publish
+#command /first cue & second cue/phrase/word group/
+#id: 57339b36d058e614000b5ea3
+Notre_Dame establish the Office_of_Sustainability in 2008
 
-? when do the Scholastic_Magazine of Notre dame begin
-publish
-.sctx ? when do the Scholastic_Magazine of Notre dame begin
-.wg Scholastic_Magazine
-.pg begin
-.ph the Scholastic_Magazine of Notre_Dame begin publish in September_1876
-.wg September_1876
+? in what_year do Notre_Dame create the Office_of_Sustainability
+.ph /Notre_Dame & Office_of_Sustainability/Notre_Dame establish the Office_of_Sustainability in 2008/2008/
 .rw
 
-? when do the Scholastic_Magazine of Notre dame begin
-publish
-
+? in what_year do Notre_Dame create the Office_of_sustainability
 .x

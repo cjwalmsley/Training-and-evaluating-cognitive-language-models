@@ -16,3 +16,4 @@ svgling
 spacy
 tqdm
 hf_xet
+matplotlib
