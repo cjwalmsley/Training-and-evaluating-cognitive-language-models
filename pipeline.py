@@ -65,11 +65,10 @@ class Pipeline:
             self.generate_declarative_sentences()
             self.preprocess_dataset()
             self.assign_categories()
-            self.generate_pre_training_data()
             self.save_prepared_dataset()
         else:
             self.load_prepared_dataset()
-
+        self.generate_pre_training_data()
         self.run_pre_training()
         self.run_pre_training_evaluation_testing()
         self.run_evaluate_pre_training_results()

@@ -71,6 +71,9 @@ class AbstractPlatformConfig:
     def get_docker_directory(self, settings) -> str:
         raise NotImplementedError("Subclasses must implement this method.")
 
+    def get_dataset_directory(self, settings) -> str:
+        raise NotImplementedError("Subclasses must implement this method.")
+
 
 class MacConfig(AbstractPlatformConfig):
 
@@ -79,6 +82,11 @@ class MacConfig(AbstractPlatformConfig):
 
     def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_directory_mac
+
+    def get_dataset_directory(self, settings) -> str:
+        return os.path.join(
+            self.get_base_directory(settings), settings.dataset.dataset_directory
+        )
 
 
 class LinuxConfig(AbstractPlatformConfig):
@@ -89,6 +97,9 @@ class LinuxConfig(AbstractPlatformConfig):
     def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_directory_linux
 
+    def get_dataset_directory(self, settings) -> str:
+        return settings.dataset.dataset_directory_linux
+
 
 class WindowsConfig(AbstractPlatformConfig):
 
@@ -97,6 +108,11 @@ class WindowsConfig(AbstractPlatformConfig):
 
     def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_directory_windows
+
+    def get_dataset_directory(self, settings) -> str:
+        return os.path.join(
+            self.get_base_directory(settings), settings.dataset.dataset_directory
+        )
 
 
 class GlobalConfig(metaclass=SingletonMeta):
@@ -134,9 +150,7 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def dataset_directory(self) -> str:
 
-        return os.path.join(
-            self.get_base_directory(), self.settings.dataset.dataset_directory
-        )
+        return self.platform_config.get_dataset_directory(self.settings)
 
     def get_docker_directory(self) -> str:
 

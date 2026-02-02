@@ -2,6 +2,7 @@ import unittest
 
 from numpy.ma.testutils import assert_equal
 
+from annabell_utilities import AnnabellLogfileInterpreter
 from commands import (
     AnnabellQuestionCommandGenerator,
     AnnabellBaseCommandGenerator,
@@ -90,6 +91,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             ".drop_goal",
             ".wg blue",
             ".rw",
+            f"{AnnabellBaseCommandGenerator.time_command()}",
             "\n",
         ]
 
@@ -115,6 +117,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
             ".prw",
             ".wg grey",
             ".rw",
+            f"{AnnabellBaseCommandGenerator.time_command()}",
             "\n",
         ]
 
@@ -1308,10 +1311,37 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
+    def test_timing_in_commands(self):
+        """Test that timing commands are correctly added."""
+        generator = AnnabellBaseCommandGenerator(
+            self.sample_id,
+            self.declarative_sentence,
+            self.question,
+            self.short_answer,
+            max_words=9,
+        )
+        generator.create_list_of_commands()
 
-"the encounter between Notre_Dame student and the KKK occur in South_Bend"
-"? where do Notre_Dame student and the KKK have their encounter"
-"south Bend"
+        expected_commands = [
+            "#id: test_01",
+            "the sky is blue with patches of grey",
+            f"{AnnabellLogfileInterpreter.end_of_declaration_string()}",
+            "\n",
+            "? what color is the sky",
+            f"{AnnabellLogfileInterpreter.end_of_question_string()}",
+            ".pg sky",
+            ".ggp",
+            ".ph the sky is blue with patches of grey",
+            ".drop_goal",
+            ".wg blue",
+            ".rw",
+            "\n",
+            f"{AnnabellLogfileInterpreter.end_of_commands_string()}",
+            f"{AnnabellBaseCommandGenerator.time_command()}",
+            f"{AnnabellLogfileInterpreter.end_of_time_string()}",
+        ]
+
+        self.assertEqual(expected_commands, generator.commands)
 
 
 if __name__ == "__main__":

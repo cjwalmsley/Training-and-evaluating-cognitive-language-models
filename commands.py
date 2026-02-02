@@ -3,6 +3,8 @@ from operator import indexOf
 
 import nltk
 from nltk.corpus import stopwords
+
+from annabell_utilities import AnnabellLogfileInterpreter
 from config.global_config import GlobalConfig
 from collections import deque
 
@@ -123,10 +125,14 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
     def blank_line():
         return "\n"
 
-    def write_declarative_sentence(self):
+    @staticmethod
+    def time_command():
+        return ".time"
 
+    def write_declarative_sentence(self):
         for phrase in self.declarative_sentence.phrases:
             self.commands.append(phrase.text)
+        self.commands.append(AnnabellLogfileInterpreter.end_of_declaration_string())
 
     @staticmethod
     def informational_non_pretraining_command():
@@ -147,6 +153,10 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
     def write_sample_id(self):
         self.commands.append("#id: " + str(self.sample_id))
 
+    def write_time_command(self):
+        self.commands.append(self.time_command())
+        self.commands.append(AnnabellLogfileInterpreter.end_of_time_string())
+
     def create_list_of_commands(self):
         try:
             self.commands = []
@@ -160,6 +170,11 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
                 self.write_answer_commands()
                 # add a blank line to terminate the context
                 self.commands.append(self.blank_line())
+                self.commands.append(
+                    AnnabellLogfileInterpreter.end_of_commands_string()
+                )
+                self.write_time_command()
+
             else:
                 self.commands.append(self.informational_non_pretraining_command())
             return self.commands
@@ -699,6 +714,7 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
     def write_commands(self):
         self.commands = []
         self.write_question()
+        self.commands.append(AnnabellLogfileInterpreter.end_of_question_string())
         self.write_question_commands()
         return self.commands
 

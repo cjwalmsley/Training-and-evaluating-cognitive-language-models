@@ -10,6 +10,8 @@ CONFIG_DIR = Path(__file__).parent
 # 1. A nested model for dataset parameters
 class DatasetConfig(BaseModel):
     dataset_directory: str
+    # store the dataset locally for Linux as the mounted gdrive takes a long time to transfer the dataset files
+    dataset_directory_linux: str
 
 
 class FileLocations(BaseModel):
