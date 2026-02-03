@@ -84,6 +84,7 @@ class Experiments(BaseModel):
     use_all_available_samples: bool
     cosine_distance_threshold: float
     auto_save_weights: bool
+    save_weights_every_n_steps: int
 
 
 # 2. A nested model for model hyperparameters

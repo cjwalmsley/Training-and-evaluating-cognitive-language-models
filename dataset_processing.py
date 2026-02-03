@@ -652,6 +652,10 @@ class DatasetPreProcessor:
     def auto_save_weights_command():
         return ".auto_save_links"
 
+    @staticmethod
+    def save_weights_command():
+        return ".save"
+
     def create_commands_for_pretraining(self):
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
@@ -697,7 +701,14 @@ class DatasetPreProcessor:
                     "Auto-save weights is enabled; adding save weight commands to pre-training samples."
                 )
                 commands_file.write(f"{self.auto_save_weights_command()}\n")
+            save_weights_counter = 0
             for index, row in dataset_to_write.iterrows():
+                if save_weights_counter >= global_config.save_weights_every_n_steps():
+                    commands_file.write(
+                        f"{self.save_weights_command()} {global_config.pre_training_weights_filename}\n"
+                    )
+                    save_weights_counter = 0
+                save_weights_counter += 1
                 commands = row["created_commands"]
                 commands_file.write(
                     f"{AnnabellLogfileInterpreter.start_of_sample_string()}\n"
@@ -711,6 +722,7 @@ class DatasetPreProcessor:
                         commands_file.write(command)
                     else:
                         commands_file.write(command + "\n")
+
         logger.info(f"Wrote {len(dataset_to_write)} samples to {the_filepath}")
 
     @staticmethod

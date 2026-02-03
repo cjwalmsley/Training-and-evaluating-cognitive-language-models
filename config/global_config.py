@@ -761,3 +761,6 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def auto_save_weights(self) -> bool:
         return self.settings.experiments.auto_save_weights
+
+    def save_weights_every_n_steps(self):
+        return self.settings.experiments.save_weights_every_n_steps
