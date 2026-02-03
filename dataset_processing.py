@@ -656,6 +656,10 @@ class DatasetPreProcessor:
     def save_weights_command():
         return ".save"
 
+    @staticmethod
+    def stat_command():
+        return ".stat"
+
     def create_commands_for_pretraining(self):
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
@@ -702,13 +706,18 @@ class DatasetPreProcessor:
                 )
                 commands_file.write(f"{self.auto_save_weights_command()}\n")
             save_weights_counter = 0
+            stat_counter = 0
             for index, row in dataset_to_write.iterrows():
-                if save_weights_counter >= global_config.save_weights_every_n_steps():
+                if save_weights_counter == global_config.save_weights_every_n_steps():
                     commands_file.write(
-                        f"{self.save_weights_command()} {global_config.pre_training_weights_filename}\n"
+                        f"{self.save_weights_command()} {global_config.docker_runtime_pre_training_weights_filepath()}\n"
                     )
                     save_weights_counter = 0
                 save_weights_counter += 1
+                if stat_counter == global_config.log_stats_every_n_steps():
+                    commands_file.write(f"{self.stat_command()}\n")
+                    stat_counter = 0
+                stat_counter += 1
                 commands = row["created_commands"]
                 commands_file.write(
                     f"{AnnabellLogfileInterpreter.start_of_sample_string()}\n"

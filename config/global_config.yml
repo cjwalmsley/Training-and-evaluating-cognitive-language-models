@@ -61,6 +61,7 @@ experiments:
   cosine_distance_threshold: 0.1
   auto_save_weights: false
   save_weights_every_n_steps: 5
+  log_stats_every_n_steps: 5
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
