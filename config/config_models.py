@@ -86,6 +86,7 @@ class Experiments(BaseModel):
     auto_save_weights: bool
     save_weights_every_n_steps: int
     log_stats_every_n_steps: int
+    exclude_samples_with_fewer_than_2_lookups: bool
 
 
 # 2. A nested model for model hyperparameters

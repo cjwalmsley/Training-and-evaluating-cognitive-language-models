@@ -3,6 +3,7 @@ import os
 import sys
 import platform
 from pathlib import Path
+from contextlib import contextmanager
 import yaml
 from pydantic import ValidationError
 from .config_models import Settings
@@ -767,3 +768,81 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def log_stats_every_n_steps(self):
         return self.settings.experiments.log_stats_every_n_steps
+
+    def exclude_samples_with_fewer_than_2_lookups(self) -> bool:
+        return self.settings.experiments.exclude_samples_with_fewer_than_2_lookups
+
+    @contextmanager
+    def temporary_override(self, **overrides):
+        """
+        Context manager to temporarily override settings values during tests.
+
+        Usage:
+            with global_config.temporary_override(max_word_length_limit=20, max_words_limit=100):
+                # Code here uses overridden values
+                pass
+            # Original values are restored after the block
+
+        Args:
+            **overrides: Keyword arguments mapping setting paths to temporary values.
+                         Use double underscores for nested settings, e.g.,
+                         'dataset__max_word_length_limit' or 'experiments__experiment_name'
+        """
+        original_values = {}
+
+        for key, value in overrides.items():
+            # Handle nested settings using double underscore notation
+            parts = key.split("__")
+
+            if len(parts) == 1:
+                # Top-level setting
+                if hasattr(self.settings, key):
+                    original_values[key] = getattr(self.settings, key)
+                    object.__setattr__(self.settings, key, value)
+            else:
+                # Nested setting (e.g., 'dataset__max_word_length_limit')
+                section_name = parts[0]
+                setting_name = parts[1]
+                if hasattr(self.settings, section_name):
+                    section = getattr(self.settings, section_name)
+                    if hasattr(section, setting_name):
+                        original_values[key] = getattr(section, setting_name)
+                        object.__setattr__(section, setting_name, value)
+
+        try:
+            yield self
+        finally:
+            # Restore original values
+            for key, original_value in original_values.items():
+                parts = key.split("__")
+
+                if len(parts) == 1:
+                    object.__setattr__(self.settings, key, original_value)
+                else:
+                    section_name = parts[0]
+                    setting_name = parts[1]
+                    section = getattr(self.settings, section_name)
+                    object.__setattr__(section, setting_name, original_value)
+
+
+# Utility function for tests
+@contextmanager
+def override_global_config(**overrides):
+    """
+    Convenience function to temporarily override global_config settings during tests.
+
+    Usage in tests:
+        from config.global_config import override_global_config, global_config
+
+        def test_something():
+            with override_global_config(dataset__max_word_length_limit=20):
+                # Test code here
+                pass
+    """
+    config = GlobalConfig()  # Gets singleton instance
+    with config.temporary_override(**overrides):
+        yield config
+
+
+# Create singleton instance for easy import
+global_config = GlobalConfig()

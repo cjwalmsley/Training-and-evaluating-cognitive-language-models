@@ -62,6 +62,7 @@ experiments:
   auto_save_weights: false
   save_weights_every_n_steps: 5
   log_stats_every_n_steps: 5
+  exclude_samples_with_fewer_than_2_lookups: true
 
 dataset:
   dataset_directory: "datasets/squad_dataset"

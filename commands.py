@@ -16,6 +16,10 @@ class MissingAnswerWordsException(Exception):
     pass
 
 
+class ToFewLookupWordGroupsException(Exception):
+    pass
+
+
 class LIFOQueue:
     def __init__(self):
         self._items = deque()
@@ -704,6 +708,13 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.write_non_lookup_commands()
         # write the commands that will initially guide finding the declarative sentence phrase
         self.write_lookup_declarative_sentence_commands()
+
+        if global_config.exclude_samples_with_fewer_than_2_lookups() and (
+            len(self.all_declarative_phrase_lookup_word_groups()) < 2
+        ):
+            error_msg = f"Sample excluded due to having fewer than 2 lookup word groups in declarative sentence. Lookup word groups: {self.all_declarative_phrase_lookup_word_groups()}"
+            logger.warning(error_msg)
+            raise ToFewLookupWordGroupsException(error_msg)
 
         # finally write the word group command that will be used for the lookup of the first declarative sentence
         if len(self.all_declarative_phrase_lookup_word_groups()) > 1:
