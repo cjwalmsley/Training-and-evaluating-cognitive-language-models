@@ -1,4 +1,5 @@
 analyse existing logs for error correlations
 add on-the fly evaluation to pretraining
-look at sampling
+review sampling methodology
 load original weights as pre pretraining step
+run experiment without joining noun words

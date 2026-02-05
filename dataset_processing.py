@@ -660,6 +660,10 @@ class DatasetPreProcessor:
     def stat_command():
         return ".stat"
 
+    @staticmethod
+    def load_pretrained_weights_command():
+        return ".load"
+
     def create_commands_for_pretraining(self):
         # if the pretraining column is true create the commands
         # add a new column to the dataframe with the created list of commands
@@ -700,6 +704,13 @@ class DatasetPreProcessor:
                     dataset_to_write["created_commands_error"] != True
                 ]
             dataset_to_write.reset_index(drop=True, inplace=True)
+            if global_config.preload_weights():
+                logger.info(
+                    "Pre-load weights is enabled; adding load weight command to the start of the pre-training file."
+                )
+                commands_file.write(
+                    f"{self.load_pretrained_weights_command()} {global_config.pre_load_weights_filepath()}\n"
+                )
             if auto_save_weights:
                 logger.info(
                     "Auto-save weights is enabled; adding save weight commands to pre-training samples."

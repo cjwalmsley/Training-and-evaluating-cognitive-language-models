@@ -60,6 +60,7 @@ class FileLocations(BaseModel):
     dataset_with_sentence_categories_filename: str
     test_pre_training_validation_results_dataframe_filename: str
     test_results_dataframe_filename: str
+    annabell_weights_directory: str
 
 
 class OllamaOptions(BaseModel):
@@ -87,6 +88,8 @@ class Experiments(BaseModel):
     save_weights_every_n_steps: int
     log_stats_every_n_steps: int
     exclude_samples_with_fewer_than_2_lookups: bool
+    pre_load_weights: bool
+    pre_load_weights_filename: str
 
 
 # 2. A nested model for model hyperparameters

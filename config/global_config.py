@@ -772,6 +772,21 @@ class GlobalConfig(metaclass=SingletonMeta):
     def exclude_samples_with_fewer_than_2_lookups(self) -> bool:
         return self.settings.experiments.exclude_samples_with_fewer_than_2_lookups
 
+    def docker_runtime_annabell_weights_directory(self):
+        return os.path.join(
+            self.docker_runtime_pre_training_directory(),
+            self.settings.file_locations.annabell_weights_directory,
+        )
+
+    def preload_weights(self):
+        return self.settings.experiments.pre_load_weights
+
+    def pre_load_weights_filepath(self):
+        return os.path.join(
+            self.docker_runtime_annabell_weights_directory(),
+            self.settings.experiments.pre_load_weights_filename,
+        )
+
     @contextmanager
     def temporary_override(self, **overrides):
         """

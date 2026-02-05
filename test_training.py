@@ -3,6 +3,8 @@ import pandas as pd
 import os
 from dataset_processing import DatasetPreProcessor
 from annabell_utilities import AnnabellLogfileInterpreter
+from config.global_config import GlobalConfig
+from unittest.mock import patch
 
 
 class TestPretrainingFileGeneration(unittest.TestCase):
@@ -35,6 +37,8 @@ class TestPretrainingFileGeneration(unittest.TestCase):
             }
         )
         self.processor = DatasetPreProcessor(self.df)
+
+        self.global_config = GlobalConfig()
 
     def tearDown(self):
         if os.path.exists(self.output_file):
@@ -80,6 +84,20 @@ class TestPretrainingFileGeneration(unittest.TestCase):
             content = f.read()
 
         self.assertIn(f"{DatasetPreProcessor.auto_save_weights_command()}", content)
+
+    @patch(
+        "commands.global_config.preload_weights",
+        return_value=True,
+    )
+    def test_write_pretraining_file_with_loading_pre_loaded_weights(self, mock_method):
+        self.processor.write_pretraining_file(self.output_file, False)
+        with open(self.output_file, "r") as f:
+            content = f.read()
+
+        self.assertIn(
+            f"{DatasetPreProcessor.load_pretrained_weights_command()} {self.global_config.pre_load_weights_filepath()}",
+            content,
+        )
 
 
 if __name__ == "__main__":

@@ -48,7 +48,7 @@ file_locations:
   dataset_with_sentence_categories_filename: "squad_dataset_with_sentence_categories.jsonl"
   test_pre_training_validation_results_dataframe_filename: "squad_dataset_with_pre_training_validation_results.jsonl"
   test_results_dataframe_filename: "squad_dataset_with_testing_results"
-
+  annabell_weights_directory: "annabell/links"
 
 experiments:
   experiment_name: "sandbox"
@@ -60,9 +60,11 @@ experiments:
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
-  save_weights_every_n_steps: 5
+  save_weights_every_n_steps: 25
   log_stats_every_n_steps: 5
   exclude_samples_with_fewer_than_2_lookups: true
+  pre_load_weights: true
+  pre_load_weights_filename: "links_people.dat"
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
