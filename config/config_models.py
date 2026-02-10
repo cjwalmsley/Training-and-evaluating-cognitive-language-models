@@ -86,7 +86,7 @@ class Experiments(BaseModel):
     cosine_distance_threshold: float
     auto_save_weights: bool
     save_weights_every_n_steps: int
-    log_stats_every_n_steps: int
+    log_stats: bool
     exclude_samples_with_fewer_than_2_lookups: bool
     pre_load_weights: bool
     pre_load_weights_filename: str

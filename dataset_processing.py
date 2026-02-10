@@ -695,6 +695,18 @@ class DatasetPreProcessor:
             "created_commands_error"
         ]
 
+    @staticmethod
+    def count_created_commands_errors_in_df(the_dataframe):
+        the_dataframe["created_commands_error"] = the_dataframe[
+            "created_commands"
+        ].apply(
+            lambda x: "# There was an error generating commands for this pre-training sample."
+            in x
+        )
+        error_count = the_dataframe["created_commands_error"].sum()
+        logger.info("Number of rows with errors in created_commands:", error_count)
+        return error_count
+
     def write_pretraining_file(self, the_filepath, auto_save_weights):
         with open(the_filepath, "w") as commands_file:
             dataset_to_write = self.pretraining_dataset()
@@ -717,7 +729,6 @@ class DatasetPreProcessor:
                 )
                 commands_file.write(f"{self.auto_save_weights_command()}\n")
             save_weights_counter = 0
-            stat_counter = 0
             for index, row in dataset_to_write.iterrows():
                 if save_weights_counter == global_config.save_weights_every_n_steps():
                     commands_file.write(
@@ -725,10 +736,6 @@ class DatasetPreProcessor:
                     )
                     save_weights_counter = 0
                 save_weights_counter += 1
-                if stat_counter == global_config.log_stats_every_n_steps():
-                    commands_file.write(f"{self.stat_command()}\n")
-                    stat_counter = 0
-                stat_counter += 1
                 commands = row["created_commands"]
                 commands_file.write(
                     f"{AnnabellLogfileInterpreter.start_of_sample_string()}\n"

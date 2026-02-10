@@ -7,14 +7,77 @@ class TestAnnabellLogfileInterpreter(unittest.TestCase):
 
     def setUp(self):
         self.log_filepath = "test_annabell_pretraining_log.txt"
+        self.log_filepath_stat = "test_annabell_pretraining_log_with_stat.txt"
         with open(self.log_filepath, "w") as f:
             f.write(self.sample_logfile_content())
+        with open(self.log_filepath_stat, "w") as f:
+            f.write(self.sample_logfile_content_with_stat())
         self.interpreter = AnnabellLogfileInterpreter(self.log_filepath)
         self.interpreter.parse_entries()
+        self.intepreter_stat = AnnabellLogfileInterpreter(self.log_filepath_stat)
+        self.intepreter_stat.parse_entries()
 
     def tearDown(self):
         if os.path.exists(self.log_filepath):
             os.remove(self.log_filepath)
+            if os.path.exists(self.log_filepath_stat):
+                os.remove(self.log_filepath_stat)
+
+    @staticmethod
+    def sample_logfile_content_with_stat():
+        return """#START OF SAMPLE
+#sample: 10 of 270
+#id: 5733ae924776f41900661014
+Notre_Dame admit 3577 incoming student during the fall_semester of
+2015
+#END OF DECLARATION
+
+ >>> End context
+? how many incoming student do Notre_Dame admit in
+fall_2015
+#END OF QUESTION
+.sctx ? how many incoming student do Notre_Dame admit in
+? how many incoming student do Notre_Dame admit in
+.wg incoming student
+.push_goal
+.wg Notre_Dame admit
+.ggp
+.ph Notre_Dame admit 3577 incoming student during the fall_semester of
+.drop_goal
+.wg 3577
+.rw
+
+ >>> End context
+#END OF COMMANDS
+.time
+Elapsed time: 94.552508
+StActMem->act_time: 0.056034
+StActMem->as_time: 28.277105
+ElActfSt->act_time: 0.932212
+ElActfSt->as_time: 1.562486
+RemPh->act_time: 36.495014
+RemPh->as_time: 0.728138
+RemPhfWG->act_time: 0.012018
+RemPhfWG->as_time: 0.806025
+ElActfSt neurons: 3040
+ElActfSt links: 0
+#END OF TIME
+.stat
+Learned Words: 92
+Learned Phrases: 115
+Learned associations between word groups and phrases: 568
+IW input links: 175000
+ElActfSt neurons: 3040
+ElActfSt input links: 1358880
+ElActfSt virtual input links: 11022840000
+ElActfSt output links: 2400000
+RemPh output links: 646
+RemPh virtual output links: 11000000000
+RemPhfWG neurons: 568
+RemPhfWG input links: 5680
+RemPhfWG virtual input links: 1001000000
+RemPhfWG output links: 568
+RemPhfWG virtual output links: 10000000000"""
 
     @staticmethod
     def sample_logfile_content():
@@ -153,6 +216,24 @@ ElActfSt links: 0
         self.assertEqual(1, sample_numbers[0])
         self.assertEqual(2, sample_numbers[1])
         self.assertEqual(3, sample_numbers[2])
+
+    def test_stat_extraction(self):
+        entry = self.intepreter_stat.entries[0]
+        self.assertEqual(92, entry.learned_words())
+        self.assertEqual(115, entry.learned_phrases())
+        self.assertEqual(568, entry.learned_associations())
+        self.assertEqual(175000, entry.iw_input_links())
+        self.assertEqual(3040, entry.elActfSt_neurons())
+        self.assertEqual(1358880, entry.elActfSt_input_links())
+        self.assertEqual(11022840000, entry.elActfSt_virtual_input_links())
+        self.assertEqual(2400000, entry.elActfSt_output_links())
+        self.assertEqual(646, entry.remPh_output_links())
+        self.assertEqual(11000000000, entry.remPh_virtual_output_links())
+        self.assertEqual(568, entry.remPhfWG_neurons())
+        self.assertEqual(5680, entry.remPhfWG_input_links())
+        self.assertEqual(1001000000, entry.remPhfWG_virtual_input_links())
+        self.assertEqual(568, entry.remPhfWG_output_links())
+        self.assertEqual(10000000000, entry.remPhfWG_virtual_output_links())
 
 
 if __name__ == "__main__":

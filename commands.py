@@ -146,6 +146,10 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
     def error_generating_pretraining_command():
         return "# There was an error generating commands for this pre-training sample."
 
+    @staticmethod
+    def stat_command():
+        return ".stat"
+
     def write_question_commands(self):
         self.question_command_generator.write_commands()
         self.commands.extend(self.question_command_generator.commands)
@@ -160,6 +164,11 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
     def write_time_command(self):
         self.commands.append(self.time_command())
         self.commands.append(AnnabellLogfileInterpreter.end_of_time_string())
+
+    def write_stat_command(self):
+        if global_config.log_stats():
+            self.commands.append(self.stat_command())
+            self.commands.append(AnnabellLogfileInterpreter.end_of_stats_string())
 
     def create_list_of_commands(self):
         try:
@@ -178,6 +187,7 @@ class AnnabellBaseCommandGenerator(AbstractAnnabellCommandGenerator):
                     AnnabellLogfileInterpreter.end_of_commands_string()
                 )
                 self.write_time_command()
+                self.write_stat_command()
 
             else:
                 self.commands.append(self.informational_non_pretraining_command())

@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+
+
 class AnnabellLogfileInterpreter:
     def __init__(self, logfile_path):
         self.logfile_path = logfile_path
@@ -22,6 +25,10 @@ class AnnabellLogfileInterpreter:
     @staticmethod
     def end_of_time_string():
         return "#END OF TIME"
+
+    @staticmethod
+    def end_of_stats_string():
+        return "#END OF STATS"
 
     @staticmethod
     def start_of_sample_string():
@@ -63,6 +70,11 @@ class AnnabellLogfileInterpreter:
         command_lines = lines[index_of_question_end + 1 : index_of_commands_end - 1]
         index_of_time_end = lines.index(self.end_of_time_string())
         time_lines = lines[index_of_commands_end + 1 : index_of_time_end]
+        #       index_of_stats_end = lines.index(self.end_of_stats_string())
+        index_of_stats_end = len(
+            lines
+        )  # If stats are not present, use the end of the lines
+        stat_lines = lines[index_of_time_end + 1 : index_of_stats_end]
 
         return AnnabellLogEntry(
             self,
@@ -72,6 +84,7 @@ class AnnabellLogfileInterpreter:
             question_lines,
             command_lines,
             time_lines,
+            stat_lines,
         )
 
     def previous_entry(self, reference_entry):
@@ -91,6 +104,47 @@ class AnnabellLogfileInterpreter:
             result = 0.0
         return result
 
+    def plot_entry_time_vs_sample_number(self):
+        entry_times = [entry.time() for entry in self.entries]
+        sample_numbers = [entry.sample_number() for entry in self.entries]
+        plt.plot(sample_numbers, entry_times)
+        plt.xlabel("Index")
+        plt.ylabel("Entry Time (seconds)")
+        plt.title("Entry Time vs Index")
+        return plt
+
+    def plot_stat_measures_vs_index(self):
+        metrics = [
+            "learned_words",
+            "learned_phrases",
+            "learned_associations",
+            "iw_input_links",
+            "elActfSt_neurons",
+            "elActfSt_input_links",
+            "elActfSt_virtual_input_links",
+            "elActfSt_output_links",
+            "remPh_output_links",
+            "remPh_virtual_output_links",
+            "remPhfWG_neurons",
+            "remPhfWG_input_links",
+            "remPhfWG_virtual_input_links",
+            "remPhfWG_output_links",
+            "remPhfWG_virtual_output_links",
+        ]
+        entries_with_stats = [entry for entry in self.entries if entry.stat_lines]
+        sample_numbers = [entry.sample_number() for entry in entries_with_stats]
+
+        plots = []
+        for metric in metrics:
+            stat_values = [getattr(entry, metric)() for entry in entries_with_stats]
+            plt.figure()
+            plt.plot(sample_numbers, stat_values)
+            plt.xlabel("Index")
+            plt.ylabel(metric)
+            plt.title(f"{metric} vs Index")
+            plots.append(plt)
+        return plots
+
 
 class AnnabellLogEntry:
     def __init__(
@@ -102,6 +156,7 @@ class AnnabellLogEntry:
         question_lines,
         command_lines,
         time_lines,
+        stat_lines,
     ):
         self.interpreter = interpreter
         self.sample_number_line = sample_number_line
@@ -110,6 +165,7 @@ class AnnabellLogEntry:
         self.question_lines = question_lines
         self.command_lines = command_lines
         self.time_lines = time_lines
+        self.stat_lines = stat_lines
 
     def __repr__(self):
         # Displays the phrase text and how many word groups it has
@@ -135,3 +191,105 @@ class AnnabellLogEntry:
     def sample_number(self):
         # "#sample: 1 of 3"
         return int(self.sample_number_line.split(":")[1].split("of")[0].strip())
+
+    def learned_words(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("Learned Words:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def learned_phrases(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("Learned Phrases:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def learned_associations(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("Learned associations")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def iw_input_links(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("IW input links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def elActfSt_neurons(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("ElActfSt neurons:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def elActfSt_input_links(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("ElActfSt input links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def elActfSt_virtual_input_links(self):
+        stat_line = [
+            line
+            for line in self.stat_lines
+            if line.startswith("ElActfSt virtual input links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def elActfSt_output_links(self):
+        stat_line = [
+            line
+            for line in self.stat_lines
+            if line.startswith("ElActfSt output links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPh_output_links(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("RemPh output links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPh_virtual_output_links(self):
+        stat_line = [
+            line
+            for line in self.stat_lines
+            if line.startswith("RemPh virtual output links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPhfWG_neurons(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("RemPhfWG neurons:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPhfWG_input_links(self):
+        stat_line = [
+            line for line in self.stat_lines if line.startswith("RemPhfWG input links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPhfWG_virtual_input_links(self):
+        stat_line = [
+            line
+            for line in self.stat_lines
+            if line.startswith("RemPhfWG virtual input links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPhfWG_output_links(self):
+        stat_line = [
+            line
+            for line in self.stat_lines
+            if line.startswith("RemPhfWG output links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())
+
+    def remPhfWG_virtual_output_links(self):
+        stat_line = [
+            line
+            for line in self.stat_lines
+            if line.startswith("RemPhfWG virtual output links:")
+        ][0]
+        return int(stat_line.split(":")[1].strip())

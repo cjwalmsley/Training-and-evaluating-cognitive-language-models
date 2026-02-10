@@ -10,6 +10,7 @@ from nltk.corpus import stopwords
 from config.global_config import GlobalConfig
 import logging
 import numpy as np
+import matplotlib.pyplot as plt
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -417,6 +418,25 @@ class AnnabellTestResultsEvaluator:
 
     def teardown(self):
         self.write_annabell_files_to_gdrive()
+
+    @staticmethod
+    def plot_test_answer_correct(the_df):
+        plt.plot(
+            the_df.index,
+            the_df["test_answer_correct"].apply(lambda x: 0 if x else 1).cumsum(),
+        )
+        plt.xlabel("Index")
+        plt.ylabel("Answer Not Correct")
+        plt.title("Test Answer Not Correct vs Index")
+        return plt
+
+    def write_test_answer_not_correct_plot(self):
+        plot = self.plot_test_answer_correct(self.prepared_dataframe)
+        plot_filepath = self.testing_context.test_summary_results_filepath().replace(
+            ".txt", "_test_answer_correct_plot.png"
+        )
+        plot.savefig(plot_filepath)
+        logger.info(f"test answer correct plot saved to {plot_filepath}")
 
 
 class AnnabellTestContext:

@@ -1,18 +1,3 @@
-in the_United_States_of_America
-
-[#id: 5733be284776f4190066117f, a copper statue of Christ is in front of the, Notre Dame Main Building, \n, What is in front of the Notre Dame Main Building?, .wg What, .wg front, .wg Notre, .wg Dame, .wg Main, .wg Building, .ph a copper statue of Christ is in front of the, .wg a copper statue, .prw, .wg of Christ, .prw, .ph Notre Dame Main Building, .wg a, .rw, \n]
-
-
-the student union building at Notre_Dame be rename to LaFortune_Center in 1950
-? in what_year do the student union building at Notre_Dame get rename to LaFortune_Center
-1950
-
-
-#id: 573398ebd058e614000b5e67
-the student union building at Notre_Dame be rename to
-LaFortune_Center in 1950
-
-? in what_year do the student union building at
-Notre_Dame get rename to LaFortune_Center
-
-.sctx Notre_Dame get rename to LaFortune_Center, .pg LaFortune_Center, .sctx ? in what_year do the student union building at, .pg student union building, .sctx Notre_Dame get rename to LaFortune_Center, .pg Notre_Dame, .wg rename, .ph the student union building at Notre_Dame be rename to, .drop_goal, .drop_goal, .sctx LaFortune_Center in 1950, .drop_goal, .wg 1950, .rw, \n]
+provide a summary of the function of the WM parameter in each of the files in the attached text file:
+In particular provide a description of the Learned Word stat and how this is generated, how it grows and what changes would need to be made to increase it.
+Use the attached source code and the attached pdf which describes the system architecture.

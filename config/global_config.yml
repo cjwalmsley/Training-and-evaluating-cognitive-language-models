@@ -61,9 +61,9 @@ experiments:
   cosine_distance_threshold: 0.1
   auto_save_weights: false
   save_weights_every_n_steps: 25
-  log_stats_every_n_steps: 5
-  exclude_samples_with_fewer_than_2_lookups: true
-  pre_load_weights: true
+  log_stats: true
+  exclude_samples_with_fewer_than_2_lookups: false
+  pre_load_weights: false
   pre_load_weights_filename: "links_people.dat"
 
 dataset:

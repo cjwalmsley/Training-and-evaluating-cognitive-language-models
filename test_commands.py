@@ -76,10 +76,14 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         self.assertEqual(AnnabellQuestionContext.remove_question_mark("?"), "")
 
     @patch(
+        "commands.global_config.log_stats",
+        return_value=False,
+    )
+    @patch(
         "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
         return_value=False,
     )
-    def test_create_list_of_commands_short_answer(self, mock_method):
+    def test_create_list_of_commands_short_answer(self, mock_method1, mock_method2):
         """Test command generation for an answer with fewer than 4 words."""
         generator = AnnabellBaseCommandGenerator(
             self.sample_id, self.declarative_sentence, self.question, self.short_answer
@@ -111,7 +115,11 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
         return_value=False,
     )
-    def test_create_list_of_commands_long_answer(self, mock_method):
+    @patch(
+        "commands.global_config.log_stats",
+        return_value=False,
+    )
+    def test_create_list_of_commands_long_answer(self, mock_method1, mock_method2):
         """Test command generation for an answer with more than 3 words."""
         generator = AnnabellBaseCommandGenerator(
             self.sample_id, self.declarative_sentence, self.question, self.long_answer
@@ -1397,10 +1405,14 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, generator.commands)
 
     @patch(
+        "commands.global_config.log_stats",
+        return_value=False,
+    )
+    @patch(
         "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
         return_value=False,
     )
-    def test_timing_in_commands(self, mock_method):
+    def test_timing_in_commands(self, mock_method1, mock_method2):
         """Test that timing commands are correctly added."""
         generator = AnnabellBaseCommandGenerator(
             self.sample_id,
@@ -1428,6 +1440,47 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
             f"{AnnabellLogfileInterpreter.end_of_commands_string()}",
             f"{AnnabellBaseCommandGenerator.time_command()}",
             f"{AnnabellLogfileInterpreter.end_of_time_string()}",
+        ]
+
+        self.assertEqual(expected_commands, generator.commands)
+
+    @patch(
+        "commands.global_config.log_stats",
+        return_value=True,
+    )
+    @patch(
+        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
+        return_value=False,
+    )
+    def test_stat_in_commands(self, mock_method1, mock_method2):
+        generator = AnnabellBaseCommandGenerator(
+            self.sample_id,
+            self.declarative_sentence,
+            self.question,
+            self.short_answer,
+            max_words=9,
+        )
+        generator.create_list_of_commands()
+
+        expected_commands = [
+            "#id: test_01",
+            "the sky is blue with patches of grey",
+            f"{AnnabellLogfileInterpreter.end_of_declaration_string()}",
+            "\n",
+            "? what color is the sky",
+            f"{AnnabellLogfileInterpreter.end_of_question_string()}",
+            ".pg sky",
+            ".ggp",
+            ".ph the sky is blue with patches of grey",
+            ".drop_goal",
+            ".wg blue",
+            ".rw",
+            "\n",
+            f"{AnnabellLogfileInterpreter.end_of_commands_string()}",
+            f"{AnnabellBaseCommandGenerator.time_command()}",
+            f"{AnnabellLogfileInterpreter.end_of_time_string()}",
+            f"{AnnabellBaseCommandGenerator.stat_command()}",
+            f"{AnnabellLogfileInterpreter.end_of_stats_string()}",
         ]
 
         self.assertEqual(expected_commands, generator.commands)

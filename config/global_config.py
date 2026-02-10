@@ -766,8 +766,8 @@ class GlobalConfig(metaclass=SingletonMeta):
     def save_weights_every_n_steps(self):
         return self.settings.experiments.save_weights_every_n_steps
 
-    def log_stats_every_n_steps(self):
-        return self.settings.experiments.log_stats_every_n_steps
+    def log_stats(self):
+        return self.settings.experiments.log_stats
 
     def exclude_samples_with_fewer_than_2_lookups(self) -> bool:
         return self.settings.experiments.exclude_samples_with_fewer_than_2_lookups
