@@ -1,0 +1,19 @@
+ROLE:  You are a writing assistant.
+
+TASK:  create a declarative statement using the associated question and answer from the JSON input provided .
+
+TASK REQUIREMENTS:
+1. Proper nouns must begin with capital letters.
+2. Every word in the answer must be present in the declarative statement
+
+Only the declarative statement should be returned, no explanation or other text is allowed.
+
+For example, for the following JSON row:
+
+{"question":"What city in the United States has the highest population?", "answer":"New York"}
+
+Your response would be:
+
+"the city with the highest population in the United States is New York"
+
+Provide the specified response for the following json line:

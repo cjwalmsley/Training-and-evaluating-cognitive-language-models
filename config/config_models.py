@@ -19,6 +19,7 @@ class FileLocations(BaseModel):
     base_directory_mac: str
     base_directory_windows: str
     prompt_data_directory: str
+    prompt_directory: str
     prompt_inputs_jsonl_filename: str
     responses_data_directory: str
     responses_jsonl_filename: str
@@ -90,6 +91,7 @@ class Experiments(BaseModel):
     exclude_samples_with_fewer_than_2_lookups: bool
     pre_load_weights: bool
     pre_load_weights_filename: str
+    join_entity_words: bool
 
 
 # 2. A nested model for model hyperparameters

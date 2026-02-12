@@ -447,20 +447,6 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.testing_filename(),
         )
 
-    def categorised_questions_filepath(self) -> str:
-
-        return os.path.join(
-            self.prompt_data_directory(),
-            self.settings.file_locations.categorised_questions_filename,
-        )
-
-    def categorised_statements_filepath(self) -> str:
-
-        return os.path.join(
-            self.prompt_data_directory(),
-            self.settings.file_locations.categorised_statements_filename,
-        )
-
     def pre_training_validation_testing_filename(self) -> str:
 
         return self.settings.file_locations.pre_training_validation_testing_filename
@@ -532,6 +518,15 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
         )
 
+    def prompt_directory(self):
+
+        directory_path = os.path.join(
+            self.settings.file_locations.prompt_directory,
+        )
+        # create the directory if it doesn't exist
+        os.makedirs(directory_path, exist_ok=True)
+        return directory_path
+
     def prompt_data_directory(self) -> str:
 
         directory_path = os.path.join(
@@ -562,7 +557,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def base_prompt_filepath(self) -> str:
 
         return os.path.join(
-            self.prompt_data_directory(),
+            self.prompt_directory(),
             self.settings.file_locations.base_prompt_filename,
         )
 
@@ -592,18 +587,6 @@ class GlobalConfig(metaclass=SingletonMeta):
         return os.path.join(
             self.prompt_data_directory(),
             self.settings.file_locations.sentence_patterns_filename,
-        )
-
-    def response_declarative_sentence_categories_filepath(self):
-        return os.path.join(
-            self.responses_data_directory(),
-            self.settings.file_locations.response_declarative_sentence_categories_filename,
-        )
-
-    def response_interrogative_sentence_categories_filepath(self):
-        return os.path.join(
-            self.responses_data_directory(),
-            self.settings.file_locations.response_interrogative_sentence_categories_filename,
         )
 
     def dataset_with_generated_sentences_filepath(self) -> str:
@@ -786,6 +769,9 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.docker_runtime_annabell_weights_directory(),
             self.settings.experiments.pre_load_weights_filename,
         )
+
+    def join_entity_words(self):
+        return self.settings.experiments.join_entity_words
 
     @contextmanager
     def temporary_override(self, **overrides):

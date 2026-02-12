@@ -71,16 +71,14 @@ def create_prompt_input_dataframe(the_dataset):
     )
 
     # Add the new column for the response, which will now be at the end
-    filtered_dataframe["response_declarative_sentence"] = (
-        "<INSERT RESPONSE SENTENCE HERE>"
-    )
+    filtered_dataframe["declarative_statement"] = "<INSERT RESPONSE SENTENCE HERE>"
 
     # Reorder columns to a specific, desired order
     final_columns = [
         "id",
         "question",
         "answer",
-        "response_declarative_sentence",
+        "declarative_statement",
     ]
     filtered_dataframe = filtered_dataframe[final_columns]
 
@@ -107,7 +105,7 @@ def prompt_tuple_from_json_line(the_json_line):
     prompt_dict = {
         "question": line_dict["question"],
         "answer": line_dict["answer"],
-        "response_declarative_sentence": line_dict["response_declarative_sentence"],
+        "declarative_statement": line_dict["declarative_statement"],
     }
     # Convert the dictionary to a JSON string
     line_json = json.dumps(prompt_dict)
@@ -145,7 +143,7 @@ def generate_declarative_statements(
     logger.info(global_config.settings.model_dump_json(indent=2))
 
     prompt_json_l_filepath = global_config.prompt_inputs_jsonl_filepath()
-    base_prompt_filepath = global_config.base_prompt_filepath()
+    base_prompt_filepath = "prompts/base_prompt.txt"
     examples_generated = 0
 
     output_filepath = response_filepath(ds_split_name, the_model_string)

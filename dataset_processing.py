@@ -289,19 +289,11 @@ class DatasetPreProcessor:
 
     def join_entity_words(self):
         # apply to every row and assign back the formatted columns so changes persist
-        updated = self.dataset.apply(self.join_entity_names_in_row, axis=1)
-        self.dataset[self.formatted_columns_to_process()] = updated[
-            self.formatted_columns_to_process()
-        ]
-
-    def join_concurrent_capitalized_words(self):
-        # for the following columns in the dataframe, "response_declarative_sentence_formatted" and "response_question_formatted", "response_answer_formatted", identify any concurrent words that begin with capital letters and join them together with a hyphen.
-        for column in self.formatted_columns_to_process():
-            self.dataset[column] = self.dataset[column].str.replace(
-                r"(\b[A-Z][a-zA-Z]*(?:\s+[A-Z][a-zA-Z]*)+\b)",
-                lambda m: "_".join(m.group(0).split()),
-                regex=True,
-            )
+        if global_config.join_entity_words():
+            updated = self.dataset.apply(self.join_entity_names_in_row, axis=1)
+            self.dataset[self.formatted_columns_to_process()] = updated[
+                self.formatted_columns_to_process()
+            ]
 
     @staticmethod
     def convert_stopwords_to_lower_case(a_string):

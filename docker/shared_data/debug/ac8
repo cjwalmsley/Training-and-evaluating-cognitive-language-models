@@ -1,17 +1,31 @@
-#id: 5733be284776f4190066117e
-a golden statue of the Virgin_Mary sit on top
-of the Main_Building at Notre_Dame
+#id: 57338724d058e614000b5c9f
+before adopt national standard Notre_Dame emphasize scholastic and classical
+education
+#END OF DECLARATION
 
-? what sit on top of the Main_Building at
-Notre_Dame
-.sctx ? what sit on top of the Main_Building at
-.pg sit on top
-.pg Main_Building
-.sctx Notre_Dame
-.wg Notre_Dame
-.ph of the Main_Building at Notre_Dame
+
+? what type of education be push at Notre_Dame
+before its embracing of national standard
+#END OF QUESTION
+.sctx ? what type of education be push at Notre_Dame
+.pg education
+.pg Notre_Dame
+.sctx before its embracing of national standard
+.wg national standard
+.ggp
+.ph before adopt national standard Notre_Dame emphasize scholastic and classical
 .drop_goal
-.wg a golden statue of
-.prw
-.wg the Virgin_Mary
+.drop_goal
+.wg scholastic and classical
 .rw
+
+
+#END OF COMMANDS
+.time
+#END OF TIME
+.stat
+#END OF STATS
+
+? what type of education be push at Notre_Dame
+before its embracing of national standard
+.x

@@ -1,7 +1,7 @@
 {"pattern": "S-V", "name": "Subject-Verb", "example": "The system initialized."}
 {"pattern": "S-V-O", "name": "Subject-Verb-Object", "example": "The model compiled the code."}
 {"pattern": "S-V-C", "name": "Subject-Verb-Complement", "example": "The result seems correct."}
-{"pattern": "S-V-A", "name": "Subject-Verb-Adverbial", "example": "The robot is [on the charging dock]."}
-{"pattern": "S-V-O-A", "name": "Subject-Verb-Object-Adverbial", "example": "She placed [the sensor] [on the robot]."}
-{"pattern": "S-V-iO-dO", "name": "Subject-Verb-Indirect Object-Direct Object", "example": "The API sent [the client] [a token]."}
-{"pattern": "S-V-O-C", "name": "Subject-Verb-Object-Complement", "example": "The developers deemed [the test] [a success]."}
+{"pattern": "S-V-A", "name": "Subject-Verb-Adverbial", "example": "The robot is on the charging dock."}
+{"pattern": "S-V-O-A", "name": "Subject-Verb-Object-Adverbial", "example": "She placed the sensor on the robot."}
+{"pattern": "S-V-iO-dO", "name": "Subject-Verb-Indirect Object-Direct Object", "example": "The API sent the client a token."}
+{"pattern": "S-V-O-C", "name": "Subject-Verb-Object-Complement", "example": "The developers deemed the test a success."}

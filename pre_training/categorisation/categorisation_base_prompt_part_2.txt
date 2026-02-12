@@ -4,7 +4,7 @@ For each provided sentence always answer in the following JSON format:
 
 {"category":"<INSERT SELECTED CATEGORY HERE>",}
 
-Only this JSON format is allowed as an answer. No explanation or other text is allowed.
+Only the category is allowed as an answer. No explanation or other text is allowed.
 
 For example, for the following JSON input:
 
@@ -12,6 +12,6 @@ For example, for the following JSON input:
 
 Your response would be:
 
-{"category":"Subject-Verb-Object"}
+"Subject-Verb-Object"
 
 Provide the specified response for the following JSON:

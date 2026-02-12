@@ -7,6 +7,7 @@ file_locations:
   base_directory_linux: "/home/chris/gdrive/work/annabell"
   base_directory_mac: "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell"
   prompt_data_directory: "llm_data/prompts"
+  prompt_directory: "prompts"
   prompt_inputs_jsonl_filename: "prompt_inputs.jsonl"
   base_prompt_filename: "base_prompt.txt"
   responses_data_directory: "llm_data/responses"
@@ -60,11 +61,12 @@ experiments:
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
-  save_weights_every_n_steps: 25
+  save_weights_every_n_steps: 50
   log_stats: true
   exclude_samples_with_fewer_than_2_lookups: false
   pre_load_weights: false
   pre_load_weights_filename: "links_people.dat"
+  join_entity_words: true
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
