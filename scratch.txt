@@ -1,3 +1,5 @@
 provide a summary of the function of the WM parameter in each of the files in the attached text file:
 In particular provide a description of the Learned Word stat and how this is generated, how it grows and what changes would need to be made to increase it.
 Use the attached source code and the attached pdf which describes the system architecture.
+
+check the formatting for this example: '5733a6424776f41900660f51' is not stripping out the - 'the College_of_Engineering at Notre_Dame offer eight bs - level degree'

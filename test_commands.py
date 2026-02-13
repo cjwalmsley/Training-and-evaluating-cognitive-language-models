@@ -1282,6 +1282,25 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         self, mock_method
     ):
 
+        declarative_sentence = (
+            "the daily student paper at Notre_Dame be call the Observer"
+        )
+        question = "? what be the daily student paper at Notre_Dame call"
+        answer = "the Observer"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        answer_generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        with self.assertRaises(MissingAnswerWordsException):
+            answer_generator.write_answer_commands()
+
+    def test_write_commands_long_answer_multi_phrase_statement_answer_stopword_at_end(
+        self,
+    ):
+        # todo: handles this case where the answer is split across multiple phrases and the last answer word of the first phrase is a stopword ("the", "Observer")
         declarative_sentence = "a golden statue of the virgin mary sit on top of the main building at notre_dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
         answer = "a golden statue of the Virgin Mary"
