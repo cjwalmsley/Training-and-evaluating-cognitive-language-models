@@ -773,6 +773,9 @@ class GlobalConfig(metaclass=SingletonMeta):
     def join_entity_words(self):
         return self.settings.experiments.join_entity_words
 
+    def categorise_samples(self):
+        return self.settings.experiments.categorise_samples
+
     @contextmanager
     def temporary_override(self, **overrides):
         """

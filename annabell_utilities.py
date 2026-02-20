@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AnnabellLogfileInterpreter:
@@ -49,7 +52,18 @@ class AnnabellLogfileInterpreter:
         raw_entries = content.split(self.start_of_sample_string())[
             1:
         ]  # Skip the first empty split
-        self.entries.extend([self.create_entry(raw_entry) for raw_entry in raw_entries])
+
+        for raw_entry in raw_entries:
+            parsed_entry = self.create_entry_with_error_handling(raw_entry)
+            if parsed_entry is not None:
+                self.entries.append(parsed_entry)
+
+    def create_entry_with_error_handling(self, raw_entry):
+        try:
+            return self.create_entry(raw_entry)
+        except Exception as e:
+            logger.error(f"Error creating entry from raw entry: {e}")
+            return None
 
     def create_entry(self, raw_entry):
 

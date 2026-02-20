@@ -78,9 +78,13 @@ def filter_dataset_split(the_dataset_split, title, number_of_sentences, the_id=N
     if number_of_sentences == "all":
         pass
     else:
-        filtered_database_split = filtered_database_split.select(
-            range(min(number_of_sentences, len(the_dataset_split)))
-        )
+        num_available = len(filtered_database_split)
+        num_to_select = min(number_of_sentences, num_available)
+
+        # Select random indices instead of a sequential range
+        random_indices = np.random.choice(num_available, num_to_select, replace=False)
+        filtered_database_split = filtered_database_split.select(random_indices)
+
     # Create the 'answer' column from the 'answers' dictionary
     # make a dataframe from the dataset split
     return filtered_database_split
@@ -110,7 +114,7 @@ class DatasetPreProcessor:
         self.columns_to_process = columns_to_process
         self.max_words_limit = max_words_limit
         self.max_word_length_limit = max_word_length_limit
-        self.nlp = self._load_spacy_model("en_core_web_md")
+        self.nlp = self._load_spacy_model("en_core_web_lg")
 
     @staticmethod
     def _load_spacy_model(model_name):
@@ -226,13 +230,13 @@ class DatasetPreProcessor:
     def formatted_column_suffix():
         return "_formatted"
 
-    def spacy_entities_md(self, text):
-        # Extract entities using the preloaded spaCy medium model
+    def spacy_entities_lg(self, text):
+        # Extract entities using the preloaded spaCy large model
         doc = self.nlp(text)
         return [(ent.text, ent.label_) for ent in doc.ents]
 
     def entity_names_in_text(self, text):
-        entities = self.spacy_entities_md(text)
+        entities = self.spacy_entities_lg(text)
         entity_names = [entity_name for entity_name, entity_type in entities]
         return entity_names
 
@@ -254,14 +258,6 @@ class DatasetPreProcessor:
         for column in self.formatted_columns_to_process():
             a_row[column] = self.replace_entities(a_row[column], entities_in_row)
         return a_row
-
-    @staticmethod
-    def remove_the_from_start_of_text(the_text):
-        words = the_text.split("_")
-        if words[0] == "the":
-            return "the " + "_".join(words[1:])
-        else:
-            return the_text
 
     @staticmethod
     def replace_entities(text, entities):
@@ -294,25 +290,6 @@ class DatasetPreProcessor:
             self.dataset[self.formatted_columns_to_process()] = updated[
                 self.formatted_columns_to_process()
             ]
-
-    @staticmethod
-    def convert_stopwords_to_lower_case(a_string):
-        try:
-            stopwords.words("english")
-        except LookupError:
-            nltk.download("stopwords")
-        stop_words = set(stopwords.words("english"))
-        words = a_string.split()
-        # Convert stopwords to lowercase
-        lower_case_stopwords = [word.lower() for word in stop_words]
-        # Replace stopwords in the string with their lowercase versions
-        cleaned_string = " ".join(
-            [
-                word if word.lower() not in lower_case_stopwords else word.lower()
-                for word in words
-            ]
-        )
-        return cleaned_string
 
     @staticmethod
     def convert_first_character_to_lower_case_if_stopword(a_string):
@@ -389,6 +366,34 @@ class DatasetPreProcessor:
 
     def statement_categories(self):
         return self.dataset[self.statement_category_column_name()].unique()
+
+    def select_pretraining_data_no_categorisation(
+        self, percentage_of_pretraining_samples
+    ):
+        # select a random sample for the entire dataset
+        self.dataset["is_pretraining"] = False
+        num_total_samples = len(self.dataset)
+        num_pretraining_samples = int(
+            num_total_samples * percentage_of_pretraining_samples / 100
+        )
+
+        if num_pretraining_samples == 0:
+            logger.warning("Requested 0 pre-training samples. Nothing to do.")
+            return None
+
+        logger.info(
+            f"Attempting to select {num_pretraining_samples} pre-training samples randomly (no categorization)."
+        )
+
+        pretraining_indices = np.random.choice(
+            self.dataset.index, num_pretraining_samples, replace=False
+        )
+        self.dataset.loc[pretraining_indices, "is_pretraining"] = True
+
+        actual_pretraining_size = self.dataset["is_pretraining"].sum()
+        logger.info(f"Selected {actual_pretraining_size} samples for pre-training.")
+
+        return self.dataset
 
     def select_pretraining_data(self, percentage_of_pretraining_samples):
         self.dataset["is_pretraining"] = False
@@ -565,35 +570,6 @@ class DatasetPreProcessor:
             f"Total number of samples selected for pretraining: {total_pretraining_count}"
         )
 
-        return self.dataset
-
-    def merge_categories(
-        self, categorised_questions_filepath, categorised_sentences_filepath
-    ):
-        # add categories to the questions and declarative sentences, creating 2 new columns - question category and sentence category
-        categorised_questions_df = pd.read_json(
-            categorised_questions_filepath, lines=True
-        )
-        categorised_questions_df = categorised_questions_df.rename(
-            columns={"category": self.question_category_column_name()}
-        )
-        self.dataset = self.dataset.merge(
-            categorised_questions_df[["id", self.question_category_column_name()]],
-            on="id",
-            how="left",
-        )
-        categorised_sentences_df = pd.read_json(
-            categorised_sentences_filepath, lines=True
-        )
-        categorised_sentences_df = categorised_sentences_df.rename(
-            columns={"category": self.statement_category_column_name()}
-        )
-        categorised_sentences_df[self.statement_category_column_name()].value_counts()
-        self.dataset = self.dataset.merge(
-            categorised_sentences_df[["id", self.statement_category_column_name()]],
-            on="id",
-            how="left",
-        )
         return self.dataset
 
     @staticmethod

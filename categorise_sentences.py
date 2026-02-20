@@ -32,6 +32,10 @@ class AbstractCategoryAssigner:
     def sentence_column_name():
         raise NotImplementedError("Subclasses must implement this method.")
 
+    @staticmethod
+    def no_category_string():
+        return "NO CATEGORY ASSIGNED"
+
     def assign_category(self, row):
         sentence = row[self.sentence_column_name()]
         the_id = row["id"]
@@ -197,6 +201,17 @@ class QuestionCategoryAssigner(AbstractCategoryAssigner):
         return "question"
 
 
+class QuestionNoCategoryAssigner(QuestionCategoryAssigner):
+
+    def generate_statement_categories(self, the_model_string):
+        self.dataframe[self.sentence_category_name()] = self.dataframe.apply(
+            self.assign_category, axis=1
+        )
+
+    def assign_category(self, row):
+        return self.no_category_string()
+
+
 class StatementCategoryAssigner(AbstractCategoryAssigner):
 
     @staticmethod
@@ -206,6 +221,17 @@ class StatementCategoryAssigner(AbstractCategoryAssigner):
     @staticmethod
     def sentence_column_name():
         return "declarative_statement"
+
+
+class StatementNoCategoryAssigner(StatementCategoryAssigner):
+
+    def generate_statement_categories(self, the_model_string):
+        self.dataframe[self.sentence_category_name()] = self.dataframe.apply(
+            self.assign_category, axis=1
+        )
+
+    def assign_category(self, row):
+        return self.no_category_string()
 
 
 if __name__ == "__main__":

@@ -1,5 +1,10 @@
 from generate_declarative_sentences import generate_declarative_statements
-from categorise_sentences import QuestionCategoryAssigner, StatementCategoryAssigner
+from categorise_sentences import (
+    QuestionCategoryAssigner,
+    StatementCategoryAssigner,
+    QuestionNoCategoryAssigner,
+    StatementNoCategoryAssigner,
+)
 from dataset_processing import DatasetPreProcessor
 from training import (
     AnnabellPreTrainingRunner,
@@ -67,7 +72,7 @@ class Pipeline:
             self.assign_categories()
             self.save_prepared_dataset()
         else:
-            self.load_prepared_dataset()
+            self.load_prepared_dataset(self.prepared_dataset_filepath)
         self.generate_pre_training_data()
         self.run_pre_training()
         self.run_pre_training_evaluation_testing()
@@ -115,13 +120,11 @@ class Pipeline:
         evaluator.run()
         logger.info("Evaluation of training results completed.")
 
-    def load_prepared_dataset(self):
+    def load_prepared_dataset(self, dataset_filepath):
         logger.info(
             f"Loading prepared dataset from {self.prepared_dataset_filepath}..."
         )
-        self.declarative_sentences_dataset = pd.read_json(
-            self.prepared_dataset_filepath, lines=True
-        )
+        self.declarative_sentences_dataset = pd.read_json(dataset_filepath, lines=True)
         self.datasetPreProcessor = DatasetPreProcessor(
             self.declarative_sentences_dataset
         )
@@ -145,9 +148,16 @@ class Pipeline:
 
     def generate_pre_training_data(self):
         logger.info("Starting generation of pre-training data...")
-        self.datasetPreProcessor.select_pretraining_data(
-            global_config.percentage_of_pre_training_samples()
-        )
+
+        if global_config.categorise_samples():
+
+            self.datasetPreProcessor.select_pretraining_data(
+                global_config.percentage_of_pre_training_samples()
+            )
+        else:
+            self.datasetPreProcessor.select_pretraining_data_no_categorisation(
+                global_config.percentage_of_pre_training_samples()
+            )
         self.save_prepared_dataset(
             global_config.prepared_dataset_pre_commands_filename()
         )
@@ -160,8 +170,14 @@ class Pipeline:
 
     def categorise_questions(self):
 
+        if global_config.categorise_samples():
+            category_assigner_class = QuestionCategoryAssigner
+        else:
+            category_assigner_class = QuestionNoCategoryAssigner
+
         logger.info("Starting categorisation of questions...")
-        self.question_assigner = QuestionCategoryAssigner(
+
+        self.question_assigner = category_assigner_class(
             self.declarative_sentences_dataset
         )
         self.question_assigner.generate_statement_categories(
@@ -171,10 +187,13 @@ class Pipeline:
 
     def categorise_declarative_sentences(self):
 
+        if global_config.categorise_samples():
+            category_assigner_class = StatementCategoryAssigner
+        else:
+            category_assigner_class = StatementNoCategoryAssigner
+
         logger.info("Starting categorisation of statements...")
-        statement_assigner = StatementCategoryAssigner(
-            self.declarative_sentences_dataset
-        )
+        statement_assigner = category_assigner_class(self.declarative_sentences_dataset)
         statement_assigner.generate_statement_categories(
             global_config.ollama_default_model()
         )

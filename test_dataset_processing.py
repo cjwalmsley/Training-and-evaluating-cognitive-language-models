@@ -73,6 +73,14 @@ class TestDatasetPreProcessor(unittest.TestCase):
                 "question_category": "Subject-Verb-Object",
                 "statement_category": "Subject-Verb-Object",
             },
+            {
+                "id": 8,
+                "declarative_sentence": "Technikons began integrating with traditional South African universities in the year two thousand four.",
+                "question": "When did Technikons start being integrated with traditional South African universities?",
+                "answer": "2004",
+                "question_category": "Subject-Verb-Adverbial",
+                "statement_category": "Subject-Verb-Adverbial",
+            },
         ]
 
         with open(self.dataset_filepath, "w") as f:
@@ -128,6 +136,23 @@ class TestDatasetPreProcessor(unittest.TestCase):
         actual_answer = self.preprocessor.dataset.loc[4, "answer_formatted"]
         self.assertEqual(actual_answer, expected_answer)
 
+    def test_join_concurrent_capitalized_words2(self):
+        """Tests that consecutive capitalized words are joined with hyphens."""
+        self.preprocessor.join_entity_words()
+        expected_sentence = "Technikons began integrating with traditional South_African universities in the year two thousand four."
+        actual_sentence = self.preprocessor.dataset.loc[
+            7, "declarative_sentence_formatted"
+        ]
+        self.assertEqual(expected_sentence, actual_sentence)
+
+        expected_question = "Technikons began integrating with traditional South_African universities in the year two thousand four."
+        actual_question = self.preprocessor.dataset.loc[7, "question_formatted"]
+        self.assertEqual(expected_question, actual_question)
+
+        expected_answer = "2004"
+        actual_answer = self.preprocessor.dataset.loc[7, "answer_formatted"]
+        self.assertEqual(expected_answer, actual_answer)
+
     def test_join_concurrent_capitalized_words_without_the(self):
         """Tests that consecutive capitalized words are joined with hyphens."""
         self.preprocessor.join_entity_words()
@@ -137,7 +162,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         actual_sentence = self.preprocessor.dataset.loc[
             5, "declarative_sentence_formatted"
         ]
-        self.assertEqual(actual_sentence, expected_sentence)
+        self.assertEqual(expected_sentence, actual_sentence)
 
         expected_answer = "a copper statue of Christ"
         actual_answer = self.preprocessor.dataset.loc[5, "answer_formatted"]

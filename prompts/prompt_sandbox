@@ -1,77 +1,47 @@
-the United Nations is base -d in New York
-there are 120 school and university -s in NYC
-the name of the Lenape homeland was Lenapehoking
-Estevao Gomes command -ed the Spanish expedite -ion
-the myth is that Manhattan was bought for glass bead -s by General Peter Minuit
-an African burial ground was discover -ed in the 1990s after the build -ing of a new courthouse
-the Great Fire of New York was a notable catastrophe that took place under the British occupy -ation
-in the ear -ly 1920s London was the second most high -ly populate -d city in the world
-10 lead -er terror -ist -s of Al Quada were involve -d with the 911 attack -s direct -ly that day
-New York City is locate -d in the Northeast -ern geography -ical region of the United States
-the Hudson River separate -s NYC from the US state of New Jersey
-there are 304 point 8 square mile -s of land in NYC
-the 61st floor of the Chrysler Building has sculpture -s of eagle -s at its corner -s
-the cold -est month in New York City is January
-the mean snowfall between 1981 and 2010 in NYC has been 25 point 8 inch -es
-the large -st park in New York City is Pelham Bay Park
-Queens contain -s the high -est populate -ion of Asian-American -s
-the Bronx has the large -st populate -ion of ethnic Albania -an -s
-4 point 8 million Hispanic people live in the New York metropolitan area
-the two high -est advertise -ing agency -es in the world locate -d in NYC are call -ed Omnicom Group and Interpublic Group
-the British Bankers Association was the previous overseer of the London interbank offer -ed rate
-Silicon Alley is locate -d in the borough of Manhattan
-the New York film and television industry create -s  7 point 1 billion every year
-more than 200 newspaper office -s are locate -d in New York
-the name of the city s public television service is NYCTV
-the Global Language Monitor rank -ed New York as the fashion capital of the world
-New York is home to 24000 restaurant -s
-the New Jersey Devils hockey team play -s in Newark
-the Amateur Box -ing Golden Gloves take -s place at Madison Square Garden
-52  of New York household -s do nt own an automobile
-the busi -est bridge in NYC is The George Washington Bridge
-President Franklin D Roosevelt was the first person to drive through The Queens-Midtown Tunnel
-the Second number -ed department of the Supreme Court is locate -d in Brooklyn
+Convert the provided question and answer into a declarative statement.
+The input is provided in JSON format.
+Only the declarative statement should be returned, no explanation or other text is allowed.
+Every proper noun in the declarative statement must be capitalized.
+Every word in the answer must be present in the declarative statement.
 
+EXAMPLE:
 
+{"question":"What city in the United States has the highest population?", "answer":"New York"}
 
-? in what city is the United Nations base -d
-? how many school and university -s are in NYC
-? what was the name of the Lenape homeland
-? who command -ed the Spanish expedite -ion
-? what was the myth that Manhattan was bought for by General Peter Minuit
-? when was as African burial ground discover -ed after the build -ing of new courthouse
-? what notable catastrophe took place under the British occupy -ation
-? in the ear -ly 1920s what was the second most high -ly populate -d city in the world
-? how many lead -er terror -ist -s of Al Quada were involve -d with the 911 attack -s direct -ly that day
-? in what geography -ical region of the United States is New York City locate -d
-? the Hudson River separate -s NYC from which US state
-? how many square mile -s are land in NYC
-? what floor of the Chrysler Building has sculpture -s of eagle -s at its corner -s
-? what month in New York City is the cold -est
-? the mean snowfall between 1981 and 2010 in NYC has been how many inch -es
-? what is the large -st park in New York City
-? what New York borough contain -s the high -est populate -ion of Asian-American -s
-? what borough has the large -st populate -ion of ethnic Albania -an -s
-? how many Hispanic people live in the New York metropolitan area
-? the Two high -est advertise -ing agency -es in the world locate -d in NYC are call -ed what
-? who was the previous overseer of the London interbank offer -ed rate
-? in what borough is Silicon Alley locate -d
-? how much money does the New York film and television industry create every year
-? how many newspaper office -s are locate -d in New York
-? what is the name of the city s public television service
-? who rank -ed New York as the fashion capital of the world
-? how many restaurant -s is New York home to
-? which town do the New Jersey Devils hockey team play
-? at what venue does the Amateur Box -ing Golden Gloves take place
-? what percentage of New York household -s do nt own an automobile
-? which bridge in NYC is the busi -est in the world
-? who was the first person to drive through The Queens-Midtown Tunnel
-? what number -ed department of the Supreme Court is locate -d in Brooklyn
+Response:
 
-corrections:
+"The city with the highest population in the United States is New York"
 
+'EXAMPLE:
 
-? the Two high -est advertise -ing agency -es in the world locate -d in NYC are call -ed what
-52  of New York household -s do nt own an automobile
-? what percentage of New York household -s do nt own an automobile
-10 lead -er terrorist -s of Al Quada were involve -d with the 911 attack -s direct -ly that day
+{"question":"What is the official language of Montana?", "answer":"English"}
+
+Response:
+
+"The official language of Montana is English"
+
+EXAMPLE:
+
+{"question":"What year did the 5th Dalai Lama start to dominate over Tibet?", "answer":"1642"}
+
+Response:
+
+"The 5th Dalai Lama started to dominate over Tibet in 1642"
+
+EXAMPLE:
+
+{"question":"What New York street is associated with fashion?", "answer":"Seventh Avenue"}
+
+Response:
+
+"The New York street associated with fashion is Seventh Avenue"
+
+EXAMPLE:
+
+{"question":"What type of language is Portuguese?", "answer":"Romance"}
+
+Response:
+
+"Portuguese is a Romance language"
+
+Provide the declarative statement for the following json line:

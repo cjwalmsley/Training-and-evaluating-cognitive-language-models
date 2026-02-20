@@ -1,5 +1,9 @@
 analyse existing logs for error correlations
-add on-the fly evaluation to pretraining
-review sampling methodology
-
+add on-the fly evaluation to pretraining?
+review sampling methodology - avoid picking similarly structured phrases
 run experiment without joining noun words
+normalise data so that words are consistent case, using the question and answer as baseline
+remove number of goals set to maximum 2
+add logging to testing and training.
+
+

@@ -1,19 +1,47 @@
-ROLE:  You are a writing assistant.
-
-TASK:  create a declarative statement using the associated question and answer from the JSON input provided .
-
-TASK REQUIREMENTS:
-1. Proper nouns must begin with capital letters.
-2. Every word in the answer must be present in the declarative statement
-
+Convert the provided question and answer into a declarative statement.
+The input is provided in JSON format.
 Only the declarative statement should be returned, no explanation or other text is allowed.
+Every proper noun in the declarative statement must be capitalized.
+Every word in the answer must be present in the declarative statement.
 
-For example, for the following JSON row:
+EXAMPLE:
 
 {"question":"What city in the United States has the highest population?", "answer":"New York"}
 
-Your response would be:
+Response:
 
-"the city with the highest population in the United States is New York"
+"The city with the highest population in the United States is New York"
 
-Provide the specified response for the following json line:
+'EXAMPLE:
+
+{"question":"What is the official language of Montana?", "answer":"English"}
+
+Response:
+
+"The official language of Montana is English"
+
+EXAMPLE:
+
+{"question":"What year did the 5th Dalai Lama start to dominate over Tibet?", "answer":"1642"}
+
+Response:
+
+"The 5th Dalai Lama started to dominate over Tibet in 1642"
+
+EXAMPLE:
+
+{"question":"What New York street is associated with fashion?", "answer":"Seventh Avenue"}
+
+Response:
+
+"The New York street associated with fashion is Seventh Avenue"
+
+EXAMPLE:
+
+{"question":"What type of language is Portuguese?", "answer":"Romance"}
+
+Response:
+
+"Portuguese is a Romance language"
+
+Provide the declarative statement for the following json line:

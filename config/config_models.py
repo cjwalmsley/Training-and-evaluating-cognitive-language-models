@@ -92,6 +92,7 @@ class Experiments(BaseModel):
     pre_load_weights: bool
     pre_load_weights_filename: str
     join_entity_words: bool
+    categorise_samples: bool
 
 
 # 2. A nested model for model hyperparameters

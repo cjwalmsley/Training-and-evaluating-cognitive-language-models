@@ -52,12 +52,12 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "sandbox"
+  experiment_name: "38"
   percentage_of_pretraining_samples: 50
   maximum_number_of_words: 18
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 20
+  number_of_training_samples: 2000
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
@@ -67,6 +67,7 @@ experiments:
   pre_load_weights: false
   pre_load_weights_filename: "links_people.dat"
   join_entity_words: true
+  categorise_samples: false
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
@@ -82,9 +83,9 @@ ollama:
     repeat_penalty: 1.5
     temperature: 0
     seed: 42
-    num_predict: 100
+    num_predict: 75
     top_k: 1
-    top_p: 0.1
+    top_p: 0.0
     min_p: 0.0
   model: "ministral-3:8b"
   embedding_model: "embeddinggemma"
