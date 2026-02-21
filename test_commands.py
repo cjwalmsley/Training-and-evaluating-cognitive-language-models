@@ -19,9 +19,47 @@ from commands import (
 )
 
 
-class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
+class AbstractAnnabellTestCase(unittest.TestCase):
+    """Abstract base class for Annabell command generator tests."""
 
     def setUp(self):
+        self.log_stats_patcher = patch(
+            "commands.global_config.log_stats", return_value=False
+        )
+        self.exclude_patcher = patch(
+            "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
+            return_value=False,
+        )
+        self.write_non_lookup_commands_patcher = patch(
+            "commands.global_config.write_non_lookup_commands",
+            return_value=True,
+        )
+
+        self.goal_stack_limit_patcher = patch(
+            "commands.global_config.goal_stack_limit",
+            return_value=100,
+        )
+
+        # 2. Start the patchers and store the mock objects
+        self.mock_log_stats = self.log_stats_patcher.start()
+        self.mock_exclude = self.exclude_patcher.start()
+        self.mock_write_non_lookup_commands = (
+            self.write_non_lookup_commands_patcher.start()
+        )
+        self.mock_goal_stack_limit = self.goal_stack_limit_patcher.start()
+
+    def tearDown(self):
+        # Stop the patchers after each test
+        self.log_stats_patcher.stop()
+        self.exclude_patcher.stop()
+        self.write_non_lookup_commands_patcher.stop()
+        self.goal_stack_limit_patcher.stop()
+
+
+class TestAbstractAnnabellCommandGenerator(AbstractAnnabellTestCase):
+
+    def setUp(self):
+        super().setUp()
         """Set up a common instance for testing."""
         self.sample_id = "test_01"
         self.declarative_sentence = "the sky is blue with patches of grey"
@@ -75,15 +113,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         )
         self.assertEqual(AnnabellQuestionContext.remove_question_mark("?"), "")
 
-    @patch(
-        "commands.global_config.log_stats",
-        return_value=False,
-    )
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_create_list_of_commands_short_answer(self, mock_method1, mock_method2):
+    def test_create_list_of_commands_short_answer(self):
         """Test command generation for an answer with fewer than 4 words."""
         generator = AnnabellBaseCommandGenerator(
             self.sample_id, self.declarative_sentence, self.question, self.short_answer
@@ -111,15 +141,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    @patch(
-        "commands.global_config.log_stats",
-        return_value=False,
-    )
-    def test_create_list_of_commands_long_answer(self, mock_method1, mock_method2):
+    def test_create_list_of_commands_long_answer(self):
         """Test command generation for an answer with more than 3 words."""
         generator = AnnabellBaseCommandGenerator(
             self.sample_id, self.declarative_sentence, self.question, self.long_answer
@@ -149,11 +171,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_question_commands_for_phrase(self, mock_method):
+    def test_write_question_commands_for_phrase(self):
         """Test the write_question_commands_for_phrase method."""
         generator = AnnabellQuestionCommandGenerator(
             self.declarative_sentence, self.question, self.short_answer, max_words=5
@@ -216,11 +234,7 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, generator.commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_question_commands_short_question(self, mock_method):
+    def test_write_question_commands_short_question(self):
         """Test the write_question_commands method with a short question."""
         generator = AnnabellQuestionCommandGenerator(
             self.declarative_sentence, self.question, self.short_answer, max_words=5
@@ -228,9 +242,6 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         generator.write_question_commands()
         expected_commands = [".sctx sky", ".pg sky"]
         self.assertEqual(expected_commands, generator.commands)
-
-    def test_write_question_commands_long_declarative_sentence(self):
-        pass
 
     def test_write_question_commands_long_question(self):
         """Test the write_question_commands method with a long question."""
@@ -343,8 +354,9 @@ class TestAbstractAnnabellCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, answer_generator.commands)
 
 
-class TestAnnabellTestCommandGenerator(unittest.TestCase):
+class TestAnnabellTestCommandGenerator(AbstractAnnabellTestCase):
     def setUp(self):
+        super().setUp()
         """Set up a common instance for testing."""
         self.sample_id = "5733be284776f41900661180"
         self.question = "? the Basilica of the sacred heart at Notre_Dame be beside to which structure"
@@ -366,8 +378,9 @@ class TestAnnabellTestCommandGenerator(unittest.TestCase):
         self.assertEqual(self.command_generator.commands, expected_commands)
 
 
-class TestAnnabellTrainingCommandGenerator(unittest.TestCase):
+class TestAnnabellTrainingCommandGenerator(AbstractAnnabellTestCase):
     def setUp(self):
+        super().setUp()
         """Set up a common instance for testing."""
         self.sample_id = "5733be284776f41900661180"
         self.declarative_sentence = (
@@ -390,9 +403,10 @@ class TestAnnabellTrainingCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, self.command_generator.commands)
 
 
-class TestAnnabellQuestionContext(unittest.TestCase):
+class TestAnnabellQuestionContext(AbstractAnnabellTestCase):
 
     def setUp(self):
+        super().setUp()
         self.declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         self.question = "? what sit on top of the Main_Building at Notre_Dame"
         self.context = AnnabellQuestionContext(self.question, max_words_per_phrase=9)
@@ -432,7 +446,8 @@ class TestAnnabellQuestionContext(unittest.TestCase):
         assert_equal(word_group_chunks, expected_chunks)
 
 
-class TestAnnabellDeclarativeContext(unittest.TestCase):
+class TestAnnabellDeclarativeContext(AbstractAnnabellTestCase):
+
     def test_split_2_line_question_into_phrases(self):
         declarative_statement = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         expected_phrases = [
@@ -449,7 +464,7 @@ class TestAnnabellDeclarativeContext(unittest.TestCase):
         self.assertEqual(context.text, declarative_statement)
 
 
-class TestAnnabellAnswerContext(unittest.TestCase):
+class TestAnnabellAnswerContext(AbstractAnnabellTestCase):
     def test_create_answer_context(self):
         answer = "a golden statue of the Virgin_Mary"
         expected_phrases = ["a golden statue of the Virgin_Mary"]
@@ -472,15 +487,24 @@ class TestLIFOQueue(unittest.TestCase):
         self.assertTrue(queue.is_empty())
 
 
-class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
+class TestAnnabellQuestionCommandGenerator(AbstractAnnabellTestCase):
 
     def setUp(self):
+        super().setUp()
         self.declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         self.question = "? what sit on top of the Main_Building at Notre_Dame"
         self.answer = "a golden statue of the Virgin_Mary"
         self.generator = AnnabellQuestionCommandGenerator(
             self.declarative_sentence, self.question, self.answer, max_words=9
         )
+
+    def tearDown(self):
+        # Stop the patchers after each test
+        self.log_stats_patcher.stop()
+        self.exclude_patcher.stop()
+        self.write_non_lookup_commands_patcher.stop()
+        self.goal_stack_limit_patcher.stop()
+        super().tearDown()
 
     def test_goal_stack_is_correct(self):
         self.assertTrue(self.generator.goal_stack.is_empty())
@@ -563,13 +587,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
     from config.global_config import global_config
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_commands_single_phrase_question_single_phrase_statement(
-        self, mock_method
-    ):
+    def test_write_commands_single_phrase_question_single_phrase_statement(self):
 
         # from config.global_config import override_global_config
         # with override_global_config(experiments__exclude_samples_with_fewer_than_2_lookups=False):
@@ -650,13 +668,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, question_generator.commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_commands_multi_phrase_question_multi_phrase_statement2(
-        self, mock_method
-    ):
+    def test_write_commands_multi_phrase_question_multi_phrase_statement2(self):
 
         declarative_sentence = "a golden statue of the virgin mary sit on top of the main building at notre_dame"
         question = "? what sit on top of the Main_Building at Notre_Dame"
@@ -787,9 +799,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, question_generator.commands)
 
-    def test_write_commands_multi_phrase_question_multi_phrase_statement7(
-        self,
-    ):
+    def test_write_commands_multi_phrase_question_multi_phrase_statement7(self):
 
         declarative_sentence = "the entity that provide help with the management of time for new student at Notre_Dame be Learning_Resource_Center"
         question = "? what entity provide help with the management of time for new student at Notre_Dame"
@@ -807,6 +817,32 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
             ".pg Notre_Dame",
             ".sctx ? what entity provide help with the management of",
             ".pg entity",
+            ".pg provide help",
+            ".wg management",
+        ]
+
+        self.assertEqual(expected_commands, question_generator.commands)
+
+    @patch(
+        "commands.global_config.goal_stack_limit",
+        return_value=1,
+    )
+    def test_write_commands_multi_phrase_question_multi_phrase_statement7_with_goal_stack_limit(
+        self, mock_method1
+    ):
+
+        declarative_sentence = "the entity that provide help with the management of time for new student at Notre_Dame be Learning_Resource_Center"
+        question = "? what entity provide help with the management of time for new student at Notre_Dame"
+        answer = "Learning_Resource_Center"
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+        expected_commands = [
+            "? what entity provide help with the management of",
+            "time for new student at Notre_Dame",
+            "#END OF QUESTION",
+            ".sctx ? what entity provide help with the management of",
             ".pg provide help",
             ".wg management",
         ]
@@ -910,13 +946,7 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
 
         self.assertEqual(expected_commands, question_generator.commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_commands_multi_phrase_question_multi_phrase_statement12(
-        self, mock_method
-    ):
+    def test_write_commands_multi_phrase_question_multi_phrase_statement12(self):
 
         declarative_sentence = "Father John_Francis OHara become the Vice - President of the University_of_Notre_Dame in 1933"
         question = "? which person become vice - president of Notre_Dame in 1933"
@@ -938,9 +968,10 @@ class TestAnnabellQuestionCommandGenerator(unittest.TestCase):
         self.assertEqual(expected_commands, question_generator.commands)
 
 
-class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
+class TestAnnabellAnswerCommandGenerator(AbstractAnnabellTestCase):
 
     def setUp(self):
+        super().setUp()
         self.declarative_sentence = "a golden statue of the Virgin_Mary sit on top of the Main_Building at Notre_Dame"
         self.answer = "a golden statue of the Virgin_Mary"
         self.question = "? what sit on top of the Main_Building at Notre_Dame"
@@ -1194,11 +1225,7 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_commands_short_answer_multi_phrase_statement8(self, mock_method):
+    def test_write_commands_short_answer_multi_phrase_statement8(self):
 
         declarative_sentence = "Father John_Francis OHara become the Vice - President of the University_of_Notre_Dame in 1933"
         question = "? which person become vice - president of Notre_Dame in 1933"
@@ -1315,8 +1342,9 @@ class TestAnnabellAnswerCommandGenerator(unittest.TestCase):
             answer_generator.write_answer_commands()
 
 
-class TestAnnabellBaseCommandGenerator(unittest.TestCase):
+class TestAnnabellBaseCommandGenerator(AbstractAnnabellTestCase):
     def setUp(self):
+        super().setUp()
         """Set up a common instance for testing."""
         self.sample_id = "test_01"
         self.declarative_sentence = "the sky is blue with patches of grey"
@@ -1363,11 +1391,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         # expected_commands = ["? what color is the sky", "#END OF QUESTION", ".pg sky"]
         # self.assertEqual(expected_commands, generator.commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_answer_commands(self, mock_method):
+    def test_write_answer_commands(self):
         generator = AnnabellBaseCommandGenerator(
             self.sample_id,
             self.declarative_sentence,
@@ -1390,11 +1414,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_write_commands_long_answer(self, mock_method):
+    def test_write_commands_long_answer(self):
         """Test write_answer_commands with a long sentence where the answer is split across phrases."""
         declarative_sentence = "the sky is a brilliant blue with some patches of grey"
         answer = "blue with some patches of grey"
@@ -1423,15 +1443,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         ]
         self.assertEqual(expected_commands, generator.commands)
 
-    @patch(
-        "commands.global_config.log_stats",
-        return_value=False,
-    )
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_timing_in_commands(self, mock_method1, mock_method2):
+    def test_timing_in_commands(self):
         """Test that timing commands are correctly added."""
         generator = AnnabellBaseCommandGenerator(
             self.sample_id,
@@ -1467,11 +1479,7 @@ class TestAnnabellBaseCommandGenerator(unittest.TestCase):
         "commands.global_config.log_stats",
         return_value=True,
     )
-    @patch(
-        "commands.global_config.exclude_samples_with_fewer_than_2_lookups",
-        return_value=False,
-    )
-    def test_stat_in_commands(self, mock_method1, mock_method2):
+    def test_stat_in_commands(self, mock_method1):
         generator = AnnabellBaseCommandGenerator(
             self.sample_id,
             self.declarative_sentence,

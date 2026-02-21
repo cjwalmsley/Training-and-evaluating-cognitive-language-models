@@ -44,7 +44,12 @@ class LIFOQueue:
 
 
 class AnnabellGoalStack(LIFOQueue):
-    pass
+    def __init__(self, limit):
+        self.limit = limit
+        super().__init__()
+
+    def size(self):
+        return len(self.items())
 
 
 class AbstractAnnabellCommandGenerator:
@@ -539,7 +544,7 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
         self.question_type = self.question.get_question_type()
         self.answer = AnnabellAnswerContext(answer)
         self.current_word_group = []
-        self.goal_stack = AnnabellGoalStack()
+        self.goal_stack = AnnabellGoalStack(global_config.goal_stack_limit())
         self.current_context = None
 
     def current_word_group_text(self):
@@ -565,6 +570,67 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
                 )
 
         self.set_lookup_word_groups_for_candidate_phrases()
+
+    def all_candidate_phrase_word_groups(self):
+        word_groups = []
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            word_groups.extend(candidate_phrase.word_groups)
+        return word_groups
+
+    def non_lookup_candidate_phrase_word_groups(self):
+        word_groups = []
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            word_groups.extend(candidate_phrase.declarative_non_lookup_word_groups())
+        return word_groups
+
+    def filter_candidate_question_phrases_and_word_groups(self):
+        """if the number of word groups exceeds the goal stack limit + 1,
+        then remove word groups according to the following rules:
+        1) remove non-lookup word_groups first
+        2) remove the word_groups with the shortest length first
+        3) keep removing word groups until the number of word groups equals the
+        size of the goal stack plus one"""
+        while len(self.all_candidate_phrase_word_groups()) > self.goal_stack.limit + 1:
+            self.remove_word_group_from_candidate_phrases()
+
+    @staticmethod
+    def shortest_word_group_in(list_of_word_groups):
+        shortest_word_group = None
+        for word_group in list_of_word_groups:
+
+            if shortest_word_group is None or len(word_group) < len(
+                shortest_word_group
+            ):
+                shortest_word_group = word_group
+        return shortest_word_group
+
+    def remove_word_group_from_candidate_phrases(self):
+        if self.non_lookup_candidate_phrase_word_groups():
+            shortest_word_group = self.shortest_word_group_in(
+                self.non_lookup_candidate_phrase_word_groups()
+            )
+            self.remove_non_lookup_candidate_phrase(shortest_word_group)
+        else:
+            shortest_word_group = self.shortest_word_group_in(
+                self.all_candidate_phrase_word_groups()
+            )
+            self.remove_lookup_candidate_phrase(shortest_word_group)
+
+    def remove_non_lookup_candidate_phrase(self, word_group_to_remove):
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            if (
+                word_group_to_remove
+                in candidate_phrase.declarative_non_lookup_word_groups()
+            ):
+                candidate_phrase.word_groups.remove(word_group_to_remove)
+
+    def remove_lookup_candidate_phrase(self, word_group_to_remove):
+        for candidate_phrase in self.candidate_question_phrases_and_word_groups:
+            if word_group_to_remove in candidate_phrase.declarative_lookup_word_groups:
+                candidate_phrase.word_groups.remove(word_group_to_remove)
+                candidate_phrase.declarative_lookup_word_groups.remove(
+                    word_group_to_remove
+                )
 
     def add_candidate_phrase(self, candidate_question_phrase):
         self.candidate_question_phrases_and_word_groups.append(
@@ -714,8 +780,12 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
 
         # self.sort_candidate_question_phrases_and_word_groups()
         self.set_candidate_question_phrases_and_word_groups()
+        self.filter_candidate_question_phrases_and_word_groups()
         # write commands to set goals for word groups in that are not used in the initial lookup
-        self.write_non_lookup_commands()
+        if global_config.write_non_lookup_commands():
+            self.write_non_lookup_commands()
+        else:
+            pass
         # write the commands that will initially guide finding the declarative sentence phrase
         self.write_lookup_declarative_sentence_commands()
 

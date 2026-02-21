@@ -776,6 +776,15 @@ class GlobalConfig(metaclass=SingletonMeta):
     def categorise_samples(self):
         return self.settings.experiments.categorise_samples
 
+    def goal_stack_limit(self):
+        return self.settings.experiments.goal_stack_limit
+
+    def write_non_lookup_commands(self):
+        return self.settings.experiments.write_non_lookup_commands
+
+    def spacy_model(self):
+        return self.settings.nlp.spacy_model
+
     @contextmanager
     def temporary_override(self, **overrides):
         """

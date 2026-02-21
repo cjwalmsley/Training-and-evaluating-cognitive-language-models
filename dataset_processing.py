@@ -114,7 +114,7 @@ class DatasetPreProcessor:
         self.columns_to_process = columns_to_process
         self.max_words_limit = max_words_limit
         self.max_word_length_limit = max_word_length_limit
-        self.nlp = self._load_spacy_model("en_core_web_lg")
+        self.nlp = self._load_spacy_model(global_config.spacy_model())
 
     @staticmethod
     def _load_spacy_model(model_name):
@@ -230,13 +230,13 @@ class DatasetPreProcessor:
     def formatted_column_suffix():
         return "_formatted"
 
-    def spacy_entities_lg(self, text):
+    def spacy_entities_model(self, text):
         # Extract entities using the preloaded spaCy large model
         doc = self.nlp(text)
         return [(ent.text, ent.label_) for ent in doc.ents]
 
     def entity_names_in_text(self, text):
-        entities = self.spacy_entities_lg(text)
+        entities = self.spacy_entities_model(text)
         entity_names = [entity_name for entity_name, entity_type in entities]
         return entity_names
 
@@ -270,7 +270,6 @@ class DatasetPreProcessor:
 
         for entity_name in sorted_entities:
             words = entity_name.split()
-            replacement = ""
             # Check if the entity starts with "the" and has more than one word.
             if len(words) > 1 and words[0].lower() == "the":
                 replacement = "the " + "_".join(words[1:])

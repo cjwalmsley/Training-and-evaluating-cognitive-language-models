@@ -68,6 +68,8 @@ experiments:
   pre_load_weights_filename: "links_people.dat"
   join_entity_words: true
   categorise_samples: false
+  goal_stack_limit: 1
+  write_non_lookup_commands: false
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
@@ -75,6 +77,9 @@ dataset:
     training: "train"
     validation: "validation"
   dataset_directory_linux: "/home/chris/datasets/squad_dataset"
+
+nlp:
+  spacy_model: "en_core_web_md"
 
 ollama:
   options:

@@ -5,5 +5,5 @@ run experiment without joining noun words
 normalise data so that words are consistent case, using the question and answer as baseline
 remove number of goals set to maximum 2
 add logging to testing and training.
-
-
+fix failing tests by reverting spacy model
+add patching to setup for answer and other test cases

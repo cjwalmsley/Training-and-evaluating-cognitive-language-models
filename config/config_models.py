@@ -64,6 +64,10 @@ class FileLocations(BaseModel):
     annabell_weights_directory: str
 
 
+class NLPConfig(BaseModel):
+    spacy_model: str
+
+
 class OllamaOptions(BaseModel):
     num_ctx: int = 4096
     repeat_last_n: int = 64
@@ -93,6 +97,8 @@ class Experiments(BaseModel):
     pre_load_weights_filename: str
     join_entity_words: bool
     categorise_samples: bool
+    goal_stack_limit: int
+    write_non_lookup_commands: bool
 
 
 # 2. A nested model for model hyperparameters
@@ -130,3 +136,4 @@ class Settings(BaseSettings):
     ollama: OllamaConfig
     file_locations: FileLocations
     experiments: Experiments
+    nlp: NLPConfig
