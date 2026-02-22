@@ -329,7 +329,7 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
                 f"Multiple declarative sentences found for lookup word group: {self.question_generator.current_word_group}, checking goal stack for disambiguation."
             )
             for candidate_target_sentence in candidate_target_sentences:
-                if candidate_target_sentence.contains(
+                if candidate_target_sentence.contains_word_group(
                     self.question_generator.goal_stack.peek()
                 ):
                     target_sentence = candidate_target_sentence

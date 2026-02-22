@@ -52,21 +52,21 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "38"
+  experiment_name: "sandbox"
   percentage_of_pretraining_samples: 50
   maximum_number_of_words: 18
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 2000
+  number_of_training_samples: 20
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
-  save_weights_every_n_steps: 50
+  save_weights_every_n_steps: 25
   log_stats: true
   exclude_samples_with_fewer_than_2_lookups: false
   pre_load_weights: false
   pre_load_weights_filename: "links_people.dat"
-  join_entity_words: true
+  join_entity_words: false
   categorise_samples: false
   goal_stack_limit: 1
   write_non_lookup_commands: false
@@ -83,7 +83,7 @@ nlp:
 
 ollama:
   options:
-    num_ctx: 4096
+    num_ctx: 1024
     repeat_last_n: 64
     repeat_penalty: 1.5
     temperature: 0
