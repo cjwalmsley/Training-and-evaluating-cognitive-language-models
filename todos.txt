@@ -1,9 +1,8 @@
-analyse existing logs for error correlations
-add on-the fly evaluation to pretraining?
+analyse existing logs for error correlations - which statements cause later statements to fail?
 review sampling methodology - avoid picking similarly structured phrases
 run experiment without joining noun words
 normalise data so that words are consistent case, using the question and answer as baseline
-remove number of goals set to maximum 2
 add logging to testing and training.
-fix failing tests by reverting spacy model
-add patching to setup for answer and other test cases
+add error handling to statement generation
+write pre and post commands db
+rebuild Annabell using 4000 words and 480k ElActStSize

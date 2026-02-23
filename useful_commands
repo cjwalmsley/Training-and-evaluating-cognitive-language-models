@@ -186,3 +186,24 @@ the city in the United States with the high -est populate -ion is New York
  .action GET_START_PH
 
  count number of id rows grep -c "#id:" 'docker/shared_data/pre_training/annabell_pre_training_log.txt'
+
+tar -cJf archive_name.tar.xz /path/to/file_or_directory
+tar -xJf archive_name.tar.xz
+
+1) copy existing archive to tmp
+cp /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/source_code/annabell_WMSize3000_ElActfStSize960k.tar.xz /Users/chris/tmp
+3) cd /Users/chris/tmp
+4) mkdir annabell_WMSize4000_ElActfStSize480k
+5) extract the archive to the new target directory
+tar -xJf annabell_WMSize3000_ElActfStSize960k.tar.xz -C /Users/chris/tmp/annabell_WMSize4000_ElActfStSize480k
+6) cd annabell_WMSize4000_ElActfStSize480k
+mv annabell_WMSize3000_ElActfStSize960k annabell_WMSize4000_ElActfStSize480k
+7) after editing the files re-archive the new directory
+tar -cJf annabell_WMSize4000_ElActfStSize480k.tar.xz ./annabell_WMSize4000_ElActfStSize480k
+8) Inspect new archive
+tar -tJf annabell_WMSize4000_ElActfStSize480k.tar.xz
+9) copy the archive to the docker directory
+cp /Users/chris/tmp/annabell_WMSize4000_ElActfStSize480k/annabell_WMSize4000_ElActfStSize480k.tar.xz /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/source_code/
+10) rebuild dcoker image
+docker compose build --build-arg ANNABELL_VERSION="annabell_WMSize4000_ElActfStSize480k"
+

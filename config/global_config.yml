@@ -53,7 +53,7 @@ file_locations:
 
 experiments:
   experiment_name: "sandbox"
-  percentage_of_pretraining_samples: 50
+  percentage_of_pretraining_samples: 75
   maximum_number_of_words: 18
   maximum_word_length: 25
   maximum_phrase_length: 9
@@ -83,7 +83,7 @@ nlp:
 
 ollama:
   options:
-    num_ctx: 1024
+    num_ctx: 2048
     repeat_last_n: 64
     repeat_penalty: 1.5
     temperature: 0
