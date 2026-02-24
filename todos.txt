@@ -4,5 +4,7 @@ run experiment without joining noun words
 normalise data so that words are consistent case, using the question and answer as baseline
 add logging to testing and training.
 add error handling to statement generation
-write pre and post commands db
-rebuild Annabell using 4000 words and 480k ElActStSize
+
+add test case for this example
+2026-02-24 08:36:37,897 - commands - CRITICAL - Not all answer words were found in the declarative sentence. missing answer words: ['sicily']
+2026-02-24 08:36:37,897 - commands - ERROR - Error creating commands for sample 57289ec83acd2414000dfb7c: Not all answer words were found in the declarative sentence. missing answer words: ['sicily'] Declarative sentence: 'Sicily play a key role in transfer the lute from Arabian to european culture' Question: '? what country helped transfer the lute from Arabian to european culture' Answer: 'sicily

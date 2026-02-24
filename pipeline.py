@@ -49,9 +49,9 @@ class Pipeline:
         if filepath is not None:
             dataset_filepath = filepath
         elif self.use_prepared_dataset_if_available:
-            if global_config.prepared_dataset_with_commands_filepath_exists():
+            if global_config.prepared_dataset_pre_commands_filepath_exists():
                 dataset_filepath = (
-                    global_config.prepared_dataset_with_commands_filepath()
+                    global_config.prepared_dataset_pre_commands_filepath()
                 )
             else:
                 logger.warning(
@@ -70,10 +70,15 @@ class Pipeline:
             self.generate_declarative_sentences()
             self.preprocess_dataset()
             self.assign_categories()
-            self.save_prepared_dataset()
+            self.save_prepared_dataset(
+                global_config.prepared_dataset_pre_commands_filename()
+            )
         else:
             self.load_prepared_dataset(self.prepared_dataset_filepath)
         self.generate_pre_training_data()
+        self.save_prepared_dataset(
+            global_config.prepared_dataset_with_commands_filename()
+        )
         self.run_pre_training()
         self.run_pre_training_evaluation_testing()
         self.run_evaluate_pre_training_results()
@@ -158,9 +163,7 @@ class Pipeline:
             self.datasetPreProcessor.select_pretraining_data_no_categorisation(
                 global_config.percentage_of_pre_training_samples()
             )
-        self.save_prepared_dataset(
-            global_config.prepared_dataset_pre_commands_filename()
-        )
+
         self.datasetPreProcessor.create_commands_for_pretraining()
         logger.info("Generation of pre-training data completed.")
 
@@ -199,13 +202,9 @@ class Pipeline:
         )
         logger.info("Categorisation of statements completed.")
 
-    def save_prepared_dataset(self, filename=None):
-        if filename is None:
-            filepath = global_config.prepared_dataset_with_commands_filepath()
-        else:
-            filepath = os.path.join(
-                global_config.prepared_dataset_directory(), filename
-            )
+    def save_prepared_dataset(self, filename):
+
+        filepath = os.path.join(global_config.prepared_dataset_directory(), filename)
 
         self.declarative_sentences_dataset.to_json(
             filepath,

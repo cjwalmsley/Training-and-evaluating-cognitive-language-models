@@ -397,11 +397,21 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.prepared_dataset_with_commands_filename(),
         )
 
+    def prepared_dataset_pre_commands_filepath(self) -> str:
+
+        return os.path.join(
+            self.prepared_dataset_directory(),
+            self.prepared_dataset_pre_commands_filename(),
+        )
+
     def prepared_dataset_filepath_exists(self):
         return os.path.exists(self.prepared_dataset_filepath())
 
     def prepared_dataset_with_commands_filepath_exists(self):
         return os.path.exists(self.prepared_dataset_with_commands_filepath())
+
+    def prepared_dataset_pre_commands_filepath_exists(self):
+        return os.path.exists(self.prepared_dataset_pre_commands_filepath())
 
     def training_directory(self) -> str:
 
