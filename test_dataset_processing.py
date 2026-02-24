@@ -5,11 +5,13 @@ import tempfile
 import shutil
 import os
 import pandas as pd
+import logging
 
 
 class TestDatasetPreProcessor(unittest.TestCase):
     def setUp(self):
         """Creates a temporary directory and a JSONL dataset file for testing."""
+        logging.disable(logging.CRITICAL)
         self.temp_dir = tempfile.mkdtemp()
         self.dataset_filepath = os.path.join(self.temp_dir, "test_dataset.jsonl")
         self.columns_to_process = [
@@ -110,6 +112,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Removes the temporary directory and its contents."""
         shutil.rmtree(self.temp_dir)
         self.join_entity_words_patcher.stop()
+        logging.disable(logging.NOTSET)
 
     def test_remove_specialCharacters(self):
         text_to_process = "what be in front of the Notre Dame Main Building ?"
@@ -214,6 +217,15 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.assertIn("declarative_sentence_formatted", pretraining_data.columns)
         self.assertIn("question_formatted", pretraining_data.columns)
         self.assertIn("answer_formatted", pretraining_data.columns)
+
+    def test_remove_samples_where_answer_is_not_in_declarative_sentence(self):
+        """Tests that samples where the answer is not in the declarative sentence are removed."""
+        initial_rows = len(self.preprocessor.dataset)
+        # Row 1 should be removed because "Ring ding ding" is not in "The quick brown fox."
+        self.preprocessor.remove_samples_where_answer_not_in_declarative_sentence()
+        self.assertLess(len(self.preprocessor.dataset), initial_rows)
+        self.assertNotIn(1, self.preprocessor.dataset["id"].values)
+        self.assertNotIn(8, self.preprocessor.dataset["id"].values)
 
 
 if __name__ == "__main__":

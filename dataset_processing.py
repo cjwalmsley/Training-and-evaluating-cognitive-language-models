@@ -126,8 +126,28 @@ class DatasetPreProcessor:
             download(model_name)
             return spacy.load(model_name)
 
+    @staticmethod
+    def is_answer_in_declarative_sentence(a_row):
+        answer = a_row["answer"]
+        declarative_sentence = a_row["declarative_sentence"]
+        result = answer in declarative_sentence
+        if not result:
+            logger.info(
+                f"Answer '{answer}' not found in declarative statement: '{declarative_sentence}', for sample ID: {a_row['id']}"
+            )
+        return result
+
+    def remove_samples_where_answer_not_in_declarative_sentence(self):
+        mask = self.dataset.apply(self.is_answer_in_declarative_sentence, axis=1)
+        num_removed = len(self.dataset) - mask.sum()
+        self.dataset = self.dataset[mask]
+        logger.info(
+            f"Removed {num_removed} samples where the answer was not in the declarative statement."
+        )
+
     def preprocess_data(self):
         self.convert_answers_to_answer()
+        self.remove_samples_where_answer_not_in_declarative_sentence()
         self.format_columns()
         self.join_entity_words()
         self.filter_dataset_by_limits()
