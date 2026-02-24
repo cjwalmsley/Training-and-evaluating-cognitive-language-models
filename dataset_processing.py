@@ -129,7 +129,7 @@ class DatasetPreProcessor:
     @staticmethod
     def is_answer_in_declarative_sentence(a_row):
         answer = a_row["answer"]
-        declarative_sentence = a_row["declarative_sentence"]
+        declarative_sentence = a_row["declarative_statement"]
         result = answer in declarative_sentence
         if not result:
             logger.info(

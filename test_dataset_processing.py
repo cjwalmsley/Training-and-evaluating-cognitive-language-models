@@ -15,14 +15,14 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.dataset_filepath = os.path.join(self.temp_dir, "test_dataset.jsonl")
         self.columns_to_process = [
-            "declarative_sentence",
+            "declarative_statement",
             "question",
             "answer",
         ]
         data = [
             {
                 "id": 1,
-                "declarative_sentence": "  The quick brown fox.  ",
+                "declarative_statement": "  The quick brown fox.  ",
                 "question": "What does the fox say?",
                 "answer": "Ring ding ding",
                 "question_category": "Subject-Verb-Object",
@@ -30,7 +30,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 2,
-                "declarative_sentence": "New York is a big city.",
+                "declarative_statement": "New York is a big city.",
                 "question": "Where is New York?",
                 "answer": "In the United States Of America",
                 "question_category": "Subject-Verb-Object",
@@ -38,7 +38,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 3,
-                "declarative_sentence": "This sentence has more than five words in it.",
+                "declarative_statement": "This sentence has more than five words in it.",
                 "question": "Is this sentence long?",
                 "answer": "Yes",
                 "question_category": "Subject-Verb-Object",
@@ -46,7 +46,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 4,
-                "declarative_sentence": "This sentence has a verylongwordinit.",
+                "declarative_statement": "This sentence has a verylongwordinit.",
                 "question": "Does it have a long word?",
                 "answer": "Indeed",
                 "question_category": "Subject-Verb-Object",
@@ -54,7 +54,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 5,
-                "declarative_sentence": "the English call -ed New Amsterdam New York after its capture",
+                "declarative_statement": "the English call -ed New Amsterdam New York after its capture",
                 "question": "What did the English call New Amsterdam after its capture?",
                 "answer": "New York",
                 "question_category": "Subject-Verb-Object",
@@ -62,7 +62,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 6,
-                "declarative_sentence": "a copper statue of Christ be in front of the Notre Dame Main Building",
+                "declarative_statement": "a copper statue of Christ be in front of the Notre Dame Main Building",
                 "question": "? what be in front of the Notre Dame Main Building",
                 "answer": "a copper statue of Christ",
                 "question_category": "Subject-Verb-Object",
@@ -70,7 +70,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 7,
-                "declarative_sentence": "a dog is a mammal",
+                "declarative_statement": "a dog is a mammal",
                 "question": "? tell me a mammal",
                 "answer": "dog",
                 "question_category": "Subject-Verb-Object",
@@ -78,7 +78,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
             {
                 "id": 8,
-                "declarative_sentence": "Technikons began integrating with traditional South African universities in the year two thousand four.",
+                "declarative_statement": "Technikons began integrating with traditional South African universities in the year two thousand four.",
                 "question": "When did Technikons start being integrated with traditional South African universities?",
                 "answer": "2004",
                 "question_category": "Subject-Verb-Adverbial",
@@ -130,7 +130,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Tests that leading/trailing whitespace is removed from string columns."""
         self.preprocessor.remove_whitespace_from_dataframe()
         expected = "The quick brown fox."
-        actual = self.preprocessor.dataset.loc[0, "declarative_sentence"]
+        actual = self.preprocessor.dataset.loc[0, "declarative_statement"]
         self.assertEqual(actual, expected)
 
     def test_join_concurrent_capitalized_words(self):
@@ -140,7 +140,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             "the English call -ed New_Amsterdam New_York after its capture"
         )
         actual_sentence = self.preprocessor.dataset.loc[
-            4, "declarative_sentence_formatted"
+            4, "declarative_statement_formatted"
         ]
         self.assertEqual(expected_sentence, actual_sentence)
 
@@ -155,7 +155,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             "a copper statue of Christ be in front of the Notre_Dame Main Building"
         )
         actual_sentence = self.preprocessor.dataset.loc[
-            5, "declarative_sentence_formatted"
+            5, "declarative_statement_formatted"
         ]
         self.assertEqual(expected_sentence, actual_sentence)
 
@@ -191,7 +191,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         # Check that whitespace has been handled
         processed_row = self.preprocessor.dataset.iloc[0]
         self.assertEqual(
-            processed_row["declarative_sentence_formatted"],
+            processed_row["declarative_statement_formatted"],
             "a dog be a mammal",
         )
 
@@ -214,7 +214,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
             self.preprocessor.dataset["is_pretraining"] == True
         ]
         self.assertEqual(len(pretraining_data), expected_selected)
-        self.assertIn("declarative_sentence_formatted", pretraining_data.columns)
+        self.assertIn("declarative_statement_formatted", pretraining_data.columns)
         self.assertIn("question_formatted", pretraining_data.columns)
         self.assertIn("answer_formatted", pretraining_data.columns)
 
