@@ -1,0 +1,4 @@
+km / kilometer
+
+2026-02-23 18:58:48,451 - commands - CRITICAL - Not all answer words were found in the declarative sentence. missing answer words: ['wind', '-', 'drive', 'turbine']
+2026-02-23 18:58:48,451 - commands - ERROR - Error creating commands for sample 573416864776f4190066182e: Not all answer words were found in the declarative sentence. missing answer words: ['wind', '-', 'drive', 'turbine'] Declarative sentence: 'wind - drive turbine be use to pump water uphill in Portugal' Question: '? what be use to pump water uphill in Portugal' Answer: 'wind - drive turbine

@@ -1,5 +1,6 @@
 from dataset_processing import DatasetPreProcessor
 import unittest
+from unittest.mock import patch
 import tempfile
 import shutil
 import os
@@ -83,6 +84,13 @@ class TestDatasetPreProcessor(unittest.TestCase):
             },
         ]
 
+        self.join_entity_words_patcher = patch(
+            "commands.global_config.join_entity_words", return_value=True
+        )
+        self.mock_log_stats = self.mock_log_stats = (
+            self.join_entity_words_patcher.start()
+        )
+
         with open(self.dataset_filepath, "w") as f:
             for item in data:
                 f.write(str(item).replace("'", '"') + "\n")
@@ -101,6 +109,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
     def tearDown(self):
         """Removes the temporary directory and its contents."""
         shutil.rmtree(self.temp_dir)
+        self.join_entity_words_patcher.stop()
 
     def test_remove_specialCharacters(self):
         text_to_process = "what be in front of the Notre Dame Main Building ?"
@@ -130,7 +139,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         actual_sentence = self.preprocessor.dataset.loc[
             4, "declarative_sentence_formatted"
         ]
-        self.assertEqual(actual_sentence, expected_sentence)
+        self.assertEqual(expected_sentence, actual_sentence)
 
         expected_answer = "New_York"
         actual_answer = self.preprocessor.dataset.loc[4, "answer_formatted"]
