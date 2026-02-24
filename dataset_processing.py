@@ -130,6 +130,9 @@ class DatasetPreProcessor:
     def is_answer_in_declarative_sentence(a_row):
         answer = a_row["answer"]
         declarative_sentence = a_row["declarative_statement"]
+        # convert both to lower case for the comparison
+        answer = answer.lower()
+        declarative_sentence = declarative_sentence.lower()
         result = answer in declarative_sentence
         if not result:
             logger.info(

@@ -84,6 +84,14 @@ class TestDatasetPreProcessor(unittest.TestCase):
                 "question_category": "Subject-Verb-Adverbial",
                 "statement_category": "Subject-Verb-Adverbial",
             },
+            {
+                "id": 9,
+                "declarative_statement": "a Dog is a mammal",
+                "question": "? tell me a mammal",
+                "answer": "dog",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
+            },
         ]
 
         self.join_entity_words_patcher = patch(
@@ -185,7 +193,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Tests the full preprocessing pipeline."""
         self.preprocessor.preprocess_data()
         # After all preprocessing with limits (5 words, 10 length), only row 1 should remain
-        self.assertEqual(len(self.preprocessor.dataset), 1)
+        self.assertEqual(len(self.preprocessor.dataset), 2)
         self.assertEqual(self.preprocessor.dataset.iloc[0]["id"], 7)
 
         # Check that whitespace has been handled
@@ -226,6 +234,13 @@ class TestDatasetPreProcessor(unittest.TestCase):
         self.assertLess(len(self.preprocessor.dataset), initial_rows)
         self.assertNotIn(1, self.preprocessor.dataset["id"].values)
         self.assertNotIn(8, self.preprocessor.dataset["id"].values)
+
+    def test_remove_samples_where_answer_is_not_in_declarative_sentence_differing_case(
+        self,
+    ):
+        """Tests that samples where the answer is not in the declarative sentence are removed."""
+        self.preprocessor.remove_samples_where_answer_not_in_declarative_sentence()
+        self.assertIn(9, self.preprocessor.dataset["id"].values)
 
 
 if __name__ == "__main__":
