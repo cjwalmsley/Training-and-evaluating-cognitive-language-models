@@ -26,14 +26,20 @@ def generated_model_from_prompt(the_prompt, id_string, the_model_string):
 
     logger.debug("raw response: " + the_response)
 
-    # Parse the JSON response from the model
-    response_data = json.loads(the_response)
+    try:
+        # Parse the JSON response from the model
+        response_data = json.loads(the_response)
 
-    # Add the example_id to the dictionary
-    response_data["example_id"] = id_string
+        # Add the example_id to the dictionary
+        response_data["example_id"] = id_string
 
-    # Validate the complete data against the Pydantic model
-    return DeclarativeStatementWithID.model_validate(response_data)
+        # Validate the complete data against the Pydantic model
+        return DeclarativeStatementWithID.model_validate(response_data)
+    except json.JSONDecodeError as e:
+        logger.error(
+            f"JSONDecodeError for id {id_string}: {e}. Raw response: {the_response}"
+        )
+        return None
 
 
 def generate_response_with_prompt(the_model_string, the_prompt):
@@ -172,16 +178,14 @@ def generate_declarative_statements(
     for line in prompt_json_l:
         the_id, line_json = prompt_tuple_from_json_line(line)
 
-        try:
-            response_model = process_prompt(
-                base_prompt, line_json, the_id, the_model_string
-            )
+        response_model = process_prompt(
+            base_prompt, line_json, the_id, the_model_string
+        )
+        if response_model:
             responses.append(response_model.model_dump_json())
+        else:
+            logger.error(f"No valid response model generated for id: {the_id}")
 
-        except ValidationError as error:
-            logger.critical(
-                "Error processing example with id: " + str(the_id) + "\t" + str(error)
-            )
         examples_generated = examples_generated + 1
         logger.info(
             "generated: " + str(examples_generated) + " of: " + str(number_of_examples)
