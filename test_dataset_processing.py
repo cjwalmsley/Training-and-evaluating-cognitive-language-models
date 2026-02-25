@@ -92,6 +92,22 @@ class TestDatasetPreProcessor(unittest.TestCase):
                 "question_category": "Subject-Verb-Object",
                 "statement_category": "Subject-Verb-Object",
             },
+            {
+                "id": 10,
+                "declarative_statement": "a Dog is a mammal",
+                "question": "? tell me a mammal",
+                "answer": "dog",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
+            },
+            {
+                "id": 11,
+                "declarative_statement": "a dog is a mammal",
+                "question": "? tell me a mammal",
+                "answer": "Dog",
+                "question_category": "Subject-Verb-Object",
+                "statement_category": "Subject-Verb-Object",
+            },
         ]
 
         self.join_entity_words_patcher = patch(
@@ -193,7 +209,7 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Tests the full preprocessing pipeline."""
         self.preprocessor.preprocess_data()
         # After all preprocessing with limits (5 words, 10 length), only row 1 should remain
-        self.assertEqual(len(self.preprocessor.dataset), 2)
+        self.assertEqual(len(self.preprocessor.dataset), 4)
         self.assertEqual(self.preprocessor.dataset.iloc[0]["id"], 7)
 
         # Check that whitespace has been handled
@@ -241,6 +257,28 @@ class TestDatasetPreProcessor(unittest.TestCase):
         """Tests that samples where the answer is not in the declarative sentence are removed."""
         self.preprocessor.remove_samples_where_answer_not_in_declarative_sentence()
         self.assertIn(9, self.preprocessor.dataset["id"].values)
+
+    def test_normalise_case_for_matching_answer_and_declarative_words(self):
+        """Tests that case is normalised for matching answer and declarative sentence words."""
+
+        self.preprocessor.format_columns()
+        self.preprocessor.normalise_case_for_matching_answer_and_declarative_words()
+        self.assertIn(10, self.preprocessor.dataset["id"].values)
+        processed_row = self.preprocessor.dataset.iloc[9]
+        self.assertEqual(
+            "Dog",
+            processed_row["answer_formatted"],
+        )
+
+    def test_normalise_case_for_matching_answer_and_declarative_words2(self):
+        """Tests that case is normalised for matching answer and declarative sentence words."""
+        self.preprocessor.normalise_case_for_matching_answer_and_declarative_words()
+        self.assertIn(11, self.preprocessor.dataset["id"].values)
+        processed_row = self.preprocessor.dataset.iloc[10]
+        self.assertEqual(
+            "a Dog is a mammal",
+            processed_row["declarative_statement_formatted"],
+        )
 
 
 if __name__ == "__main__":

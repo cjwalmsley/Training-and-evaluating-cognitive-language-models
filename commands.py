@@ -470,37 +470,8 @@ class AnnabellAnswerCommandGenerator(AbstractAnnabellCommandGenerator):
         if len(self.answer.answer_words_remaining) != 0:
             # if there are still answer words remaining, raise an exception
             error_msg = f"Not all answer words were found in the declarative sentence. missing answer words: {self.answer.answer_words_remaining}"
-            logger.critical(error_msg)
+            logger.warning(error_msg)
             raise MissingAnswerWordsException(error_msg)
-
-    def write_long_declaration_long_answer_commands(self):
-        answer_words_remaining = self.answer.words().copy()
-        # look up the first phrase of the context
-        self.commands.append(f".ph {self.declarative_sentence.first_phrase().text}")
-        # for each remaining phrase in the declarative sentence search the context for the phrase and write the answer words that are in that phrase.
-        for declarative_phrase in self.declarative_sentence.phrases:
-            self.commands.append(f".sctx {declarative_phrase.text}")
-            for declarative_word in declarative_phrase.words():
-                if declarative_word in answer_words_remaining:
-                    self.commands.append(f".wg {declarative_word}")
-                    answer_words_remaining.remove(declarative_word)
-                    if len(answer_words_remaining) > 0:
-                        self.commands.append(".prw")
-                    else:
-                        continue
-        self.commands.append(".rw")
-
-    def write_short_declaration_short_answer_commands(self):
-        self.commands.append(f".ph {self.declarative_sentence.text}")
-        # the model can only hold 4 words in its focus of attention, so the answer must be split and rewarded and outputted incrementally in chunks if the answer has more than 4 words
-
-        if len(self.answer.words()) < 4:
-            self.commands.append(f".wg {self.answer.text}")
-        else:
-            self.commands.append(f".wg {" ".join(self.answer.words()[:3])}")
-            self.commands.append(".prw")
-            self.commands.append(f".wg {" ".join(self.answer.words()[3:])}")
-        self.commands.append(".rw")
 
 
 class CandidateQuestionPhrase:
@@ -688,7 +659,7 @@ class AnnabellQuestionCommandGenerator(AbstractAnnabellCommandGenerator):
             for keyword in question_phrase_keywords:
                 if keyword in target_keywords:
                     total_matching_words += 1
-            return (len(candidate_phrase.word_groups), -total_matching_words)
+            return len(candidate_phrase.word_groups), -total_matching_words
 
         self.candidate_question_phrases_and_word_groups.sort(key=phrase_sort_key)
 

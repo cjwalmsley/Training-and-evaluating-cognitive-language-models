@@ -1341,6 +1341,28 @@ class TestAnnabellAnswerCommandGenerator(AbstractAnnabellTestCase):
         with self.assertRaises(MissingAnswerWordsException):
             answer_generator.write_answer_commands()
 
+    def test_write_commands_long_answer_multi_phrase_statement3(self):
+        """2026-02-24 08:36:37,897 - commands - CRITICAL - Not all answer words were found in the declarative sentence. missing answer words: ['sicily']
+        2026-02-24 08:36:37,897 - commands - ERROR - Error creating commands for sample 57289ec83acd2414000dfb7c: Not all answer words were found in the declarative sentence. missing answer words: ['sicily'] Declarative sentence: 'Sicily play a key role in transfer the lute from Arabian to european culture' Question: '? what country helped transfer the lute from Arabian to european culture' Answer: 'sicily
+        """
+
+        declarative_sentence = "Sicily play a key role in transfer the lute from Arabian to european culture"
+        question = (
+            "? what country helped transfer the lute from Arabian to european culture"
+        )
+        answer = "sicily"
+
+        question_generator = AnnabellQuestionCommandGenerator(
+            declarative_sentence, question, answer, max_words=9
+        )
+        question_generator.write_commands()
+
+        answer_generator = AnnabellAnswerCommandGenerator(
+            declarative_sentence, answer, question_generator, max_words=9
+        )
+        with self.assertRaises(MissingAnswerWordsException):
+            answer_generator.write_answer_commands()
+
 
 class TestAnnabellBaseCommandGenerator(AbstractAnnabellTestCase):
     def setUp(self):

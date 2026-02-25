@@ -148,10 +148,35 @@ class DatasetPreProcessor:
             f"Removed {num_removed} samples where the answer was not in the declarative statement."
         )
 
+    def normalise_case_for_matching_answer_and_declarative_words(self):
+        self.dataset = self.dataset.apply(
+            self.normalise_case_for_matching_answer_and_declarative_words_for_row,
+            axis=1,
+        )
+
+    @staticmethod
+    def normalise_case_for_matching_answer_and_declarative_words_for_row(the_row):
+        # if any answer words are the same as those in the declarative sentence, ignoring case, then update the word that is in lower case to upper case.
+        answer_words = the_row["answer_formatted"].split()
+        declarative_words = the_row["declarative_statement_formatted"].split()
+        for answer_word in answer_words:
+            for declarative_word in declarative_words:
+                if answer_word.lower() == declarative_word.lower():
+                    if answer_word.islower() and not declarative_word.islower():
+                        the_row["answer_formatted"] = the_row[
+                            "answer_formatted"
+                        ].replace(answer_word, answer_word.capitalize())
+                    elif not answer_word.islower() and declarative_word.islower():
+                        the_row["declarative_statement_formatted"] = the_row[
+                            "declarative_statement_formatted"
+                        ].replace(declarative_word, declarative_word.capitalize())
+        return the_row
+
     def preprocess_data(self):
         self.convert_answers_to_answer()
         self.remove_samples_where_answer_not_in_declarative_sentence()
         self.format_columns()
+        self.normalise_case_for_matching_answer_and_declarative_words()
         self.join_entity_words()
         self.filter_dataset_by_limits()
         self.dataset.reset_index(drop=True, inplace=True)
