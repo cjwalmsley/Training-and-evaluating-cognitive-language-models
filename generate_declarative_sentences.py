@@ -181,10 +181,10 @@ def generate_declarative_statements(
         response_model = process_prompt(
             base_prompt, line_json, the_id, the_model_string
         )
-        if response_model:
+        if response_model and response_model.declarative_statement:
             responses.append(response_model.model_dump_json())
         else:
-            logger.error(f"No valid response model generated for id: {the_id}")
+            logger.error(f"No valid response generated for id: {the_id}")
 
         examples_generated = examples_generated + 1
         logger.info(
