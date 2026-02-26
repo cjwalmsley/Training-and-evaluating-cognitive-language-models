@@ -4,3 +4,12 @@ run experiment without joining noun words
 normalise data so that words are consistent case, using the question and answer as baseline
 add logging to testing and training.
 
+
+from datasets import load_dataset
+
+# Load the Wikidata-mapped version
+dataset = load_dataset("rvashurin/wikidata_simplequestions")
+
+# Example of a training row
+print(dataset['train'][0])
+

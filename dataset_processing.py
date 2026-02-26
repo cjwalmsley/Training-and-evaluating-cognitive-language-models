@@ -128,7 +128,7 @@ class DatasetPreProcessor:
 
     @staticmethod
     def is_answer_in_declarative_sentence(a_row):
-        logger.info(
+        logger.debug(
             f"Checking if answer is in declarative statement for sample ID: {a_row['id']}"
         )
         answer = a_row["answer"]

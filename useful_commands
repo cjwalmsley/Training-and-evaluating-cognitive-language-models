@@ -199,11 +199,11 @@ tar -xJf annabell_WMSize3000_ElActfStSize960k.tar.xz -C /Users/chris/tmp/annabel
 6) cd annabell_WMSize4000_ElActfStSize480k
 mv annabell_WMSize3000_ElActfStSize960k annabell_WMSize4000_ElActfStSize480k
 7) after editing the files re-archive the new directory
-tar -cJf annabell_WMSize4000_ElActfStSize480k.tar.xz ./annabell_WMSize4000_ElActfStSize480k
+tar -cJf annabell_WMSize5000_ElActfStSize480k.tar.xz ./annabell_WMSize5000_ElActfStSize480k
 8) Inspect new archive
-tar -tJf annabell_WMSize4000_ElActfStSize480k.tar.xz
+tar -tJf annabell_WMSize5000_ElActfStSize480k.tar.xz
 9) copy the archive to the docker directory
-cp /Users/chris/tmp/annabell_WMSize4000_ElActfStSize480k/annabell_WMSize4000_ElActfStSize480k.tar.xz /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/source_code/
+cp /Users/chris/tmp/annabell_WMSize5000_ElActfStSize480k/annabell_WMSize5000_ElActfStSize480k.tar.xz /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/source_code/
 10) rebuild dcoker image
-docker compose build --build-arg ANNABELL_VERSION="annabell_WMSize4000_ElActfStSize480k"
+docker compose build --build-arg ANNABELL_VERSION="annabell_WMSize5000_ElActfStSize480k"
 
