@@ -212,3 +212,7 @@ sbatch -p gpu --gres=gpu:ampere 1 --mem=16G "deepseek-r1:8b" "all" "5"
 start the ollama container
 srun -p gpu --gres gpu:ampere 1 --mem=16G apptainer run --nv ollama.sif
 
+
+sbatch slurm_generate_declarative_dentences.sh
+
+generate_declarative_sentences.sh "deepseek-r1:8b" "all" "5"
