@@ -7,7 +7,6 @@ datasets
 datetime
 pandas
 requests
-jupyter
 nltk
 unidecode
 scipy
@@ -17,4 +16,3 @@ spacy
 tqdm
 hf_xet
 matplotlib
-lxml
