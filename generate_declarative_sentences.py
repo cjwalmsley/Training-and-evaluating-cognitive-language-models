@@ -5,7 +5,7 @@ import timeit
 import pandas as pd
 import sys
 import json
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 from config.global_config import GlobalConfig
 
 logger = logging.getLogger(__name__)
