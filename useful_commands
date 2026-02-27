@@ -207,5 +207,8 @@ cp /Users/chris/tmp/annabell_WMSize5000_ElActfStSize480k/annabell_WMSize5000_ElA
 10) rebuild dcoker image
 docker compose build --build-arg ANNABELL_VERSION="annabell_WMSize5000_ElActfStSize480k"
 
-sbatch -p gpu --gres=gpu:1 --mem=15G "deepseek-r1:8b" "all" "5"
+sbatch -p gpu --gres=gpu:ampere 1 --mem=16G "deepseek-r1:8b" "all" "5"
+
+start the ollama container
+srun -p gpu --gres gpu:ampere 1 --mem=16G apptainer run --nv ollama.sif
 
