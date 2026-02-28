@@ -75,6 +75,10 @@ class AbstractPlatformConfig:
     def get_dataset_directory(self, settings) -> str:
         raise NotImplementedError("Subclasses must implement this method.")
 
+    @staticmethod
+    def ollama_host(settings) -> str:
+        return settings.ollama.host_local
+
 
 class HydraConfig(AbstractPlatformConfig):
 
@@ -88,6 +92,10 @@ class HydraConfig(AbstractPlatformConfig):
         return os.path.join(
             self.get_base_directory(settings), settings.dataset.dataset_directory
         )
+
+    @staticmethod
+    def ollama_host(settings) -> str:
+        return settings.ollama.host_hydra
 
 
 class MacConfig(AbstractPlatformConfig):
