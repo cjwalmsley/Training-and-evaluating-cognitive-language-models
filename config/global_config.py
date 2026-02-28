@@ -812,6 +812,9 @@ class GlobalConfig(metaclass=SingletonMeta):
     def spacy_model(self):
         return self.settings.nlp.spacy_model
 
+    def ollama_host(self):
+        return self.platform_config.ollama_host(self.settings)
+
     @contextmanager
     def temporary_override(self, **overrides):
         """
