@@ -53,12 +53,12 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "50"
+  experiment_name: "sandbox"
   percentage_of_pretraining_samples: 75
   maximum_number_of_words: 18
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 2000
+  number_of_training_samples: 10
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
@@ -98,7 +98,7 @@ ollama:
   stream: false
   think: false
   ollama_host_local: "http://localhost"
-  ollama_host_hydra: "http://pascal01:11434"
+  ollama_host_hydra: "http://ampere03:11434"
   ollama_port:
     models:
       - "llama3.2"
