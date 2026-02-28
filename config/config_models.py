@@ -15,6 +15,7 @@ class DatasetConfig(BaseModel):
 
 
 class FileLocations(BaseModel):
+    base_directory_hydra: str
     base_directory_linux: str
     base_directory_mac: str
     base_directory_windows: str

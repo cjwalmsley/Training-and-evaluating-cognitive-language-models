@@ -76,6 +76,20 @@ class AbstractPlatformConfig:
         raise NotImplementedError("Subclasses must implement this method.")
 
 
+class HydraConfig(AbstractPlatformConfig):
+
+    def get_base_directory(self, settings) -> str:
+        return settings.file_locations.base_directory_hydra
+
+    def get_docker_directory(self, settings) -> str:
+        raise NotImplementedError("Docker directory is not applicable for HydraConfig.")
+
+    def get_dataset_directory(self, settings) -> str:
+        return os.path.join(
+            self.get_base_directory(settings), settings.dataset.dataset_directory
+        )
+
+
 class MacConfig(AbstractPlatformConfig):
 
     def get_base_directory(self, settings) -> str:
@@ -133,11 +147,14 @@ class GlobalConfig(metaclass=SingletonMeta):
         if os_name == "Windows":
             return WindowsConfig()
         elif os_name == "Linux":
-            return LinuxConfig()
+            if platform.node() == "hydra":
+                return HydraConfig()
+            else:
+                return LinuxConfig()
         elif os_name == "Darwin":  # macOS
             return MacConfig()
         else:
-            raise OSError(f"Unsupported operating system: {os_name}")
+            raise NotImplementedError(f"Unsupported operating system: {os_name}")
 
     def get_base_directory(self) -> str:
         """Returns the appropriate base directory for the current operating system."""
@@ -362,14 +379,6 @@ class GlobalConfig(metaclass=SingletonMeta):
         return os.path.join(
             self.pre_training_directory(),
             self.pre_training_filename(),
-        )
-
-    def annabell_log_pretraining_validation_testing_filepath(self) -> str:
-
-        return os.path.join(
-            self.log_archive_directory(),
-            self.settings.file_locations.testing_directory,
-            self.settings.file_locations.annabell_log_pretraining_validation_testing_filename,
         )
 
     def prepared_dataset_directory(self) -> str:

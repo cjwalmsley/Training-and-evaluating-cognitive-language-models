@@ -1,11 +1,11 @@
 import logging
-import ollama
+from ollama import Client
 from dataset_processing import load_squad_dataset, filter_dataset_split
 import timeit
 import pandas as pd
 import sys
 import json
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 from config.global_config import GlobalConfig
 
 logger = logging.getLogger(__name__)
@@ -43,8 +43,8 @@ def generated_model_from_prompt(the_prompt, id_string, the_model_string):
 
 
 def generate_response_with_prompt(the_model_string, the_prompt):
-
-    generated_text = ollama.generate(
+    client = Client(host=global_config.ollama_host(), port=global_config.ollama_port())
+    response = client.generate(
         model=the_model_string,
         prompt=the_prompt,
         format=DeclarativeStatement.model_json_schema(),
@@ -52,9 +52,9 @@ def generate_response_with_prompt(the_model_string, the_prompt):
         think=global_config.ollama_think(),
         options=global_config.ollama_options_dict(),
     )
-    logger.info("Generated response: " + str(generated_text.response).strip())
-    logger.info("Total duration: " + str(generated_text.total_duration))
-    return generated_text.response
+    logger.info("Generated response: " + str(response.response).strip())
+    logger.info("Total duration: " + str(response.total_duration))
+    return response.response
 
 
 def process_prompt(the_base_prompt, the_line, the_id, the_model_string):

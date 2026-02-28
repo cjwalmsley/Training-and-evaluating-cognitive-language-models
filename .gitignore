@@ -1,1 +1,42 @@
 /config/.env
+# --- Python Environments ---
+# Ignore the local conda or venv folders
+venv/
+env/
+.venv/
+bin/
+lib/
+# If you keep your conda environment files locally
+conda-env/
+
+# --- Python Bytecode & Cache ---
+# Prevents committing compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# --- Deep Learning & Research Specifics ---
+# Ignore large dataset folders (adjust names as needed)
+data/
+datasets/
+# Ignore trained model weights and checkpoints
+*.pth
+*.pt
+*.h5
+*.ckpt
+outputs/
+models/
+
+# --- Jupyter Notebooks ---
+# Ignore checkpoint files created by Jupyter
+.ipynb_checkpoints
+# Optional: Ignore all notebook output if you only want to commit the code
+# *.nbconvert.txt
+
+# --- Operating System & IDEs ---
+.DS_Store
+.vscode/
+.idea/
+.env
