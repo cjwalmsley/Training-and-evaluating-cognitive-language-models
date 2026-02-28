@@ -118,6 +118,9 @@ class OllamaConfig(BaseModel):
     embedding_model: str
     stream: bool
     think: bool
+    ollama_host_local: str
+    ollama_host_hydra: str
+    ollama_port: int
 
 
 # 3. The main settings class that inherits from BaseSettings

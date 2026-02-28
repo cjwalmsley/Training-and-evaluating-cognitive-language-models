@@ -98,20 +98,20 @@ ollama:
   stream: false
   think: false
   ollama_host_local: "http://localhost"
-  ollama_host_hydra: "http://ampere03:11434"
-  ollama_port:
-    models:
-      - "llama3.2"
-      - "llama3"
-      - "deepseek-r1:8b"
-      - "gemma3:4b"
-      - "gemma3:1b"
-      - "gemma3n:e4b"
-      - "qwen3:4b"
-      - "gemma3:12b-it-qat"
-      - "qwen3-vl:8b"
-      - "mistral-nemo:12b"
-      - "gemma3:1b-it-qat"
-      - "gemma3:4b-it-qat"
-      - "gemma3:27b-it-qat"
-      - "ministral-3:8b"
+  ollama_host_hydra: "http://ampere03"
+  ollama_port: 11434
+  models:
+    - "llama3.2"
+    - "llama3"
+    - "deepseek-r1:8b"
+    - "gemma3:4b"
+    - "gemma3:1b"
+    - "gemma3n:e4b"
+    - "qwen3:4b"
+    - "gemma3:12b-it-qat"
+    - "qwen3-vl:8b"
+    - "mistral-nemo:12b"
+    - "gemma3:1b-it-qat"
+    - "gemma3:4b-it-qat"
+    - "gemma3:27b-it-qat"
+    - "ministral-3:8b"

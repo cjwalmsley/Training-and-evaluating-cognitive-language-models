@@ -79,6 +79,10 @@ class AbstractPlatformConfig:
     def ollama_host(settings) -> str:
         return settings.ollama.ollama_host_local
 
+    @staticmethod
+    def ollama_port(settings) -> int:
+        return settings.ollama.ollama_port
+
 
 class HydraConfig(AbstractPlatformConfig):
 
@@ -814,6 +818,9 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def ollama_host(self):
         return self.platform_config.ollama_host(self.settings)
+
+    def ollama_port(self):
+        return self.platform_config.ollama_port(self.settings)
 
     @contextmanager
     def temporary_override(self, **overrides):

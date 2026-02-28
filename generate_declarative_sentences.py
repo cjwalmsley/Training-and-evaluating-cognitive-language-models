@@ -43,7 +43,8 @@ def generated_model_from_prompt(the_prompt, id_string, the_model_string):
 
 
 def generate_response_with_prompt(the_model_string, the_prompt):
-    client = Client(host=global_config.ollama_host(), port=global_config.ollama_port())
+    host_string = global_config.ollama_host() + ":" + str(global_config.ollama_port())
+    client = Client(host_string)
     response = client.generate(
         model=the_model_string,
         prompt=the_prompt,
