@@ -3,7 +3,7 @@
 project_name: "Training-and-evaluating-cognitive-language-models"
 
 file_locations:
-  base_directory_hydra: "~/work"
+  base_directory_hydra: "/home/bwc/cjw81/work"
   base_directory_windows: "G:\\My Drive\\Shared with Julia\\Education\\Kent University\\PhD\\work\\annabell"
   base_directory_linux: "/home/chris/gdrive/work/annabell"
   base_directory_mac: "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell"
