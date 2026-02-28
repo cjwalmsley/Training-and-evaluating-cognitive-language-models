@@ -77,7 +77,7 @@ class AbstractPlatformConfig:
 
     @staticmethod
     def ollama_host(settings) -> str:
-        return settings.ollama.host_local
+        return settings.ollama.ollama_host_local
 
 
 class HydraConfig(AbstractPlatformConfig):
@@ -95,7 +95,7 @@ class HydraConfig(AbstractPlatformConfig):
 
     @staticmethod
     def ollama_host(settings) -> str:
-        return settings.ollama.host_hydra
+        return settings.ollama.ollam_host_hydra
 
 
 class MacConfig(AbstractPlatformConfig):
