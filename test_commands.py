@@ -1342,9 +1342,12 @@ class TestAnnabellAnswerCommandGenerator(AbstractAnnabellTestCase):
             answer_generator.write_answer_commands()
 
     def test_write_commands_long_answer_multi_phrase_statement3(self):
-        """2026-02-24 08:36:37,897 - commands - CRITICAL - Not all answer words were found in the declarative sentence. missing answer words: ['sicily']
-        2026-02-24 08:36:37,897 - commands - ERROR - Error creating commands for sample 57289ec83acd2414000dfb7c: Not all answer words were found in the declarative sentence. missing answer words: ['sicily'] Declarative sentence: 'Sicily play a key role in transfer the lute from Arabian to european culture' Question: '? what country helped transfer the lute from Arabian to european culture' Answer: 'sicily
+        """Put a test case for this sample
+        2026-02-26 23:15:36,540 - dataset_processing - INFO - Answer 'subject–verb–object' not found in declarative statement: 'the sentence structure of czech syntax follows the subject-verb-object order.', for sample ID: 572b9c6fbe1ee31400cb8465
         """
+
+        """2026-02-26 23:15:54,577 - commands - WARNING - Not all answer words were found in the declarative sentence. missing answer words: ['up']
+2026-02-26 23:15:54,577 - commands - ERROR - Error creating commands for sample 57313d51e6313a140071cd75: Not all answer words were found in the declarative sentence. missing answer words: ['up'] Declarative sentence: 'government assistance be necessary in Tuvalu for clean - up after the cyclone' Question: '? for what action be government assistance necessary after the Tuvalu cyclone' Answer: 'clean - up"""
 
         declarative_sentence = "Sicily play a key role in transfer the lute from Arabian to european culture"
         question = (
