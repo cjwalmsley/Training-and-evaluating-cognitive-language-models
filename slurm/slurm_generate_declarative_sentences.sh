@@ -5,8 +5,8 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate venv_python3.13
 
 # Define variables for the arguments, using provided parameters or defaults
-MODEL_STRING="${1:-llama3.2}"
-TITLE="${2:-Frédéric_Chopin}"
+MODEL_STRING="${1:-lfm2:24b}"
+TITLE="${2:-all}"
 NUMBER_OF_SENTENCES="${3:-5}" # Note: The python script expects a string for this argument if it's not 'all'
 
 echo "Running with MODEL_STRING: $MODEL_STRING"

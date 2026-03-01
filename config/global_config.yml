@@ -53,20 +53,20 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "sandbox"
+  experiment_name: "51"
   percentage_of_pretraining_samples: 75
   maximum_number_of_words: 18
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 10
+  number_of_training_samples: 2000
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
   save_weights_every_n_steps: 25
   log_stats: true
   exclude_samples_with_fewer_than_2_lookups: false
-  pre_load_weights: false
-  pre_load_weights_filename: "links_people.dat"
+  pre_load_weights: true
+  pre_load_weights_filename: "links_people_body_skills.dat"
   join_entity_words: false
   categorise_samples: false
   goal_stack_limit: 1
@@ -93,12 +93,12 @@ ollama:
     top_k: 1
     top_p: 0.0
     min_p: 0.0
-  model: "ministral-3:8b"
+  model: "lfm2:24b"
   embedding_model: "embeddinggemma"
   stream: false
   think: false
   ollama_host_local: "http://localhost"
-  ollama_host_hydra: "http://ampere03"
+  ollama_host_hydra: "http://pascal01"
   ollama_port: 11434
   models:
     - "llama3.2"
@@ -115,3 +115,4 @@ ollama:
     - "gemma3:4b-it-qat"
     - "gemma3:27b-it-qat"
     - "ministral-3:8b"
+    - "lfm2:24b"
