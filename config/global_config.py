@@ -119,7 +119,7 @@ class MacConfig(AbstractPlatformConfig):
 class LinuxConfig(AbstractPlatformConfig):
 
     def get_base_directory(self, settings) -> str:
-        return os.path.expanduser(settings.file_locations.base_directory_linux)
+        return settings.file_locations.base_directory_linux
 
     def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_directory_linux
