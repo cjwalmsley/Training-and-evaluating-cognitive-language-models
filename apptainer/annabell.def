@@ -1,0 +1,39 @@
+Bootstrap: docker
+From: ubuntu:latest
+Stage: build
+
+%arguments
+    ANNABELL_VERSION=annabell
+
+%setup
+    # This runs on the host to prepare files if needed
+    mkdir -p ${APPTAINER_ROOTFS}/app
+
+%files
+    # Source code must be accessible relative to this file
+    ../annabell_source_code/{{ ANNABELL_VERSION }}.tar.xz /app/
+    ../annabell_scripts/train_annabell_squad.sh /app/
+    ../annabell_scripts/pre_train_annabell_squad_nyc.sh /app/
+    ../annabell_scripts/test_annabell_squad.sh /app/
+
+%post
+    apt-get update && apt-get install -y --no-install-recommends \
+        g++ cmake libpcre3-dev libgtest-dev make pkg-config xz-utils libpcre3 libgomp1 sed adduser
+
+    # Build Annabell
+    cd /app
+    tar -xvJf {{ ANNABELL_VERSION }}.tar.xz
+    cd {{ ANNABELL_VERSION }}
+    ./configure && make && make install
+
+    # Cleanup and permissions
+    cd /app
+    sed -i 's/\r$//' *.sh
+    chmod +x *.sh
+
+%runscript
+    exec /usr/local/bin/annabell "$@"
+
+%labels
+    Author YourName
+    Version {{ ANNABELL_VERSION }}

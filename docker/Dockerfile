@@ -29,7 +29,7 @@ RUN echo "Setting up build dependencies..." && \
     rm -rf /var/lib/apt/lists/*
 
 # Use a relative path for the source code from the build context
-COPY ../source_code/${ANNABELL_VERSION}.tar.xz /app/
+COPY annabell_source_code/${ANNABELL_VERSION}.tar.xz /app/
 
 RUN echo "Setting up Annabell..." && \
     cd /app/ && \
@@ -57,9 +57,9 @@ RUN apt-get update && \
 COPY --from=build /usr/local/bin/annabell /usr/local/bin/annabell
 
 # Use correct relative paths from the Dockerfile's context
-COPY scripts/train_annabell_squad.sh .
-COPY scripts/pre_train_annabell_squad_nyc.sh .
-COPY scripts/test_annabell_squad.sh .
+COPY annabell_scripts/train_annabell_squad.sh .
+COPY annabell_scripts/pre_train_annabell_squad_nyc.sh .
+COPY annabell_scripts/test_annabell_squad.sh .
 
 # Fix CRLF line endings and set execute permissions
 RUN sed -i 's/\r$//' train_annabell_squad.sh && chmod +x train_annabell_squad.sh

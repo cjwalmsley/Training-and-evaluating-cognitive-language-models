@@ -1,5 +1,6 @@
 #!/bin/bash
-#SBATCH --mail-type=FAIL
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=cjw81@kent.ac.uk
 #SBATCH --export=ALL
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate venv_python3.13

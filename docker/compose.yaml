@@ -4,7 +4,8 @@ services:
   app:
     image: dataset:${ANNABELL_VERSION}
     build:
-      context: .
+      context: ..
+      dockerfile: docker/Dockerfile
       target: final
       args:
         - ANNABELL_VERSION=${ANNABELL_VERSION}

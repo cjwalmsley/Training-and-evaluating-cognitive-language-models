@@ -204,8 +204,10 @@ tar -cJf annabell_WMSize5000_ElActfStSize480k.tar.xz ./annabell_WMSize5000_ElAct
 tar -tJf annabell_WMSize5000_ElActfStSize480k.tar.xz
 9) copy the archive to the docker directory
 cp /Users/chris/tmp/annabell_WMSize5000_ElActfStSize480k/annabell_WMSize5000_ElActfStSize480k.tar.xz /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/source_code/
-10) rebuild dcoker image
-docker compose build --build-arg ANNABELL_VERSION="annabell_WMSize5000_ElActfStSize480k"
+10) rebuild docker image
+
+docker compose -f /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/compose.yaml build --build-arg ANNABELL_VERSION="annabell_WMSize5000_ElActfStSize480k"
+
 
 sbatch -p gpu --gres=gpu:ampere 1 --mem=16G "deepseek-r1:8b" "all" "5"
 
@@ -223,5 +225,26 @@ APPTAINERENV_OLLAMA_HOST=pascal01 apptainer run ollama.sif pull lfm2:24b
 git fetch origin
 git reset --hard origin/main
 
-sbatch -p cpu --mem=2G slurm_generate_de
-clarative_sentences.sh "lfm2:24b" "all" "5"
+#To run Ollama model on cluster..
+#log onto hydra:
+ssh cjw81@hydra.kent.acv.uk:22
+#start the ollama container up on ampere class gpu:
+srun -p gpu --gres gpu:ampere 1 --mem=32G apptainer run --nv ollama.sif
+#start on any gpu:
+srun -p gpu --gres gpu: 1 --mem=32G apptainer run --nv ollama.sif
+#get the HOSTNAME (aka node):
+squeue --me
+#pull a model if needed:
+APPTAINERENV_OLLAMA_HOST=<HOSTNAME>> apptainer run ollama.sif pull lfm2:24b
+#pull the latest code:
+git pull
+#if needed, hard reset from the remote  repository:
+git fetch origin
+git reset --hard origin/main
+#update the config with the node:
+nano /home/bwc/cjw81/Training-and-evaluating-cognitive-language-models/config/global_config.yml
+#run the generation script from the project directory:
+cd /home/bwc/cjw81/Training-and-evaluating-cognitive-language-models
+sbatch -p cpu --mem=2G ./slurm/slurm_generate_declarative_sentences.sh "lfm2:24b" "all" "all"
+#track the logfile
+ tail -f -n 100 /home/bwc/cjw81/Training-and-evaluating-cognitive-language-models/slurm/slurm-<JOB ID>.out
