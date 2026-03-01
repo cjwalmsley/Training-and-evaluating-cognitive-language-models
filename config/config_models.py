@@ -123,6 +123,10 @@ class OllamaConfig(BaseModel):
     ollama_port: int
 
 
+class HydraConfig(BaseModel):
+    host_names: list[str]
+
+
 # 3. The main settings class that inherits from BaseSettings
 class Settings(BaseSettings):
     # This tells Pydantic to look for a .env file in the same directory as this script
@@ -141,3 +145,4 @@ class Settings(BaseSettings):
     file_locations: FileLocations
     experiments: Experiments
     nlp: NLPConfig
+    hydra: HydraConfig

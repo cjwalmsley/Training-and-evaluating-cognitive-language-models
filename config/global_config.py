@@ -86,6 +86,10 @@ class AbstractPlatformConfig:
 
 class HydraConfig(AbstractPlatformConfig):
 
+    @staticmethod
+    def hydra_host_names(settings) -> list[str]:
+        return settings.hydra.host_names
+
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_hydra
 
@@ -152,14 +156,13 @@ class GlobalConfig(metaclass=SingletonMeta):
         self.platform_config = self.get_platform_config()
         self._initialized = True
 
-    @staticmethod
-    def get_platform_config() -> AbstractPlatformConfig:
+    def get_platform_config(self) -> AbstractPlatformConfig:
         """Sets the platform-specific configuration based on the current OS."""
         os_name = platform.system()
         if os_name == "Windows":
             return WindowsConfig()
         elif os_name == "Linux":
-            if platform.node() == "hydra":
+            if platform.node() in HydraConfig.hydra_host_names(self.settings):
                 return HydraConfig()
             else:
                 return LinuxConfig()
