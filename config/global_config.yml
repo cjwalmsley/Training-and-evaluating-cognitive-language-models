@@ -53,7 +53,7 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "51"
+  experiment_name: "52"
   percentage_of_pretraining_samples: 75
   maximum_number_of_words: 18
   maximum_word_length: 25
@@ -142,23 +142,4 @@ hydra:
     - "pascal01"
     - "volta01"
     - "pascal02"
-    - "ampere01"
-    - "ampere02"
-    - "ampere03"
-    - "pascal01"
-    - "volta01"
-    - "pascal02"
-    - "ampere01"
-    - "ampere02"
-    - "ampere03"
-    - "pascal01"
-    - "volta01"
-    - "pascal02"
-    - "ampere01"
-    - "ampere02"
-    - "ampere03"
-    - "pascal01"
-    - "volta01"
-    - "pascal02"
     - "kepler01"
-    - "legacy25"
