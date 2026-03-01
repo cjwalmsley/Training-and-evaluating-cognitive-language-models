@@ -7,6 +7,7 @@ import sys
 import json
 from pydantic import BaseModel
 from config.global_config import GlobalConfig
+import platform
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -141,7 +142,9 @@ def generate_declarative_statements(
 ):
 
     logger.info(f"🚀 Running Platform Config: {global_config.platform_config}")
+    logger.info(f"Running on node: {platform.node()}")
     logger.info(
+        f"🚀 Starting sentence generation for experiment: {global_config.experiment_name()}"
         f"🚀 Starting sentence generation for experiment: {global_config.experiment_name()}"
     )
     logger.info("\n--- Model Config ---")
