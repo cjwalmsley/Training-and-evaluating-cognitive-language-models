@@ -140,7 +140,7 @@ def generate_declarative_statements(
     title="all",
 ):
 
-    logger.info(f"🚀 Running Platform Config: {global_config.platform_config()}")
+    logger.info(f"🚀 Running Platform Config: {global_config.platform_config}")
     logger.info(
         f"🚀 Starting sentence generation for experiment: {global_config.experiment_name()}"
     )

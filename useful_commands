@@ -219,3 +219,8 @@ generate_declarative_sentences.sh "qwen3:4b" "all" "5"
 sbatch -p cpu --mem=2G slurm_generate_declarative_sentences.sh "lfm2:24b" "all" "5"
 
 APPTAINERENV_OLLAMA_HOST=pascal01 apptainer run ollama.sif pull lfm2:24b
+
+git fetch origin
+git reset --hard origin/main
+
+sbatch -p cpu --mem=2G slurm_generate_declarative_sentences.sh "lfm2:24b" "all" "5"
