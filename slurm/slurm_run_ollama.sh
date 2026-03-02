@@ -7,5 +7,5 @@
 #SBATCH --mem=32G
 
 # Run the command
-apptainer run --nv ollama.sif
+apptainer run --nv ~/ollama.sif
 

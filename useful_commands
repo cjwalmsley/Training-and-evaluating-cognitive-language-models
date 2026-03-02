@@ -231,7 +231,7 @@ ssh cjw81@hydra.kent.acv.uk:22
 #start the ollama container up on ampere class gpu:
 srun -p gpu --gres gpu:ampere 1 --mem=32G apptainer run --nv ollama.sif
 #start on any gpu:
-srun -p gpu --gres gpu: 1 --mem=32G apptainer run --nv ollama.sif
+sbatch -p gpu --gres gpu:ampere --mem=32G slurm_run_ollama.sh
 #get the HOSTNAME (aka node):
 squeue --me
 #pull a model if needed:
