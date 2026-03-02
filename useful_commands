@@ -246,3 +246,6 @@ cd /home/bwc/cjw81/Training-and-evaluating-cognitive-language-models
 sbatch -p cpu --mem=2G ./slurm/slurm_generate_declarative_sentences.sh "lfm2:24b" "all" "all"
 #track the logfile
  tail -f -n 100 /home/bwc/cjw81/Training-and-evaluating-cognitive-language-models/slurm/slurm-<JOB ID>.out
+
+
+systemctl --user stop docker-desktop-desktop
