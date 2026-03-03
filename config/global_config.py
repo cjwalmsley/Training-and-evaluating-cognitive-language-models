@@ -407,13 +407,6 @@ class GlobalConfig(metaclass=SingletonMeta):
             os.makedirs(directory_path, exist_ok=True)
         return directory_path
 
-    def prepared_dataset_filepath(self) -> str:
-
-        return os.path.join(
-            self.prepared_dataset_directory(),
-            self.prepared_dataset_filename(),
-        )
-
     def prepared_dataset_with_commands_filepath(self) -> str:
 
         return os.path.join(
@@ -668,10 +661,6 @@ class GlobalConfig(metaclass=SingletonMeta):
     def experiment_name(self) -> str:
 
         return self.settings.experiments.experiment_name
-
-    def prepared_dataset_filename(self) -> str:
-
-        return self.settings.file_locations.prepared_dataset_filename
 
     def prepared_dataset_with_commands_filename(self):
         return self.settings.file_locations.prepared_dataset_with_commands_filename

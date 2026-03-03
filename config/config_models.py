@@ -49,7 +49,6 @@ class FileLocations(BaseModel):
     test_detailed_results_filename: str
     test_summary_results_filename: str
     prepared_dataset_directory: str
-    prepared_dataset_filename: str
     pre_training_validation_testing_filename: str
     categorised_questions_filename: str
     categorised_statements_filename: str

@@ -37,7 +37,6 @@ file_locations:
   annabell_log_training_filename: "annabell_training_log.txt"
   annabell_log_testing_filename: "annabell_testing_log.txt"
   prepared_dataset_directory: "data_sets"
-  prepared_dataset_filename: "prepared_dataframe.jsonl"
   pre_training_validation_testing_filename: "nyc_squad_pretraining_validation_testing_commands.txt"
   categorised_questions_filename: "llm_question_categorisation_results.jsonl"
   categorised_statements_filename: "llm_sentence_categorisation_results.jsonl"
@@ -53,19 +52,19 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "52"
+  experiment_name: "sandbox"
   percentage_of_pretraining_samples: 75
   maximum_number_of_words: 18
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 2000
+  number_of_training_samples: 5
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
   save_weights_every_n_steps: 25
   log_stats: true
   exclude_samples_with_fewer_than_2_lookups: false
-  pre_load_weights: true
+  pre_load_weights: false
   pre_load_weights_filename: "links_people_body_skills.dat"
   join_entity_words: false
   categorise_samples: false
@@ -93,7 +92,7 @@ ollama:
     top_k: 1
     top_p: 0.0
     min_p: 0.0
-  model: "lfm2:24b"
+  model: "gemma3:1b"
   embedding_model: "embeddinggemma"
   stream: false
   think: false
@@ -116,6 +115,7 @@ ollama:
     - "gemma3:27b-it-qat"
     - "ministral-3:8b"
     - "lfm2:24b"
+    - "qwen3.5:9b"
 
 hydra:
   host_names:

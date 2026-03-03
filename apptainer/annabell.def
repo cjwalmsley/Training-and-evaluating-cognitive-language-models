@@ -14,7 +14,7 @@ Stage: build
     ../annabell_source_code/{{ ANNABELL_VERSION }}.tar.xz /app/
     ../annabell_scripts/train_annabell_squad.sh /app/
     ../annabell_scripts/pre_train_annabell_squad_nyc.sh /app/
-    ../annabell_scripts/test_annabell_squad.sh /app/
+    ../annabell_ scripts/test_annabell_squad.sh /app/
 
 %post
     apt-get update && apt-get install -y --no-install-recommends \

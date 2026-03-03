@@ -75,6 +75,7 @@ class Pipeline:
             )
         else:
             self.load_prepared_dataset(self.prepared_dataset_filepath)
+            self.preprocess_dataset()
         self.generate_pre_training_data()
         self.save_prepared_dataset(
             global_config.prepared_dataset_with_commands_filename()

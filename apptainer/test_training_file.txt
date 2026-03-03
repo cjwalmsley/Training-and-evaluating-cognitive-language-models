@@ -1,0 +1,13 @@
+#id: 5733be284776f4190066117f
+in front of the Notre_Dame Main_Building stand a statue
+
+? what be in front of the Notre_Dame Main_Building
+.pg front of the Notre_Dame Main_Building
+.ggp
+.ph in front of the Notre_Dame Main_Building stand a statue
+.drop_goal
+.wg a statue
+.rw
+
+? what be in front of the Notre_Dame Main_Building
+.x
