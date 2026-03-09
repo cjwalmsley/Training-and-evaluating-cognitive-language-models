@@ -10,6 +10,6 @@ services:
       args:
         - ANNABELL_VERSION=${ANNABELL_VERSION}
     volumes:
-      - ./shared_data:/app/data:rw
+      - ./shared_data:/app/shared_data:rw
     stdin_open: true
     tty: true

@@ -15,11 +15,14 @@ file_locations:
   responses_jsonl_filename: "responses.jsonl"
   response_declarative_sentence_categories_filename: "responses_declarative_sentence_categories.jsonl"
   response_interrogative_sentence_categories_filename: "responses_interrogative_sentence_categories.jsonl"
-  docker_directory_mac: "/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
-  docker_directory_linux: "/home/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker"
-  docker_directory_windows: "C:\\PycharmProjects\\Training-and-evaluating-cognitive-language-models\\docker"
+  docker_directory: "docker"
+  project_directory_mac: "/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models"
+  project_directory_linux: "/home/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models"
+  project_directory_windows: "C:\\PycharmProjects\\Training-and-evaluating-cognitive-language-models"
+  project_directory_hydra: "/home/bwc/cjw81/Training-and-evaluating-cognitive-language-models"
+  apptainer_image_filename: "annabell.sif"
+  apptainer_directory: "apptainer"
   docker_data_directory: "shared_data"
-  docker_runtime_data_directory: "data"
   pre_training_directory: "pre_training"
   pre_training_filename: "nyc_squad_pretraining_commands.txt"
   training_directory: "training"
@@ -52,16 +55,16 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "sandbox"
+  experiment_name: "sandbox_apptainer"
   percentage_of_pretraining_samples: 75
-  maximum_number_of_words: 18
+  maximum_number_of_words: 9
   maximum_word_length: 25
   maximum_phrase_length: 9
-  number_of_training_samples: 5
+  number_of_training_samples: 20
   use_all_available_samples: false
   cosine_distance_threshold: 0.1
   auto_save_weights: false
-  save_weights_every_n_steps: 25
+  save_weights_every_n_steps: 50
   log_stats: true
   exclude_samples_with_fewer_than_2_lookups: false
   pre_load_weights: false
@@ -70,6 +73,7 @@ experiments:
   categorise_samples: false
   goal_stack_limit: 1
   write_non_lookup_commands: false
+  annabell_build: "annabell_WMSize8500_ElActfStSize600k"
 
 dataset:
   dataset_directory: "datasets/squad_dataset"
@@ -117,29 +121,31 @@ ollama:
     - "lfm2:24b"
     - "qwen3.5:9b"
 
-hydra:
-  host_names:
-    - "legacy29"
-    - "cpu01"
-    - "cpu02"
-    - "cpu03"
-    - "cloud01"
-    - "cloud02"
-    - "cloud03"
-    - "cloud04"
-    - "cloud05"
-    - "cloud06"
-    - "legacy24"
-    - "legacy25"
-    - "legacy26"
-    - "legacy27"
-    - "legacy28"
-    - "legacy30"
-    - "legacy31"
-    - "ampere01"
-    - "ampere02"
-    - "ampere03"
-    - "pascal01"
-    - "volta01"
-    - "pascal02"
-    - "kepler01"
+machine_config:
+  local_container_environment: "apptainer"
+  hydra:
+    host_names:
+      - "legacy29"
+      - "cpu01"
+      - "cpu02"
+      - "cpu03"
+      - "cloud01"
+      - "cloud02"
+      - "cloud03"
+      - "cloud04"
+      - "cloud05"
+      - "cloud06"
+      - "legacy24"
+      - "legacy25"
+      - "legacy26"
+      - "legacy27"
+      - "legacy28"
+      - "legacy30"
+      - "legacy31"
+      - "ampere01"
+      - "ampere02"
+      - "ampere03"
+      - "pascal01"
+      - "volta01"
+      - "pascal02"
+      - "kepler01"

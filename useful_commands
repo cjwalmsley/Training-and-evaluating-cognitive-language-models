@@ -202,11 +202,11 @@ mv annabell_WMSize3000_ElActfStSize960k annabell_WMSize4000_ElActfStSize480k
 tar -cJf annabell_WMSize5000_ElActfStSize480k.tar.xz ./annabell_WMSize5000_ElActfStSize480k
 8) Inspect new archive
 tar -tJf annabell_WMSize5000_ElActfStSize480k.tar.xz
-9) copy the archive to the docker directory
-cp /Users/chris/tmp/annabell_WMSize5000_ElActfStSize480k/annabell_WMSize5000_ElActfStSize480k.tar.xz /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/source_code/
+9) copy the archive to the pycharm directory
+cp /Users/chris/tmp/annabell_WMSize8500_ElActfStSize600k/annabell_WMSize8500_ElActfStSize600k.tar.xz /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/annabell_source_code/
 10) rebuild docker image
 
-docker compose -f /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/compose.yaml build --build-arg ANNABELL_VERSION="annabell_WMSize5000_ElActfStSize480k"
+docker compose -f /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/docker/compose.yaml build --build-arg ANNABELL_VERSION="annabell_WMSize8500_ElActfStSize600k"
 
 
 sbatch -p gpu --gres=gpu:ampere 1 --mem=16G "deepseek-r1:8b" "all" "5"
@@ -249,3 +249,9 @@ sbatch -p cpu --mem=2G ./slurm/slurm_generate_declarative_sentences.sh "lfm2:24b
 
 
 systemctl --user stop docker-desktop-desktop
+
+#copy the sif to the cluster
+rsync -P ./annabell.sif cjw81@hydra.kent.ac.uk:
+
+#copy back to local machine (example)
+rsync -P cjw81@hydra.kent.ac.uk:/home/bwc/cjw81/work/experiments/52/data_sets/squad_dataset_with_generated_sentences.jsonl .

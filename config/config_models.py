@@ -27,11 +27,14 @@ class FileLocations(BaseModel):
     response_declarative_sentence_categories_filename: str
     response_interrogative_sentence_categories_filename: str
     base_prompt_filename: str
-    docker_directory_mac: str
-    docker_directory_linux: str
-    docker_directory_windows: str
+    docker_directory: str
     docker_data_directory: str
-    docker_runtime_data_directory: str
+    project_directory_linux: str
+    project_directory_mac: str
+    project_directory_windows: str
+    project_directory_hydra: str
+    apptainer_directory: str
+    apptainer_image_filename: str
     pre_training_directory: str
     training_directory: str
     testing_directory: str
@@ -99,6 +102,7 @@ class Experiments(BaseModel):
     categorise_samples: bool
     goal_stack_limit: int
     write_non_lookup_commands: bool
+    annabell_build: str
 
 
 # 2. A nested model for model hyperparameters
@@ -126,6 +130,11 @@ class HydraConfig(BaseModel):
     host_names: list[str]
 
 
+class MachineConfig(BaseModel):
+    local_container_environment: str
+    hydra: HydraConfig
+
+
 # 3. The main settings class that inherits from BaseSettings
 class Settings(BaseSettings):
     # This tells Pydantic to look for a .env file in the same directory as this script
@@ -144,4 +153,4 @@ class Settings(BaseSettings):
     file_locations: FileLocations
     experiments: Experiments
     nlp: NLPConfig
-    hydra: HydraConfig
+    machine_config: MachineConfig

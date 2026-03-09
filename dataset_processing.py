@@ -128,15 +128,16 @@ class DatasetPreProcessor:
 
     @staticmethod
     def is_answer_in_declarative_sentence(a_row):
-        logger.debug(
-            f"Checking if answer is in declarative statement for sample ID: {a_row['id']}"
-        )
         answer = a_row["answer"]
         declarative_sentence = a_row["declarative_statement"]
-        # convert both to lower case for the comparison
-        answer = answer.lower()
-        declarative_sentence = declarative_sentence.lower()
-        result = answer in declarative_sentence
+        if not declarative_sentence:
+            logger.warning("Declarative statement is None for sample ID: {a_row['id']}")
+            result = False
+        else:
+            # convert both to lower case for the comparison
+            answer = answer.lower()
+            declarative_sentence = declarative_sentence.lower()
+            result = answer in declarative_sentence
         if not result:
             logger.info(
                 f"Answer '{answer}' not found in declarative statement: '{declarative_sentence}', for sample ID: {a_row['id']}"
@@ -336,10 +337,12 @@ class DatasetPreProcessor:
     def join_entity_words(self):
         # apply to every row and assign back the formatted columns so changes persist
         if global_config.join_entity_words():
+            logger.info("Joining entity words in the dataset...")
             updated = self.dataset.apply(self.join_entity_names_in_row, axis=1)
             self.dataset[self.formatted_columns_to_process()] = updated[
                 self.formatted_columns_to_process()
             ]
+            logger.info("Finished joining entity words in the dataset.")
 
     @staticmethod
     def convert_first_character_to_lower_case_if_stopword(a_string):
@@ -376,8 +379,19 @@ class DatasetPreProcessor:
         return "? " + question
 
     def filter_dataset_by_limits(self):
+
+        logger.info(
+            f"Filtering dataset by word count and word length limits: max words = {self.max_words_limit}, max word length = {self.max_word_length_limit}"
+        )
+        logger.info("Initial dataset size: " + str(len(self.dataset)))
         self.filter_dataset_by_word_count()
+        logger.info(
+            "Dataset size after filtering by word count: " + str(len(self.dataset))
+        )
         self.filter_dataset_by_word_length()
+        logger.info(
+            "Dataset size after filtering by word length: " + str(len(self.dataset))
+        )
 
     def filter_dataset_by_word_count(self):
         for column_name in self.formatted_columns_to_process():

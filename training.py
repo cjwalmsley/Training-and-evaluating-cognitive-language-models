@@ -12,8 +12,9 @@ global_config = GlobalConfig()
 
 class AbstractAnnabellRunner:
 
-    def __init__(self, dataset_processor):
+    def __init__(self, dataset_processor, a_run_environment_class):
         self.dataset_processor = dataset_processor
+        self.run_environment = a_run_environment_class(self)
 
     def run(
         self,
@@ -23,23 +24,36 @@ class AbstractAnnabellRunner:
         self.teardown()
 
     def setup(self):
-        self.write_annabell_files_to_gdrive()
-        self.copy_files_to_docker_directory()
+        self.run_environment.setup()  # creates directories first
+        self.run_environment.write_annabell_files()
+        self.run_environment.copy_files_to_container_directory()
+
+    def write_annabell_files_to_outputs_directory(self):
+        raise NotImplementedError("Subclasses should implement this method.")
 
     def write_annabell_files_to_gdrive(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
     def teardown(self):
-        pass
+        self.run_environment.teardown()
 
     def copy_files_to_docker_directory(self):
 
         raise NotImplementedError("Subclasses should implement this method.")
 
+    def copy_files_to_apptainer_directory(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
     def run_script(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
+    def apptainer_command(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
     def docker_command(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def setup_apptainer_directories(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
     @staticmethod
@@ -65,6 +79,10 @@ class AbstractAnnabellRunner:
             raise
 
     def run_processing(self):
+        self.run_environment.run_processing()
+
+    def run_processing_docker(self):
+
         # Use shlex.split to handle arguments safely
         command_args = shlex.split(self.docker_command())
         docker_directory = os.path.join(PROJECT_ROOT, "docker")
@@ -107,14 +125,44 @@ class AbstractAnnabellRunner:
             logger.error("STDOUT: %s", e.stdout)
             logger.error("STDERR: %s", e.stderr)
             raise
-        except FileNotFoundError as e:
-            logger.critical(
-                "Error: 'docker' command not found. Make sure Docker is installed and in your system's PATH."
+
+    def run_processing_apptainer(self):
+        # Use shlex.split to handle arguments safely
+        command_args = shlex.split(self.apptainer_command())
+
+        # Find the full path to apptainer executable
+        apptainer_path = shutil.which("apptainer")
+        if not apptainer_path:
+            if global_config.platform_config.is_mac() and shutil.which("limactl"):
+                command_args = ["limactl", "shell", "apptainer"] + command_args
+            else:
+                raise FileNotFoundError(
+                    "'apptainer' command not found. Make sure Apptainer is installed and in your system's PATH."
+                )
+
+        # Replace 'apptainer' with full path in command_args if it's the first argument
+        if apptainer_path and command_args[0] == "apptainer":
+            command_args[0] = apptainer_path
+
+        logger.info(f"Running Apptainer command: {' '.join(command_args)}")
+
+        try:
+            # Execute the command
+            result = subprocess.run(
+                command_args,
+                check=True,
+                text=True,
+                capture_output=True,
+                shell=False,
             )
-            logger.critical(f"Details: {e}")
-            raise
-        except Exception as e:
-            logger.critical(f"An unexpected error occurred: {e}")
+            logger.info("STDOUT: %s", result.stdout)
+            logger.info("STDERR: %s", result.stderr)
+            logger.info("\nApptainer command executed successfully.")
+
+        except subprocess.CalledProcessError as e:
+            logger.critical(f"Apptainer command failed with exit code {e.returncode}")
+            logger.error("STDOUT: %s", e.stdout)
+            logger.error("STDERR: %s", e.stderr)
             raise
 
     def docker_runtime_weights_filepath(self):
@@ -127,9 +175,47 @@ class AnnabellTrainingRunner(AbstractAnnabellRunner):
         super().setup()
 
     def teardown(self):
-        self.copy_annabell_weights_to_gdrive()
-        self.move_annabell_logfile_to_gdrive()
+        self.run_environment.copy_annabell_weights()
+        self.run_environment.move_annabell_logfile()
         super().teardown()
+
+    def setup_apptainer_directories(self):
+        # Ensure the training directory exists inside the apptainer directory on the host
+        training_dir = os.path.join(
+            global_config.project_directory(),
+            global_config.apptainer_training_directory(),
+        )
+        os.makedirs(training_dir, exist_ok=True)
+
+    def apptainer_command(self):
+        project_dir = global_config.project_directory()
+        apptainer_dir = global_config.apptainer_directory()
+
+        # Use relative paths from the apptainer working directory (/{apptainer_dir})
+        # This matches the Docker pattern where Annabell uses relative paths like
+        # "pre_training/file.txt" rather than absolute paths "/apptainer/pre_training/file.txt"
+        training_dir = global_config.settings.file_locations.training_directory
+        pre_training_dir = global_config.settings.file_locations.pre_training_directory
+        log_filename = (
+            global_config.settings.file_locations.annabell_log_training_filename
+        )
+        training_filename = global_config.training_filename()
+        training_weights_filename = global_config.training_weights_filename()
+        pre_training_weights_filename = global_config.pre_training_weights_filename()
+
+        command = (
+            f"apptainer exec --nv "
+            f"--pwd /{apptainer_dir} "
+            f"--bind {project_dir}/{apptainer_dir}/:/{apptainer_dir} "
+            f"--bind {project_dir}/annabell_scripts/:/annabell_scripts "
+            f"{project_dir}/{global_config.annabell_build_sif_filepath()} "
+            f"/annabell_scripts/{self.run_script()} "
+            f"{training_dir}/{log_filename} "
+            f"{pre_training_dir}/{pre_training_weights_filename} "
+            f"{training_dir}/{training_weights_filename} "
+            f"{training_dir}/{training_filename} "
+        )
+        return command
 
     def run_script(self):
         return "train_annabell_squad.sh"
@@ -143,6 +229,19 @@ class AnnabellTrainingRunner(AbstractAnnabellRunner):
             global_config.training_filepath(),
             global_config.docker_training_directory(),
         )
+
+    def copy_files_to_apptainer_directory(self):
+
+        source = global_config.training_filepath()
+        dest = global_config.apptainer_training_directory()
+        dest_full = os.path.join(global_config.project_directory(), dest)
+        os.makedirs(dest_full, exist_ok=True)
+        self.copy_file(source, dest_full)
+        # Verify the file arrived
+        expected = os.path.join(dest_full, os.path.basename(source))
+        if not os.path.exists(expected):
+            raise FileNotFoundError(f"training file not found after copy: {expected}")
+        logger.info(f"Verified training file exists at: {expected}")
 
     def docker_command(self):
 
@@ -159,7 +258,7 @@ class AnnabellTrainingRunner(AbstractAnnabellRunner):
 
     def copy_annabell_weights_to_gdrive(self):
         # copy the pre-trained weights to the pre-training directory
-        source_path = os.path.join(global_config.docker_training_weights_filepath())
+        source_path = self.run_environment.training_weights_filepath()
         destination_path = os.path.join(
             global_config.training_directory(),
             global_config.training_weights_filename(),
@@ -168,12 +267,18 @@ class AnnabellTrainingRunner(AbstractAnnabellRunner):
         self.copy_file(source_path, destination_path)
 
     def move_annabell_logfile_to_gdrive(self):
-        source_path = os.path.join(
-            global_config.docker_training_log_filepath(),
-        )
+        source_path = self.run_environment.training_log_filepath()
+
         destination_path = global_config.training_log_filepath()
 
         self.move_file(source_path, destination_path)
+
+    @staticmethod
+    def apptainer_training_weights_filepath():
+        return os.path.join(
+            global_config.project_directory(),
+            global_config.apptainer_training_weights_filepath(),
+        )
 
 
 class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
@@ -182,11 +287,45 @@ class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
         super().setup()
 
     def teardown(self):
-
         super().teardown()
 
     def run_script(self):
         return "pre_train_annabell_squad_nyc.sh"
+
+    def setup_apptainer_directories(self):
+        # Ensure the pre_training directory exists inside the apptainer directory on the host
+        pre_training_dir = os.path.join(
+            global_config.project_directory(),
+            global_config.apptainer_pre_training_directory(),
+        )
+        os.makedirs(pre_training_dir, exist_ok=True)
+
+    def apptainer_command(self):
+        project_dir = global_config.project_directory()
+        apptainer_dir = global_config.apptainer_directory()
+
+        # Use relative paths from the apptainer working directory (/{apptainer_dir})
+        # This matches the Docker pattern where Annabell uses relative paths like
+        # "pre_training/file.txt" rather than absolute paths "/apptainer/pre_training/file.txt"
+        pre_training_dir = global_config.settings.file_locations.pre_training_directory
+        log_filename = (
+            global_config.settings.file_locations.annabell_log_pre_training_filename
+        )
+        training_filename = global_config.pre_training_filename()
+        weights_filename = global_config.pre_training_weights_filename()
+
+        command = (
+            f"apptainer exec --nv "
+            f"--pwd /{apptainer_dir} "
+            f"--bind {project_dir}/{apptainer_dir}/:/{apptainer_dir} "
+            f"--bind {project_dir}/annabell_scripts/:/annabell_scripts "
+            f"{project_dir}/{global_config.annabell_build_sif_filepath()} "
+            f"/annabell_scripts/{self.run_script()} "
+            f"{pre_training_dir}/{log_filename} "
+            f"{pre_training_dir}/{training_filename} "
+            f"{pre_training_dir}/{weights_filename}"
+        )
+        return command
 
     def docker_command(self):
 
@@ -210,9 +349,35 @@ class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
             global_config.docker_pre_training_directory(),
         )
 
+    def copy_files_to_apptainer_directory(self):
+
+        source = global_config.pre_training_filepath()
+        dest = global_config.apptainer_pre_training_directory()
+        dest_full = os.path.join(global_config.project_directory(), dest)
+        os.makedirs(dest_full, exist_ok=True)
+        self.copy_file(source, dest_full)
+        # Verify the file arrived
+        expected = os.path.join(dest_full, os.path.basename(source))
+        if not os.path.exists(expected):
+            raise FileNotFoundError(
+                f"Pre-training file not found after copy: {expected}"
+            )
+        logger.info(f"Verified pre-training file exists at: {expected}")
+
+    def docker_runtime_weights_filepath(self):
+        return global_config.docker_runtime_pre_training_weights_filepath()
+
+    @staticmethod
+    def apptainer_pre_training_weights_filepath():
+        return os.path.join(
+            global_config.project_directory(),
+            global_config.apptainer_pre_training_weights_filepath(),
+        )
+
     def copy_annabell_weights_to_gdrive(self):
         # copy the pre-trained weights to the pre-training directory
-        source_path = os.path.join(global_config.docker_pre_training_weights_filepath())
+
+        source_path = self.run_environment.pre_training_weights_filepath()
         destination_path = os.path.join(
             global_config.pre_training_directory(),
             global_config.pre_training_weights_filename(),
@@ -222,7 +387,7 @@ class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
 
     def move_annabell_logfile_to_gdrive(self):
         source_path = os.path.join(
-            global_config.docker_pre_training_directory(),
+            self.run_environment.pre_training_directory(),
             global_config.pre_training_log_filename(),
         )
         destination_path = global_config.pre_training_log_filepath()
@@ -242,7 +407,7 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
         super().setup()
 
     def teardown(self):
-        self.move_annabell_logfile_to_gdrive()
+        self.run_environment.move_annabell_logfile()
         super().teardown()
 
     def docker_command(self):
@@ -275,12 +440,65 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
         self.dataset_processor.write_testing_file(global_config.testing_filepath())
 
     def move_annabell_logfile_to_gdrive(self):
-        source_path = os.path.join(
-            global_config.docker_testing_log_filepath(),
-        )
+
+        source_path = self.run_environment.testing_log_filepath()
+
         destination_path = global_config.testing_log_filepath()
 
         self.move_file(source_path, destination_path)
+
+    def setup_apptainer_directories(self):
+        # Ensure the training directory exists inside the apptainer directory on the host
+        testing_dir = os.path.join(
+            global_config.project_directory(),
+            global_config.apptainer_testing_directory(),
+        )
+        os.makedirs(testing_dir, exist_ok=True)
+
+    def copy_files_to_apptainer_directory(self):
+        # Copy the testing file
+        source_commands = global_config.testing_filepath()
+        dest_commands = global_config.apptainer_testing_filepath()
+        dest_commands_full = os.path.join(
+            global_config.project_directory(), dest_commands
+        )
+        os.makedirs(os.path.dirname(dest_commands_full), exist_ok=True)
+        self.copy_file(source_commands, dest_commands_full)
+
+        # Copy the training weights file
+        source_weights = global_config.training_weights_filepath()
+        dest_weights = global_config.apptainer_training_weights_filepath()
+        dest_weights_full = os.path.join(
+            global_config.project_directory(), dest_weights
+        )
+        os.makedirs(os.path.dirname(dest_weights_full), exist_ok=True)
+        self.copy_file(source_weights, dest_weights_full)
+
+    def apptainer_command(self):
+        project_dir = global_config.project_directory()
+        apptainer_dir = global_config.apptainer_directory()
+
+        # Use relative paths from the apptainer working directory (/{apptainer_dir})
+        testing_dir = global_config.settings.file_locations.testing_directory
+        training_dir = global_config.settings.file_locations.training_directory
+        log_filename = (
+            global_config.settings.file_locations.annabell_log_testing_filename
+        )
+        commands_filename = global_config.settings.file_locations.testing_filename
+        weights_filename = global_config.training_weights_filename()
+
+        command = (
+            f"apptainer exec --nv "
+            f"--pwd /{apptainer_dir} "
+            f"--bind {project_dir}/{apptainer_dir}/:/{apptainer_dir} "
+            f"--bind {project_dir}/annabell_scripts/:/annabell_scripts "
+            f"{project_dir}/{global_config.annabell_build_sif_filepath()} "
+            f"/annabell_scripts/{self.run_script()} "
+            f"{testing_dir}/{log_filename} "
+            f"{training_dir}/{weights_filename} "
+            f"{testing_dir}/{commands_filename}"
+        )
+        return command
 
 
 class AnnabellPreTrainingTestingRunner(AnnabellTestingRunner):
@@ -290,6 +508,14 @@ class AnnabellPreTrainingTestingRunner(AnnabellTestingRunner):
 
     def teardown(self):
         super().teardown()
+
+    def setup_apptainer_directories(self):
+        # Ensure the training directory exists inside the apptainer directory on the host
+        testing_dir = os.path.join(
+            global_config.project_directory(),
+            global_config.apptainer_testing_directory(),
+        )
+        os.makedirs(testing_dir, exist_ok=True)
 
     def docker_command(self):
         command = (
@@ -327,7 +553,60 @@ class AnnabellPreTrainingTestingRunner(AnnabellTestingRunner):
         )
 
     def move_annabell_logfile_to_gdrive(self):
-        source_path = global_config.docker_pretraining_validation_testing_log_filepath()
+        source_path = (
+            self.run_environment.pre_training_validation_testing_log_filepath()
+        )
         destination_path = global_config.pre_training_validation_testing_log_filepath()
 
         self.move_file(source_path, destination_path)
+
+    def copy_files_to_apptainer_directory(self):
+        # Copy the pre-training validation/testing file
+        source_commands = global_config.pre_training_validation_testing_filepath()
+        dest_commands = (
+            global_config.apptainer_pre_training_validation_testing_filepath()
+        )
+        dest_commands_full = os.path.join(
+            global_config.project_directory(), dest_commands
+        )
+        os.makedirs(os.path.dirname(dest_commands_full), exist_ok=True)
+        self.copy_file(source_commands, dest_commands_full)
+
+        # Copy the pre-training weights file
+        source_weights = global_config.pre_training_weights_filepath()
+        dest_weights = global_config.apptainer_pre_training_weights_filepath()
+        dest_weights_full = os.path.join(
+            global_config.project_directory(), dest_weights
+        )
+        os.makedirs(os.path.dirname(dest_weights_full), exist_ok=True)
+        self.copy_file(source_weights, dest_weights_full)
+
+    def apptainer_command(self):
+        project_dir = global_config.project_directory()
+        apptainer_dir = global_config.apptainer_directory()
+
+        # Use relative paths from the apptainer working directory (/{apptainer_dir})
+        pre_training_validation_testing_dir = (
+            global_config.settings.file_locations.testing_directory
+        )
+        pre_training_dir = global_config.settings.file_locations.pre_training_directory
+        log_filename = (
+            global_config.settings.file_locations.annabell_log_pre_training_validation_testing_filename
+        )
+        commands_filename = (
+            global_config.settings.file_locations.pre_training_validation_testing_filename
+        )
+        weights_filename = global_config.pre_training_weights_filename()
+
+        command = (
+            f"apptainer exec --nv "
+            f"--pwd /{apptainer_dir} "
+            f"--bind {project_dir}/{apptainer_dir}/:/{apptainer_dir} "
+            f"--bind {project_dir}/annabell_scripts/:/annabell_scripts "
+            f"{project_dir}/{global_config.annabell_build_sif_filepath()} "
+            f"/annabell_scripts/{self.run_script()} "
+            f"{pre_training_validation_testing_dir}/{log_filename} "
+            f"{pre_training_dir}/{weights_filename} "
+            f"{pre_training_validation_testing_dir}/{commands_filename}"
+        )
+        return command

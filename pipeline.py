@@ -22,6 +22,9 @@ import logging
 import pandas as pd
 import argparse
 import os
+import subprocess
+import time
+import json
 
 logger = logging.getLogger(__name__)
 global_config = GlobalConfig()
@@ -63,9 +66,32 @@ class Pipeline:
 
         return dataset_filepath
 
+    @staticmethod
+    def run_environment_class():
+        if global_config.is_hydra():
+            return AnnabellHPCApptainerRunEnvironment
+        if (
+            global_config.local_container_environment() == "apptainer"
+            and not global_config.platform_config.is_hydra()
+        ):
+            return AnnabellLocalApptainerRunEnvironment
+        if global_config.local_container_environment() == "docker":
+            return AnnabellLocalDockerRunEnvironment
+        error_message = "No valid run environment found"
+        raise RuntimeError(error_message)
+
     def run(self):
 
         logger.info("Starting pipeline...")
+
+        if (
+            self.prepared_dataset_filepath is None
+            and self.use_prepared_dataset_if_available
+        ):
+            error_string = "No prepared dataset file provided and use_prepared_dataset_if_available is True, but the default prepared dataset file does not exist. Terminating processing."
+            logger.error(error_string)
+            raise RuntimeError(error_string)
+
         if self.prepared_dataset_filepath is None:
             self.generate_declarative_sentences()
             self.preprocess_dataset()
@@ -90,25 +116,34 @@ class Pipeline:
 
     def run_training(self):
         logger.info("Starting training...")
-        runner = AnnabellTrainingRunner(self.datasetPreProcessor)
+        runner = AnnabellTrainingRunner(
+            self.datasetPreProcessor, self.run_environment_class()
+        )
         runner.run()
         logger.info("Training completed.")
 
     def run_testing(self):
         logger.info("Starting testing...")
-        runner = AnnabellTestingRunner(self.datasetPreProcessor)
+        runner = AnnabellTestingRunner(
+            self.datasetPreProcessor, self.run_environment_class()
+        )
         runner.run()
         logger.info("Testing completed.")
 
     def run_pre_training(self):
         logger.info("Starting pre-training...")
-        runner = AnnabellPreTrainingRunner(self.datasetPreProcessor)
+        runner = AnnabellPreTrainingRunner(
+            self.datasetPreProcessor, self.run_environment_class()
+        )
+
         runner.run()
         logger.info("Pre-training completed.")
 
     def run_pre_training_evaluation_testing(self):
         logger.info("Starting pre-training testing...")
-        runner = AnnabellPreTrainingTestingRunner(self.datasetPreProcessor)
+        runner = AnnabellPreTrainingTestingRunner(
+            self.datasetPreProcessor, self.run_environment_class()
+        )
         runner.run()
         logger.info("Pre-training testing completed.")
 
@@ -132,16 +167,17 @@ class Pipeline:
         )
         self.declarative_sentences_dataset = pd.read_json(dataset_filepath, lines=True)
         self.datasetPreProcessor = DatasetPreProcessor(
-            self.declarative_sentences_dataset
+            self.declarative_sentences_dataset.copy()
         )
         logger.info("Prepared dataset loaded successfully.")
 
     def preprocess_dataset(self):
         logger.info("Starting dataset preprocessing...")
         self.datasetPreProcessor = DatasetPreProcessor(
-            self.declarative_sentences_dataset
+            self.declarative_sentences_dataset.copy()
         )
         self.datasetPreProcessor.preprocess_data()
+        self.declarative_sentences_dataset = self.datasetPreProcessor.dataset
         logger.info("Dataset preprocessing completed.")
 
     def generate_declarative_sentences(self):
@@ -166,6 +202,7 @@ class Pipeline:
             )
 
         self.datasetPreProcessor.create_commands_for_pretraining()
+        self.declarative_sentences_dataset = self.datasetPreProcessor.dataset
         logger.info("Generation of pre-training data completed.")
 
     def assign_categories(self):
@@ -213,6 +250,222 @@ class Pipeline:
             lines=True,
         )
         logger.info(f"dataset saved to file: {filepath}")
+
+
+class AnnabellAbstractRunEnvironment:
+
+    def __init__(self, runner):
+        self.runner = runner
+
+    def setup(self):
+        self.start_container_environment()
+
+    def teardown(self):
+        pass
+
+    def setup_apptainer_directories(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def start_container_environment(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def stop_container_environment(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def copy_annabell_weights(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def move_annabell_logfile(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def pre_training_weights_filepath(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def pre_training_directory(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+
+class AnnabellLocalRunEnvironment(AnnabellAbstractRunEnvironment):
+
+    def write_annabell_files(self):
+        self.runner.write_annabell_files_to_gdrive()
+
+    def copy_files_to_container_directory(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def run_processing(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def copy_annabell_weights(self):
+        self.runner.copy_annabell_weights_to_gdrive()
+
+    def move_annabell_logfile(self):
+        self.runner.move_annabell_logfile_to_gdrive()
+
+    def start_container_environment(self):
+        raise NotImplementedError("Subclasses should implement this method.")
+
+
+class AnnabellLocalDockerRunEnvironment(AnnabellLocalRunEnvironment):
+    def copy_files_to_container_directory(self):
+        self.runner.copy_files_to_docker_directory()
+
+    def run_processing(self):
+        self.runner.run_processing_docker()
+
+    def pre_training_weights_filepath(self):
+        return global_config.docker_pre_training_weights_filepath()
+
+    @staticmethod
+    def training_weights_filepath():
+        return global_config.docker_training_weights_filepath()
+
+    @staticmethod
+    def testing_log_filepath():
+        return global_config.docker_testing_log_filepath()
+
+    @staticmethod
+    def training_log_filepath():
+        return global_config.docker_training_log_filepath()
+
+    @staticmethod
+    def pre_training_validation_testing_log_filepath():
+        return global_config.docker_pretraining_validation_testing_log_filepath()
+
+    def pre_training_directory(self):
+        return global_config.docker_pre_training_directory()
+
+    def start_container_environment(self):
+        self.start_docker_environment()
+
+    def start_docker_environment(self):
+
+        logger.info("Starting Docker container environment...")
+        if self.is_docker_running():
+            logger.info("Docker is already running.")
+        else:
+            logger.info("Docker is not running. Attempting to start Docker Desktop...")
+            self.start_docker_desktop()
+
+    @staticmethod
+    def is_docker_running():
+        try:
+            subprocess.run(
+                ["docker", "info"],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
+
+    def start_docker_desktop(self):
+        try:
+            subprocess.run(["open", "-a", "Docker"], check=True)
+            logger.info("Waiting for Docker to start...")
+            while not self.is_docker_running():
+                time.sleep(5)
+                logger.info("Waiting for Docker daemon...")
+            logger.info("Docker started successfully.")
+        except Exception as e:
+            logger.critical(f"Failed to start Docker Desktop: {e}")
+            raise
+
+
+class AnnabellLocalApptainerRunEnvironment(AnnabellLocalRunEnvironment):
+
+    def setup(self):
+        super().setup()
+        self.runner.setup_apptainer_directories()
+
+    @staticmethod
+    def is_linux_vm_running():
+        instance_name = "apptainer"
+        result = subprocess.run(
+            ["limactl", "list", "--json"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        result_name = json.loads(result.stdout).get("name")
+        result_status = json.loads(result.stdout).get("status")
+
+        if result_name == instance_name and result_status == "Running":
+            print(f"Apptainer environment ('{instance_name}') is already running.")
+            return True
+        else:
+            print(f"Environment is '{result_status}'. Starting '{instance_name}'...")
+            return False
+
+    @staticmethod
+    def run_start_linux_vm():
+        subprocess.run(["limactl", "start", "apptainer"], check=True)
+
+    def start_container_environment(self):
+        if global_config.platform_config.is_mac():
+            self.start_linux_vm()
+
+    def start_linux_vm(self):
+        try:
+            self.run_start_linux_vm()
+            while not self.is_linux_vm_running():
+                time.sleep(5)
+                logger.info("Waiting for Linux VM to start...")
+            logger.info("Linux VM started successfully.")
+        except Exception as e:
+            logger.critical(f"Failed to start Linux VM: {e}")
+            raise
+
+    def copy_files_to_container_directory(self):
+        self.runner.copy_files_to_apptainer_directory()
+
+    def run_processing(self):
+        self.runner.run_processing_apptainer()
+
+    @staticmethod
+    def pre_training_validation_testing_log_filepath():
+        return global_config.apptainer_pretraining_validation_testing_log_filepath()
+
+    @staticmethod
+    def testing_log_filepath():
+        return global_config.apptainer_testing_log_filepath()
+
+    def training_weights_filepath(self):
+        return self.runner.apptainer_training_weights_filepath()
+
+    def pre_training_weights_filepath(self):
+        return self.runner.apptainer_pre_training_weights_filepath()
+
+    def pre_training_directory(self):
+        return global_config.apptainer_pre_training_directory()
+
+    @staticmethod
+    def training_log_filepath():
+        return global_config.apptainer_training_log_filepath()
+
+
+class AnnabellHPCRunEnvironment(AnnabellAbstractRunEnvironment):
+    def write_annabell_files(self):
+        self.runner.write_annabell_files_to_outputs_directory()
+
+
+class AnnabellHPCApptainerRunEnvironment(AnnabellHPCRunEnvironment):
+    def copy_files_to_container_directory(self):
+        self.runner.copy_files_to_apptainer_directory()
+
+    def run_processing(self):
+        self.runner.run_processing_apptainer()
+
+    def training_weights_filepath(self):
+        return self.runner.training_weights_filepath_apptainer()
+
+    @staticmethod
+    def testing_log_filepath():
+        return global_config.apptainer_testing_log_filepath()
+
+    pass
 
 
 def main():

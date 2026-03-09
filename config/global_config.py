@@ -4,6 +4,7 @@ import sys
 import platform
 from pathlib import Path
 from contextlib import contextmanager
+from typing import LiteralString
 import yaml
 from pydantic import ValidationError
 from .config_models import Settings
@@ -66,6 +67,14 @@ class AbstractPlatformConfig:
     Subclasses should implement methods to return platform-specific paths.
     """
 
+    @staticmethod
+    def is_hydra():
+        return False
+
+    @staticmethod
+    def is_mac():
+        return False
+
     def get_base_directory(self, settings) -> str:
         raise NotImplementedError("Subclasses must implement this method.")
 
@@ -73,6 +82,10 @@ class AbstractPlatformConfig:
         raise NotImplementedError("Subclasses must implement this method.")
 
     def get_dataset_directory(self, settings) -> str:
+        raise NotImplementedError("Subclasses must implement this method.")
+
+    @staticmethod
+    def project_directory(settings) -> str:
         raise NotImplementedError("Subclasses must implement this method.")
 
     @staticmethod
@@ -87,11 +100,19 @@ class AbstractPlatformConfig:
 class HydraConfig(AbstractPlatformConfig):
 
     @staticmethod
+    def is_hydra():
+        return True
+
+    @staticmethod
     def hydra_host_names(settings) -> list[str]:
         return settings.hydra.host_names
 
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_hydra
+
+    @staticmethod
+    def project_directory(settings) -> LiteralString | str | bytes:
+        return settings.file_locations.project_directory_hydra
 
     def get_docker_directory(self, settings) -> str:
         raise NotImplementedError("Docker directory is not applicable for HydraConfig.")
@@ -108,8 +129,17 @@ class HydraConfig(AbstractPlatformConfig):
 
 class MacConfig(AbstractPlatformConfig):
 
+    @staticmethod
+    def is_mac():
+        return True
+
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_mac
+
+    @staticmethod
+    def project_directory(settings) -> LiteralString | str | bytes:
+
+        return settings.file_locations.project_directory_mac
 
     def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_directory_mac
@@ -125,8 +155,16 @@ class LinuxConfig(AbstractPlatformConfig):
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_linux
 
-    def get_docker_directory(self, settings) -> str:
-        return settings.file_locations.docker_directory_linux
+    @staticmethod
+    def project_directory(settings) -> LiteralString | str | bytes:
+        return settings.file_locations.project_directory_linux
+
+    def get_docker_directory(self, settings) -> LiteralString | str | bytes:
+        directory = os.path.join(
+            settings.file_locations.project_directory_mac,
+            settings.file_locations.docker_directory,
+        )
+        return directory
 
     def get_dataset_directory(self, settings) -> str:
         return settings.dataset.dataset_directory_linux
@@ -136,6 +174,10 @@ class WindowsConfig(AbstractPlatformConfig):
 
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_windows
+
+    @staticmethod
+    def project_directory(settings) -> LiteralString | str | bytes:
+        return settings.file_locations.project_directory_windows
 
     def get_docker_directory(self, settings) -> str:
         return settings.file_locations.docker_directory_windows
@@ -189,34 +231,47 @@ class GlobalConfig(metaclass=SingletonMeta):
 
         return self.platform_config.get_docker_directory(self.settings)
 
+    def project_directory(self) -> str:
+
+        return self.platform_config.project_directory(self.settings)
+
     def docker_data_directory(self):
         return os.path.join(
-            self.get_docker_directory(),
+            self.project_directory(),
+            self.settings.file_locations.docker_directory,
             self.settings.file_locations.docker_data_directory,
         )
 
     def docker_runtime_pre_training_directory(self) -> str:
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
             self.settings.file_locations.pre_training_directory,
         )
 
     def docker_runtime_training_directory(self) -> str:
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
             self.settings.file_locations.training_directory,
         )
 
     def docker_runtime_testing_directory(self) -> str:
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
             self.settings.file_locations.testing_directory,
         )
 
     def docker_runtime_pre_training_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
+            self.settings.file_locations.pre_training_directory,
+            self.settings.file_locations.pre_training_filename,
+        )
+
+    def apptainer_pre_training_filepath(self) -> str:
+
+        return os.path.join(
+            self.settings.file_locations.apptainer_directory,
             self.settings.file_locations.pre_training_directory,
             self.settings.file_locations.pre_training_filename,
         )
@@ -270,10 +325,28 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.pre_training_directory,
         )
 
+    def apptainer_directory(self) -> str:
+
+        return self.settings.file_locations.apptainer_directory
+
+    def apptainer_pre_training_directory(self) -> str:
+
+        return os.path.join(
+            self.settings.file_locations.apptainer_directory,
+            self.settings.file_locations.pre_training_directory,
+        )
+
     def docker_training_directory(self) -> str:
 
         return os.path.join(
             self.docker_data_directory(),
+            self.settings.file_locations.training_directory,
+        )
+
+    def apptainer_training_directory(self) -> str:
+
+        return os.path.join(
+            self.settings.file_locations.apptainer_directory,
             self.settings.file_locations.training_directory,
         )
 
@@ -284,10 +357,24 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.testing_directory,
         )
 
+    def apptainer_testing_directory(self) -> str:
+
+        return os.path.join(
+            self.settings.file_locations.apptainer_directory,
+            self.settings.file_locations.testing_directory,
+        )
+
     def docker_pre_training_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_pre_training_directory(),
+            self.settings.file_locations.annabell_log_pre_training_filename,
+        )
+
+    def apptainer_pre_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.apptainer_pre_training_directory(),
             self.settings.file_locations.annabell_log_pre_training_filename,
         )
 
@@ -298,6 +385,13 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.annabell_log_training_filename,
         )
 
+    def apptainer_training_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.apptainer_training_directory(),
+            self.settings.file_locations.annabell_log_training_filename,
+        )
+
     def docker_testing_log_filepath(self) -> str:
 
         return os.path.join(
@@ -305,10 +399,24 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.annabell_log_testing_filename,
         )
 
+    def apptainer_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.apptainer_testing_directory(),
+            self.settings.file_locations.annabell_log_testing_filename,
+        )
+
     def docker_pretraining_validation_testing_log_filepath(self) -> str:
 
         return os.path.join(
             self.docker_testing_directory(),
+            self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
+        )
+
+    def apptainer_pretraining_validation_testing_log_filepath(self) -> str:
+
+        return os.path.join(
+            self.apptainer_testing_directory(),
             self.settings.file_locations.annabell_log_pre_training_validation_testing_filename,
         )
 
@@ -353,10 +461,23 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.pre_training_weights_filename(),
         )
 
+    def apptainer_pre_training_weights_filepath(self) -> str:
+        return os.path.join(
+            self.apptainer_pre_training_directory(),
+            self.pre_training_weights_filename(),
+        )
+
+    def apptainer_training_weights_filepath(self) -> str:
+
+        return os.path.join(
+            self.apptainer_training_directory(),
+            self.training_weights_filename(),
+        )
+
     def docker_runtime_pre_training_weights_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
             self.settings.file_locations.pre_training_directory,
             self.pre_training_weights_filename(),
         )
@@ -364,7 +485,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_pre_training_validation_testing_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
             self.settings.file_locations.testing_directory,
             self.settings.file_locations.pre_training_validation_testing_filename,
         )
@@ -372,7 +493,7 @@ class GlobalConfig(metaclass=SingletonMeta):
     def docker_runtime_training_weights_filepath(self) -> str:
 
         return os.path.join(
-            self.settings.file_locations.docker_runtime_data_directory,
+            self.settings.file_locations.docker_data_directory,
             self.settings.file_locations.training_directory,
             self.settings.file_locations.training_filename.replace(".txt", ".dat"),
         )
@@ -383,9 +504,21 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.settings.file_locations.pre_training_validation_testing_filename,
         )
 
+    def apptainer_pre_training_validation_testing_filepath(self):
+        return os.path.join(
+            self.apptainer_testing_directory(),
+            self.settings.file_locations.pre_training_validation_testing_filename,
+        )
+
     def docker_testing_filepath(self):
         return os.path.join(
             self.docker_testing_directory(),
+            self.settings.file_locations.testing_filename,
+        )
+
+    def apptainer_testing_filepath(self):
+        return os.path.join(
+            self.apptainer_testing_directory(),
             self.settings.file_locations.testing_filename,
         )
 
@@ -420,12 +553,6 @@ class GlobalConfig(metaclass=SingletonMeta):
             self.prepared_dataset_directory(),
             self.prepared_dataset_pre_commands_filename(),
         )
-
-    def prepared_dataset_filepath_exists(self):
-        return os.path.exists(self.prepared_dataset_filepath())
-
-    def prepared_dataset_with_commands_filepath_exists(self):
-        return os.path.exists(self.prepared_dataset_with_commands_filepath())
 
     def prepared_dataset_pre_commands_filepath_exists(self):
         return os.path.exists(self.prepared_dataset_pre_commands_filepath())
@@ -756,10 +883,6 @@ class GlobalConfig(metaclass=SingletonMeta):
     def cosine_distance_threshold(self) -> float:
         return self.settings.experiments.cosine_distance_threshold
 
-    @staticmethod
-    def project_root():
-        return PROJECT_ROOT
-
     def docker_training_weights_filepath(self):
         return os.path.join(
             self.docker_training_directory(),
@@ -813,6 +936,24 @@ class GlobalConfig(metaclass=SingletonMeta):
 
     def ollama_port(self):
         return self.platform_config.ollama_port(self.settings)
+
+    def is_hydra(self):
+        return self.platform_config.is_hydra()
+
+    def local_container_environment(self):
+        return self.settings.machine_config.local_container_environment
+
+    def annabell_build(self):
+        return self.settings.experiments.annabell_build
+
+    def annabell_build_sif_filename(self):
+        return self.annabell_build() + ".sif"
+
+    def annabell_build_sif_filepath(self):
+        return os.path.join(
+            self.settings.file_locations.apptainer_directory,
+            self.annabell_build_sif_filename(),
+        )
 
     @contextmanager
     def temporary_override(self, **overrides):

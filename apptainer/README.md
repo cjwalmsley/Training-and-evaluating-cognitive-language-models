@@ -6,7 +6,10 @@ apptainer build --build-arg ANNABELL_VERSION=annabell annabell.sif annabell.def
 read/write access
 needs to be run from the directory where annabell.sif is located
 apptainer shell -e --bind ./:/apptainer
-/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/apptainer/annabell.sif
+/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/apptainer/annabell_WMSize8500_ElActfStSize600k.sif
+
+apptainer shell -e --bind ./:/apptainer ~
+/PycharmProjects/Training-and-evaluating-cognitive-language-models/apptainer/annabell.sif
 
 Starts the aanabell apptainer and runs the script my_script.sh located in the apptainer directory
 
