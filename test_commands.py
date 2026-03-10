@@ -23,6 +23,7 @@ class AbstractAnnabellTestCase(unittest.TestCase):
     """Abstract base class for Annabell command generator tests."""
 
     def setUp(self):
+        super().setUp()
         self.log_stats_patcher = patch(
             "commands.global_config.log_stats", return_value=False
         )
@@ -39,6 +40,14 @@ class AbstractAnnabellTestCase(unittest.TestCase):
             "commands.global_config.goal_stack_limit",
             return_value=100,
         )
+        self.maximum_number_of_words_patcher = patch(
+            "commands.global_config.maximum_number_of_words",
+            return_value=18,
+        )
+        self.maximum_phrase_length = patch(
+            "commands.global_config.maximum_phrase_length",
+            return_value=9,
+        )
 
         # 2. Start the patchers and store the mock objects
         self.mock_log_stats = self.log_stats_patcher.start()
@@ -47,6 +56,8 @@ class AbstractAnnabellTestCase(unittest.TestCase):
             self.write_non_lookup_commands_patcher.start()
         )
         self.mock_goal_stack_limit = self.goal_stack_limit_patcher.start()
+        self.mock_maximum_number_of_words = self.maximum_number_of_words_patcher.start()
+        self.mock_maximum_phrase_length = self.maximum_phrase_length.start()
 
     def tearDown(self):
         # Stop the patchers after each test
@@ -54,6 +65,9 @@ class AbstractAnnabellTestCase(unittest.TestCase):
         self.exclude_patcher.stop()
         self.write_non_lookup_commands_patcher.stop()
         self.goal_stack_limit_patcher.stop()
+        self.maximum_number_of_words_patcher.stop()
+        self.maximum_phrase_length.stop()
+        super().tearDown()
 
 
 class TestAbstractAnnabellCommandGenerator(AbstractAnnabellTestCase):
@@ -375,7 +389,7 @@ class TestAnnabellTestCommandGenerator(AbstractAnnabellTestCase):
             "\n",
         ]
         self.command_generator.create_list_of_commands()
-        self.assertEqual(self.command_generator.commands, expected_commands)
+        self.assertEqual(expected_commands, self.command_generator.commands)
 
 
 class TestAnnabellTrainingCommandGenerator(AbstractAnnabellTestCase):

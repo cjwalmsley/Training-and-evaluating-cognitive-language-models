@@ -251,7 +251,10 @@ sbatch -p cpu --mem=2G ./slurm/slurm_generate_declarative_sentences.sh "lfm2:24b
 systemctl --user stop docker-desktop-desktop
 
 #copy the sif to the cluster
-rsync -P ./annabell.sif cjw81@hydra.kent.ac.uk:
+rsync -P /Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models/apptainer/annabell_WMSize8500_ElActfStSize600k.sif cjw81@hydra.kent.ac.uk:/home/bwc/cjw81/Training-and-evaluating-cognitive-language-models/apptainer
 
 #copy back to local machine (example)
 rsync -P cjw81@hydra.kent.ac.uk:/home/bwc/cjw81/work/experiments/52/data_sets/squad_dataset_with_generated_sentences.jsonl .
+
+
+rsync -P '/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell/experiments/52/data_sets/nyc_squad_without_pretraining_commands.jsonl' cjw81@hydra.kent.ac.uk:/home/bwc/cjw81/work/experiments/54/datasets
