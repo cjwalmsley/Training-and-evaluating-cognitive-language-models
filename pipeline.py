@@ -465,7 +465,22 @@ class AnnabellHPCApptainerRunEnvironment(AnnabellHPCRunEnvironment):
     def testing_log_filepath():
         return global_config.apptainer_testing_log_filepath()
 
-    pass
+    def start_container_environment(self):
+        pass
+
+    @staticmethod
+    def pre_training_validation_testing_log_filepath():
+        return global_config.apptainer_pretraining_validation_testing_log_filepath()
+
+    def pre_training_weights_filepath(self):
+        return self.runner.apptainer_pre_training_weights_filepath()
+
+    def pre_training_directory(self):
+        return global_config.apptainer_pre_training_directory()
+
+    @staticmethod
+    def training_log_filepath():
+        return global_config.apptainer_training_log_filepath()
 
 
 def main():
