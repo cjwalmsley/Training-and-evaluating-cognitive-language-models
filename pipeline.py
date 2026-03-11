@@ -58,7 +58,7 @@ class Pipeline:
                 )
             else:
                 logger.warning(
-                    "Prepared dataset file not found. Proceeding without it."
+                    f"Prepared dataset file not found at {global_config.prepared_dataset_pre_commands_filepath()}. Proceeding without it."
                 )
                 dataset_filepath = None
         else:
