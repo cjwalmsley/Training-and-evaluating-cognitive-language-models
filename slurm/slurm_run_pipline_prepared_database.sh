@@ -3,7 +3,6 @@
 #SBATCH --mail-user=cjw81@kent.ac.uk
 #SBATCH --export=ALL
 #SBATCH --partition=cpu
-#SBATCH --constraint=ampere
 #SBATCH --mem=16G
 
 
