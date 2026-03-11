@@ -248,6 +248,14 @@ sbatch -p cpu --mem=2G ./slurm/slurm_generate_declarative_sentences.sh "lfm2:24b
  tail -f -n 100 /home/bwc/cjw81/Training-and-evaluating-cognitive-language-models/slurm/slurm-<JOB ID>.out
 
 
+
+chmod +x ~/Training-and-evaluating-cognitive-language-models/slurm/slurm_run_pipline_prepared_database.sh
+
+sbatch -p cpu --constraint=ampere --mem=16G ~/Training-and-evaluating-cognitive-language-models/slurm/slurm_run_pipline_prepared_database.sh
+
+
+
+
 systemctl --user stop docker-desktop-desktop
 
 #copy the sif to the cluster
