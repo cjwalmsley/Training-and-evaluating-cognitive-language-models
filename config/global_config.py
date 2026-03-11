@@ -105,7 +105,7 @@ class HydraConfig(AbstractPlatformConfig):
 
     @staticmethod
     def hydra_host_names(settings) -> list[str]:
-        return settings.hydra.host_names
+        return settings.machine_config.hydra.host_names
 
     def get_base_directory(self, settings) -> str:
         return settings.file_locations.base_directory_hydra
