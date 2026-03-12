@@ -130,8 +130,10 @@ class DatasetPreProcessor:
     def is_answer_in_declarative_sentence(a_row):
         answer = a_row["answer"]
         declarative_sentence = a_row["declarative_statement"]
-        if not declarative_sentence:
-            logger.warning("Declarative statement is None for sample ID: {a_row['id']}")
+        if not declarative_sentence or not isinstance(declarative_sentence, str):
+            logger.warning(
+                "Declarative statement is an invalid format for sample ID: {a_row['id']}"
+            )
             result = False
         else:
             # convert both to lower case for the comparison
