@@ -31,9 +31,6 @@ class AbstractAnnabellRunner:
     def write_annabell_files_to_outputs_directory(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
-    def write_annabell_files_to_gdrive(self):
-        raise NotImplementedError("Subclasses should implement this method.")
-
     def teardown(self):
         self.run_environment.teardown()
 
@@ -220,7 +217,7 @@ class AnnabellTrainingRunner(AbstractAnnabellRunner):
     def run_script(self):
         return "train_annabell_squad.sh"
 
-    def write_annabell_files_to_gdrive(self):
+    def write_annabell_files_to_outputs_directory(self):
 
         self.dataset_processor.write_training_file(global_config.training_filepath())
 
@@ -337,7 +334,7 @@ class AnnabellPreTrainingRunner(AnnabellTrainingRunner):
         )
         return command
 
-    def write_annabell_files_to_gdrive(self):
+    def write_annabell_files_to_outputs_directory(self):
 
         self.dataset_processor.write_pretraining_file(
             global_config.pre_training_filepath(), global_config.auto_save_weights()
@@ -435,7 +432,7 @@ class AnnabellTestingRunner(AbstractAnnabellRunner):
             global_config.docker_testing_filepath(),
         )
 
-    def write_annabell_files_to_gdrive(self):
+    def write_annabell_files_to_outputs_directory(self):
 
         self.dataset_processor.write_testing_file(global_config.testing_filepath())
 
@@ -537,7 +534,7 @@ class AnnabellPreTrainingTestingRunner(AnnabellTestingRunner):
             global_config.docker_runtime_pre_training_validation_testing_log_filepath()
         )
 
-    def write_annabell_files_to_gdrive(self):
+    def write_annabell_files_to_outputs_directory(self):
         self.dataset_processor.write_pretraining_testing_file(
             global_config.pre_training_validation_testing_filepath()
         )

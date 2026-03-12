@@ -284,11 +284,11 @@ class AnnabellAbstractRunEnvironment:
     def pre_training_directory(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
+    def write_annabell_files(self):
+        self.runner.write_annabell_files_to_outputs_directory()
+
 
 class AnnabellLocalRunEnvironment(AnnabellAbstractRunEnvironment):
-
-    def write_annabell_files(self):
-        self.runner.write_annabell_files_to_gdrive()
 
     def copy_files_to_container_directory(self):
         raise NotImplementedError("Subclasses should implement this method.")
@@ -447,8 +447,7 @@ class AnnabellLocalApptainerRunEnvironment(AnnabellLocalRunEnvironment):
 
 
 class AnnabellHPCRunEnvironment(AnnabellAbstractRunEnvironment):
-    def write_annabell_files(self):
-        self.runner.write_annabell_files_to_outputs_directory()
+    pass
 
 
 class AnnabellHPCApptainerRunEnvironment(AnnabellHPCRunEnvironment):
