@@ -227,7 +227,8 @@ class TestDatasetPreProcessor(unittest.TestCase):
         expected_selected = int(original_len * percent / 100)
 
         self.preprocessor.select_pretraining_data(
-            percentage_of_pretraining_samples=percent
+            percentage_of_pretraining_samples=percent,
+            number_of_training_samples=original_len,
         )
 
         # Construct the selected subset and perform assertions
