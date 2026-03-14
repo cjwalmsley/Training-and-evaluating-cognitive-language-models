@@ -433,9 +433,23 @@ class DatasetPreProcessor:
     def statement_categories(self):
         return self.dataset[self.statement_category_column_name()].unique()
 
+    def trim_dataset_to_number_of_training_samples(self, number_of_training_samples):
+        if number_of_training_samples == "all":
+            return
+        else:
+            num_available = len(self.dataset)
+            num_to_select = min(number_of_training_samples, num_available)
+
+            # Select random indices instead of a sequential range
+            random_indices = np.random.choice(num_available, num_to_select, replace=False)
+            self.dataset = self.dataset.iloc[random_indices].reset_index(drop=True)
+
     def select_pretraining_data_no_categorisation(
-        self, percentage_of_pretraining_samples
+        self, percentage_of_pretraining_samples, number_of_training_samples
     ):
+
+        self.trim_dataset_to_number_of_training_samples(number_of_training_samples)
+
         # select a random sample for the entire dataset
         self.dataset["is_pretraining"] = False
         num_total_samples = len(self.dataset)
@@ -461,7 +475,10 @@ class DatasetPreProcessor:
 
         return self.dataset
 
-    def select_pretraining_data(self, percentage_of_pretraining_samples):
+    def select_pretraining_data(self, percentage_of_pretraining_samples, number_of_training_samples):
+
+        self.trim_dataset_to_number_of_training_samples(number_of_training_samples)
+
         self.dataset["is_pretraining"] = False
         num_total_samples = len(self.dataset)
         num_pretraining_samples = int(

@@ -194,11 +194,11 @@ class Pipeline:
         if global_config.categorise_samples():
 
             self.datasetPreProcessor.select_pretraining_data(
-                global_config.percentage_of_pre_training_samples()
+                global_config.percentage_of_pre_training_samples(), global_config.number_of_training_samples()
             )
         else:
             self.datasetPreProcessor.select_pretraining_data_no_categorisation(
-                global_config.percentage_of_pre_training_samples()
+                global_config.percentage_of_pre_training_samples(), global_config.number_of_training_samples()
             )
 
         self.datasetPreProcessor.create_commands_for_pretraining()

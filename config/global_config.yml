@@ -5,7 +5,7 @@ project_name: "Training-and-evaluating-cognitive-language-models"
 file_locations:
   base_directory_hydra: "/home/bwc/cjw81/work"
   base_directory_windows: "G:\\My Drive\\Shared with Julia\\Education\\Kent University\\PhD\\work\\annabell"
-  base_directory_linux: "/home/chris/gdrive/work/annabell"
+  base_directory_linux: "~/gdrive/PhD/work/annabell"
   base_directory_mac: "/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com/My Drive/Shared with Julia/Education/Kent University/PhD/work/annabell"
   prompt_data_directory: "llm_data/prompts"
   prompt_directory: "prompts"
@@ -17,7 +17,7 @@ file_locations:
   response_interrogative_sentence_categories_filename: "responses_interrogative_sentence_categories.jsonl"
   docker_directory: "docker"
   project_directory_mac: "/Users/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models"
-  project_directory_linux: "/home/chris/PycharmProjects/Training-and-evaluating-cognitive-language-models"
+  project_directory_linux: "~/PycharmProjects/Training-and-evaluating-cognitive-language-models"
   project_directory_windows: "C:\\PycharmProjects\\Training-and-evaluating-cognitive-language-models"
   project_directory_hydra: "/home/bwc/cjw81/Training-and-evaluating-cognitive-language-models"
   apptainer_image_filename: "annabell.sif"
@@ -55,7 +55,7 @@ file_locations:
   annabell_weights_directory: "annabell/links"
 
 experiments:
-  experiment_name: "54"
+  experiment_name: "sandbox_v2"
   percentage_of_pretraining_samples: 75
   maximum_number_of_words: 9
   maximum_word_length: 25
@@ -80,7 +80,7 @@ dataset:
   splits:
     training: "train"
     validation: "validation"
-  dataset_directory_linux: "/home/chris/datasets/squad_dataset"
+  dataset_directory_linux: "~/datasets/squad_dataset"
 
 nlp:
   spacy_model: "en_core_web_md"
@@ -96,7 +96,7 @@ ollama:
     top_k: 1
     top_p: 0.0
     min_p: 0.0
-  model: "gemma3:1b"
+  model: "lfm2:24b"
   embedding_model: "embeddinggemma"
   stream: false
   think: false

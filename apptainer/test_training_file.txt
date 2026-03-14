@@ -1,13 +1,18 @@
-#id: 5733be284776f4190066117f
-in front of the Notre_Dame Main_Building stand a statue
+#START OF SAMPLE
+#sample: 2 of 15
+#id: 56e045d2231d4119001ac028
+the superscript equal sign be represent as t
+#END OF DECLARATION
 
-? what be in front of the Notre_Dame Main_Building
-.pg front of the Notre_Dame Main_Building
+ >>> End context
+? what be the superscript equal sign
+#END OF QUESTION
+.wg superscript equal sign
+.push_goal
 .ggp
-.ph in front of the Notre_Dame Main_Building stand a statue
+.ph the superscript equal sign be represent as t
 .drop_goal
-.wg a statue
+.wg t
 .rw
-
-? what be in front of the Notre_Dame Main_Building
-.x
+.time
+.stat
