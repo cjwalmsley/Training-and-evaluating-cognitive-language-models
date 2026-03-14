@@ -73,7 +73,7 @@ experiments:
   categorise_samples: false
   goal_stack_limit: 1
   write_non_lookup_commands: false
-  annabell_build: "annabell_WMSize8500_ElActfStSize600k"
+  annabell_build: "annabell_WMSize5000_ElActfStSize480k"
 
 dataset:
   dataset_directory: "datasets/squad_dataset"

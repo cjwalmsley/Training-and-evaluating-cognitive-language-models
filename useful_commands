@@ -269,4 +269,6 @@ rsync -P '/Users/chris/Library/CloudStorage/GoogleDrive-cjameswalmsley@gmail.com
 
 cp ~/work/experiments/54/datasets/* ~/work/experiments/54/data_sets/
 
-/Volume1/Media
+/volume1/Media
+
+rsync -avP /home/ronin/PycharmProjects/Training-and-evaluating-cognitive-language-models/apptainer/annabell_WMSize5000_ElActfStSize480k.sif cjw81@hydra.kent.ac.uk:/home/bwc/cjw81/Training-and-evaluating-cognitive-language-models/apptainer/

@@ -1,0 +1,7 @@
+#START OF SAMPLE
+
+.load test_pt_weights.dat
+
+#id: 56e045d2231d4119001ac028
+? what be the superscript equal sign
+.x

@@ -16,3 +16,5 @@ the superscript equal sign be represent as t
 .rw
 .time
 .stat
+
+.save test_pt_weights.dat
